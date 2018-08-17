@@ -29,7 +29,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-router.get('/facebook', function(req, res, next) {
+router.get('/webhook', function(req, res, next) {
  
 	console.log("get facebook")
 	if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === VALIDATION_TOKEN) {
@@ -42,7 +42,7 @@ router.get('/facebook', function(req, res, next) {
 	
 });
 
-router.post('/facebook', function(req, res, next) {
+router.post('/webhook', function(req, res, next) {
  
 	var data = req.body;
 	console.log("Res Post facebook");
