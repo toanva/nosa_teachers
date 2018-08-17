@@ -144,8 +144,8 @@ function receivedMessage(event) {
                         {
                             type: 'web_url',
                             url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                            title: 'Thông tin chương trình'
-
+                            title: 'Thông tin chương trình',
+                            webview_height_ratio: 'tall'
                         },
                         {
                             type: 'web_url',
