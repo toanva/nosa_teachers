@@ -135,17 +135,17 @@ function receivedMessage(event) {
 
                 client.getUserProfile(senderID).then(user => {
                     //client.sendText(senderID, 'Xin chào ! messageText' + user.last_name + ' ' + user.first_name, { tag: 'ISSUE_RESOLUTION' });
-                    client.sendTemplate(senderID, {
-                        template_type: 'button',
-                        text: 'Xin chào ' + user.last_name + ' ' + user.first_name + '.Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?',
-                        buttons: [
-                            {
-                                type: 'postback',
-                                title: 'Thông tin chương trình',
-                                payload: 'USER_DEFINED_PAYLOAD',
-                            },
-                        ],
-                    });
+                    //client.sendTemplate(senderID, {
+                    //    template_type: 'button',
+                    //    text: 'Xin chào ' + user.last_name + ' ' + user.first_name + '.Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?',
+                    //    buttons: [
+                    //        {
+                    //            type: 'postback',
+                    //            title: 'Thông tin chương trình',
+                    //            payload: 'USER_DEFINED_PAYLOAD',
+                    //        },
+                    //    ],
+                    //});
                     client.sendButtonTemplate(senderID, 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
                     [
                         {
