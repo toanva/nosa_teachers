@@ -145,7 +145,7 @@ function receivedMessage(event) {
                     // }
                     var obj = JSON.parse(user);
                     //msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
-                    client.sendButtonTemplate(USER_ID, 'Xin chào ' + obj["first_name"] + ' ' + obj["first_name"] + ' Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
+                    client.sendButtonTemplate(senderID, 'Xin chào ' + obj["first_name"] + ' ' + obj["first_name"] + ' Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
                         [
                             {
                                 type: 'web_url',
