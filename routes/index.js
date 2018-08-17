@@ -211,8 +211,8 @@ function receivedMessage(event) {
                         {
                             type: 'web_url',
                             url: 'http://www.chiasecungthayco.com/2018',
-                            title: 'Bình chọn',
-                        },
+                            title: 'Bình chọn'
+                        }
                     ]);
                 });
 			    break;
