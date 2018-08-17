@@ -136,7 +136,58 @@ function receivedMessage(event) {
 				});
 				break;
 			case 'liên hệ':
-				client.sendMessage(senderID, {  text: 'MKmart hotline: 091.128.5465 / 1900545465!',});
+                client.setPersistentMenu([
+                    {
+                        locale: 'default',
+                        call_to_actions: [
+                            {
+                                title: 'Play Again',
+                                type: 'postback',
+                                payload: 'RESTART',
+                            },
+                            {
+                                title: 'Language Setting',
+                                type: 'nested',
+                                call_to_actions: [
+                                    {
+                                        title: '中文',
+                                        type: 'postback',
+                                        payload: 'CHINESE',
+                                    },
+                                    {
+                                        title: 'English',
+                                        type: 'postback',
+                                        payload: 'ENGLISH',
+                                    },
+                                ],
+                            },
+                            {
+                                title: 'Explore D',
+                                type: 'nested',
+                                call_to_actions: [
+                                    {
+                                        title: 'Explore',
+                                        type: 'web_url',
+                                        url: 'https://www.youtube.com/watch?v=v',
+                                        webview_height_ratio: 'tall',
+                                    },
+                                    {
+                                        title: 'W',
+                                        type: 'web_url',
+                                        url: 'https://www.facebook.com/w',
+                                        webview_height_ratio: 'tall',
+                                    },
+                                    {
+                                        title: 'Powered by YOCTOL',
+                                        type: 'web_url',
+                                        url: 'https://www.yoctol.com/',
+                                        webview_height_ratio: 'tall',
+                                    },
+                                ],
+                            },
+                        ],
+                    },
+                ]);
 				break;
 			default:
                 client.getUserProfile(senderID).then(user => {
@@ -145,16 +196,12 @@ function receivedMessage(event) {
                         {
                             type: 'web_url',
                             url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                            title: 'Thông tin chương trình',
-                            messenger_extensions: true,
-                            webview_height_ratio: "tall"
+                            title: 'Thông tin chương trình'
                         },
                         {
                             type: 'web_url',
                             url: 'https://toanvachatbot.herokuapp.com/senddocument/',
-                            title: 'Gửi bài viết',
-                            messenger_extensions: true,
-                            webview_height_ratio: "tall"
+                            title: 'Gửi bài viết'
                         },
                         {
                             type: 'web_url',
