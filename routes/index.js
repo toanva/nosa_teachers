@@ -29,6 +29,26 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+//server.get('/senddocument', (req, res, next) => {
+//    let referer = req.get('Referer');
+//    if (referer) {
+//        if (referer.indexOf('www.messenger.com') >= 0) {
+//            console.log("register.bot 1", referer);
+//            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
+//        } else if (referer.indexOf('www.facebook.com') >= 0) {
+//            console.log("register.bot 2", referer);
+//            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
+//        } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
+//            console.log("register.bot 3", referer);
+//            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
+//        }
+//        req.session.faceUser = true;
+//        //res.render('register');
+//        res.sendFile('views/send.html', {
+//            root: __dirname
+//        });
+//    }
+//});
 router.get('/webhook', function(req, res, next) {
  
 	console.log("get facebook")
@@ -90,26 +110,7 @@ router.post('/webhook', function(req, res, next) {
 	
 });
 
-server.get('/send', (req, res, next) => {
-    let referer = req.get('Referer');
-    if (referer) {
-        if (referer.indexOf('www.messenger.com') >= 0) {
-            console.log("register.bot 1", referer);
-            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
-        } else if (referer.indexOf('www.facebook.com') >= 0) {
-            console.log("register.bot 2", referer);
-            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
-        } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
-            console.log("register.bot 3", referer);
-            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
-        }
-        req.session.faceUser = true;
-        //res.render('register');
-        res.sendFile('views/send.html', {
-            root: __dirname
-        });
-    }
-});
+
 
 function receivedMessage(event) {
 	var senderID = event.sender.id;
