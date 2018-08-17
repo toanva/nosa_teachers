@@ -60,14 +60,7 @@ router.post('/webhook', function(req, res, next) {
 					//console.log("face event", messagingEvent.postback.payload);
 					if (messagingEvent.message) {
 						//console.log("Res Post facebook 1");
-						receivedMessage(messagingEvent);
-
-
-					} else if (messagingEvent.delivery) {
-						console.log("Res Post delivery");
-						////receivedDeliveryConfirmation(messagingEvent);
-					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'getstarted') {
-						//present user with some greeting or call to action
+						//receivedMessage(messagingEvent);
                         client.getUserProfile(USER_ID).then(user => {
                             //console.log(user);
                             // {
@@ -102,6 +95,13 @@ router.post('/webhook', function(req, res, next) {
                                     },
                                 ]);
                         });
+
+					} else if (messagingEvent.delivery) {
+						console.log("Res Post delivery");
+						////receivedDeliveryConfirmation(messagingEvent);
+					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'getstarted') {
+						//present user with some greeting or call to action
+                        
 						
 					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
 						//present user 'confirm':				
