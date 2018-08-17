@@ -144,14 +144,12 @@ function receivedMessage(event) {
                         {
                             type: 'web_url',
                             url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                            title: 'Thông tin chương trình',
-                            messenger_extensions: true
+                            title: 'Thông tin chương trình'
                         },
                         {
                             type: 'web_url',
                             url: 'https://toanvachatbot.herokuapp.com/senddocument/',
-                            title: 'Gửi bài viết',
-                            messenger_extensions: true
+                            title: 'Gửi bài viết'
                         },
                         //{
                         //    type: 'web_url',
