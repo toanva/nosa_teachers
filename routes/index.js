@@ -133,7 +133,7 @@ function receivedMessage(event) {
 			default:
                 //client.sendText(senderID, 'Hello! messageText', { tag: 'ISSUE_RESOLUTION' });
 
-                client.getUserProfile(USER_ID).then(user => {
+                client.getUserProfile(senderID).then(user => {
                     //console.log(user);
                     // {
                     //   first_name: 'Johnathan',
