@@ -167,12 +167,22 @@ function receivedMessage(event) {
                     //        },
                     //    ],
                     //});
-                    var msg = 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?';
+                    var msg = 'Xin chào ' + user.last_name + ' ' + user.first_name + '.Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?';
                     client.sendButtonTemplate(senderID, msg, [
                         {
                             type: 'web_url',
                             url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                            title: 'Thông tin chương trình',
+                            title: 'Thông tin chương trình'
+                        },
+                        {
+                            type: 'web_url',
+                            url: 'https://toanvachatbot.herokuapp.com/send.html',
+                            title: 'Gửi bài viết'
+                        },
+                        {
+                            type: 'web_url',
+                            url: 'https://toanvachatbot.herokuapp.com/send.html',
+                            title: 'Bài viết chọn lọc'
                         }
                     ]);
                     //client.sendButtonTemplate(senderID, 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
