@@ -207,11 +207,6 @@ function receivedMessage(event) {
                             type: 'web_url',
                             url: 'https://toanvachatbot.herokuapp.com/document.html',
                             title: 'Bài viết chọn lọc'
-                        },
-                        {
-                            type: 'web_url',
-                            url: 'http://www.chiasecungthayco.com/2018',
-                            title: 'Bình chọn'
                         }
                     ]);
                 });
