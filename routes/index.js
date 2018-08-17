@@ -90,6 +90,27 @@ router.post('/webhook', function(req, res, next) {
 	
 });
 
+server.get('/send', (req, res, next) => {
+    let referer = req.get('Referer');
+    if (referer) {
+        if (referer.indexOf('www.messenger.com') >= 0) {
+            console.log("register.bot 1", referer);
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
+        } else if (referer.indexOf('www.facebook.com') >= 0) {
+            console.log("register.bot 2", referer);
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
+        } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
+            console.log("register.bot 3", referer);
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
+        }
+        req.session.faceUser = true;
+        //res.render('register');
+        res.sendFile('views/send.html', {
+            root: __dirname
+        });
+    }
+});
+
 function receivedMessage(event) {
 	var senderID = event.sender.id;
 	var recipientID = event.recipient.id;
@@ -158,16 +179,7 @@ function receivedMessage(event) {
                             url: 'https://toanvachatbot.herokuapp.com/send.html',
                             title: 'Gửi bài viết',
                             webview_height_ratio: 'tall',
-                        },
-                        {
-                            type: 'web_url',
-                            url: 'https://toanvachatbot.herokuapp.com/document.html',
-                            title: 'Bài viết chọn lọc',
-                        },
-                        {
-                            type: 'web_url',
-                            url: 'http://www.chiasecungthayco.com/2018',
-                            title: 'Bình chọn',
+                            fallback_url: 'https://toanvachatbot.herokuapp.com/',
                         },
                     ]);
                     //client.sendButtonTemplate(senderID, 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
@@ -179,7 +191,7 @@ function receivedMessage(event) {
                     //    },
                     //    {
                     //        type: 'web_url',
-                    //        url: 'https://toanvachatbot.herokuapp.com/',
+                    //        url: 'https://toanvachatbot.herokuapp.com/send.html',
                     //        title: 'Gửi bài viết',
                     //    },
                     //    {
