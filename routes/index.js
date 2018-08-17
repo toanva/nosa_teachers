@@ -137,7 +137,7 @@ function receivedMessage(event) {
                     //client.sendText(senderID, 'Xin chào ! messageText' + user.last_name + ' ' + user.first_name, { tag: 'ISSUE_RESOLUTION' });
                     client.sendTemplate(senderID, {
                         template_type: 'button',
-                        text: 'title',
+                        text: 'Xin chào ' + user.last_name + ' ' + user.first_name + '.Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?',
                         buttons: [
                             {
                                 type: 'postback',
@@ -146,29 +146,29 @@ function receivedMessage(event) {
                             },
                         ],
                     });
-                    //client.sendButtonTemplate(senderID, 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
-                    //    [
-                    //        {
-                    //            type: 'web_url',
-                    //            url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                    //            title: 'Thông tin chương trình',
-                    //        },
-                    //        {
-                    //            type: 'web_url',
-                    //            url: 'https://toanvachatbot.herokuapp.com/',
-                    //            title: 'Gửi bài viết',
-                    //        },
-                    //        {
-                    //            type: 'web_url',
-                    //            url: 'https://toanvachatbot.herokuapp.com/document.html',
-                    //            title: 'Bài viết chọn lọc',
-                    //        },
-                    //        {
-                    //            type: 'web_url',
-                    //            url: 'http://www.chiasecungthayco.com/2018',
-                    //            title: 'Bình chọn',
-                    //        },
-                    //    ]);
+                    client.sendButtonTemplate(senderID, 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
+                    [
+                        {
+                            type: 'web_url',
+                            url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
+                            title: 'Thông tin chương trình',
+                        },
+                        {
+                            type: 'web_url',
+                            url: 'https://toanvachatbot.herokuapp.com/',
+                            title: 'Gửi bài viết',
+                        },
+                        {
+                            type: 'web_url',
+                            url: 'https://toanvachatbot.herokuapp.com/document.html',
+                            title: 'Bài viết chọn lọc',
+                        },
+                        {
+                            type: 'web_url',
+                            url: 'http://www.chiasecungthayco.com/2018',
+                            title: 'Bình chọn',
+                        },
+                    ]);
                 });
 			    break;
 		}
