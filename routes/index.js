@@ -135,7 +135,7 @@ function receivedMessage(event) {
 
                 client.getUserProfile(senderID).then(user => {
                     //client.sendText(senderID, 'Xin chào ! messageText' + user.last_name + ' ' + user.first_name, { tag: 'ISSUE_RESOLUTION' });
-                    client.sendTemplate(USER_ID, {
+                    client.sendTemplate(senderID, {
                         template_type: 'button',
                         text: 'title',
                         buttons: [
