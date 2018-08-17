@@ -152,7 +152,7 @@ function receivedMessage(event) {
                         },
                         {
                             type: 'web_url',
-                            url: 'https://toanvachatbot.herokuapp.com/send.html',
+                            url: 'https://toanvachatbot.herokuapp.com/send/',
                             title: 'Gửi bài viết',
                             messenger_extensions: true,
                             webview_height_ratio: "tall",
@@ -160,7 +160,7 @@ function receivedMessage(event) {
                         },
                         {
                             type: 'web_url',
-                            url: 'https://toanvachatbot.herokuapp.com/send.html',
+                            url: 'https://toanvachatbot.herokuapp.com/document.html',
                             title: 'Bài viết chọn lọc'
                         },
                         {
