@@ -167,7 +167,7 @@ function receivedMessage(event) {
                     //        },
                     //    ],
                     //});
-                    var msg = 'Xin chào ' + user.last_name + ' ' + user.first_name + '.Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?';
+                    var msg = 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt.Bạn muốn chia sẻ gì cùng mình nào?';
                     client.sendButtonTemplate(senderID, msg, [
                         {
                             type: 'web_url',
@@ -178,8 +178,6 @@ function receivedMessage(event) {
                             type: 'web_url',
                             url: 'https://toanvachatbot.herokuapp.com/send.html',
                             title: 'Gửi bài viết',
-                            webview_height_ratio: 'tall',
-                            fallback_url: 'https://toanvachatbot.herokuapp.com/',
                         },
                     ]);
                     //client.sendButtonTemplate(senderID, 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
