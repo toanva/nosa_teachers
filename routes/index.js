@@ -136,58 +136,6 @@ function receivedMessage(event) {
 				});
 				break;
 			case 'liên hệ':
-                client.setPersistentMenu([
-                    {
-                        locale: 'default',
-                        call_to_actions: [
-                            {
-                                title: 'Play Again',
-                                type: 'postback',
-                                payload: 'RESTART',
-                            },
-                            {
-                                title: 'Language Setting',
-                                type: 'nested',
-                                call_to_actions: [
-                                    {
-                                        title: '中文',
-                                        type: 'postback',
-                                        payload: 'CHINESE',
-                                    },
-                                    {
-                                        title: 'English',
-                                        type: 'postback',
-                                        payload: 'ENGLISH',
-                                    },
-                                ],
-                            },
-                            {
-                                title: 'Explore D',
-                                type: 'nested',
-                                call_to_actions: [
-                                    {
-                                        title: 'Explore',
-                                        type: 'web_url',
-                                        url: 'https://www.youtube.com/watch?v=v',
-                                        webview_height_ratio: 'tall',
-                                    },
-                                    {
-                                        title: 'W',
-                                        type: 'web_url',
-                                        url: 'https://www.facebook.com/w',
-                                        webview_height_ratio: 'tall',
-                                    },
-                                    {
-                                        title: 'Powered by YOCTOL',
-                                        type: 'web_url',
-                                        url: 'https://www.yoctol.com/',
-                                        webview_height_ratio: 'tall',
-                                    },
-                                ],
-                            },
-                        ],
-                    },
-                ]);
 				break;
 			default:
                 client.getUserProfile(senderID).then(user => {
