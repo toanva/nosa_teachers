@@ -60,64 +60,24 @@ router.post('/webhook', function(req, res, next) {
 					//console.log("face event", messagingEvent.postback.payload);
 					if (messagingEvent.message) {
 						//console.log("Res Post facebook 1");
-						//receivedMessage(messagingEvent);
-                        client.getUserProfile(USER_ID).then(user => {
-                            //console.log(user);
-                            // {
-                            //   first_name: 'Johnathan',
-                            //   last_name: 'Jackson',
-                            //   profile_pic: 'https://example.com/pic.png',
-                            //   locale: 'en_US',
-                            //   timezone: 8,
-                            //   gender: 'male',
-                            // }
-                            client.sendButtonTemplate(USER_ID, 'Xin chào ' + user.first_name + ' ' + user.last_name + ' Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
-                                [
-                                    {
-                                        type: 'web_url',
-                                        url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                                        title: 'Thông tin chương trình',
-                                    },
-                                    {
-                                        type: 'web_url',
-                                        url: 'https://toanvachatbot.herokuapp.com/',
-                                        title: 'Gửi bài viết',
-                                    },
-                                    {
-                                        type: 'web_url',
-                                        url: 'https://toanvachatbot.herokuapp.com/document.html',
-                                        title: 'Bài viết chọn lọc',
-                                    },
-                                    {
-                                        type: 'web_url',
-                                        url: 'http://www.chiasecungthayco.com/2018',
-                                        title: 'Bình chọn',
-                                    },
-                                ]);
-                        });
-
+						receivedMessage(messagingEvent);
 					} else if (messagingEvent.delivery) {
 						console.log("Res Post delivery");
 						////receivedDeliveryConfirmation(messagingEvent);
 					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'getstarted') {
 						//present user with some greeting or call to action
-                        
 						
 					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
 						//present user 'confirm':				
 						//sendMessageConfimRegister(messagingEvent.sender.id);
-
 					} else {
 						console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
 					}
 					////// Cập nhật lại thời gian hết hạn của member để đếm số thành viên đang hoạt động với bót
-				
-
 				});
 			} else {
 				console.log("Messaging undefined");
 			}
-
 		});
 
 		// Returns a '200 OK' response to all requests
@@ -155,9 +115,7 @@ function receivedMessage(event) {
 			messageId, appId, metadata);
 		return;
 	} else if (quickReply) {
-		
 		client.sendText(senderID, 'Hello! quickReply', { tag: 'ISSUE_RESOLUTION' });
-	
 	}else if (messageText) {
 		switch (messageText.toLowerCase()) {
 			case 'giá xe':
@@ -173,11 +131,44 @@ function receivedMessage(event) {
 				client.sendMessage(senderID, {  text: 'MKmart hotline: 091.128.5465 / 1900545465!',});
 				break;
 			default:
-			client.sendText(senderID, 'Hello! messageText', { tag: 'ISSUE_RESOLUTION' });
-			break;
-		
-		}
+                //client.sendText(senderID, 'Hello! messageText', { tag: 'ISSUE_RESOLUTION' });
 
+                client.getUserProfile(USER_ID).then(user => {
+                    //console.log(user);
+                    // {
+                    //   first_name: 'Johnathan',
+                    //   last_name: 'Jackson',
+                    //   profile_pic: 'https://example.com/pic.png',
+                    //   locale: 'en_US',
+                    //   timezone: 8,
+                    //   gender: 'male',
+                    // }
+                    client.sendButtonTemplate(USER_ID, 'Xin chào ' + user.first_name + ' ' + user.last_name + ' Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?',
+                        [
+                            {
+                                type: 'web_url',
+                                url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
+                                title: 'Thông tin chương trình',
+                            },
+                            {
+                                type: 'web_url',
+                                url: 'https://toanvachatbot.herokuapp.com/',
+                                title: 'Gửi bài viết',
+                            },
+                            {
+                                type: 'web_url',
+                                url: 'https://toanvachatbot.herokuapp.com/document.html',
+                                title: 'Bài viết chọn lọc',
+                            },
+                            {
+                                type: 'web_url',
+                                url: 'http://www.chiasecungthayco.com/2018',
+                                title: 'Bình chọn',
+                            },
+                        ]);
+                });
+			    break;
+		}
 	}
 };
 
