@@ -29,11 +29,11 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
-server.get('/send', (req, res, next) => {
-    res.sendFile('views/send.html', {
-        root: __dirname
-    });
-});
+//server.get('/senddocument', (req, res, next) => {
+//    res.sendFile('views/send.html', {
+//        root: __dirname
+//    });
+//});
 
 router.get('/webhook', function(req, res, next) {
  
@@ -152,7 +152,7 @@ function receivedMessage(event) {
                         },
                         {
                             type: 'web_url',
-                            url: 'https://toanvachatbot.herokuapp.com/send/',
+                            url: 'https://toanvachatbot.herokuapp.com/senddocument/',
                             title: 'Gửi bài viết',
                             messenger_extensions: true,
                             webview_height_ratio: "tall",
