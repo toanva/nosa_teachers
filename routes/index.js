@@ -140,66 +140,38 @@ function receivedMessage(event) {
 			default:
                 client.getUserProfile(senderID).then(user => {
                     var msg = 'Xin chào ' + user.last_name + ' ' + user.first_name + '. Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?';
-                    client.sendListTemplate(
-                        senderID,
-                        [
-                            {
-                                title: 'Classic T-Shirt Collection',
-                                image_url: 'https://peterssendreceiveapp.ngrok.io/img/collection.png',
-                                subtitle: 'See all our colors',
-                                default_action: {
-                                    type: 'web_url',
-                                    url: 'https://peterssendreceiveapp.ngrok.io/shop_collection',
-                                    messenger_extensions: true,
-                                    webview_height_ratio: 'tall',
-                                    fallback_url: 'https://peterssendreceiveapp.ngrok.io/',
-                                },
-                                buttons: [
-                                    {
-                                        title: 'View',
-                                        type: 'web_url',
-                                        url: 'https://peterssendreceiveapp.ngrok.io/collection',
-                                        messenger_extensions: true,
-                                        webview_height_ratio: 'tall',
-                                        fallback_url: 'https://peterssendreceiveapp.ngrok.io/',
-                                    },
-                                ],
-                            },
-                        ],
-                        [
-                            {
-                                type: 'postback',
-                                title: 'View More',
-                                payload: 'USER_DEFINED_PAYLOAD',
-                            },
-                        ],
-                        { top_element_style: 'compact' }
-                    );
-                    //client.sendButtonTemplate(senderID, msg, [
-                    //    {
-                    //        type: 'web_url',
-                    //        url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
-                    //        title: 'Thông tin chương trình',
-                    //        messenger_extensions: true
-                    //    },
-                    //    {
-                    //        type: 'web_url',
-                    //        url: 'https://toanvachatbot.herokuapp.com/senddocument/',
-                    //        title: 'Gửi bài viết',
-                    //        messenger_extensions: true
-                    //    },
-                    //    //{
-                    //    //    type: 'web_url',
-                    //    //    url: 'https://toanvachatbot.herokuapp.com/document.html',
-                    //    //    title: 'Bài viết chọn lọc'
-                    //    //}
-                    //    //,
-                    //    {
-                    //        type: 'web_url',
-                    //        url: 'http://www.chiasecungthayco.com/2018',
-                    //        title: 'Bình chọn'
-                    //    }
-                    //]);
+                    client.sendButtonTemplate(senderID, msg, [
+                        {
+                            type: 'web_url',
+                            url: 'http://www.chiasecungthayco.com/2018/thong-tin-chuong-trinh',
+                            title: 'Thông tin chương trình',
+                            messenger_extensions: true
+                        },
+                        {
+                            type: 'web_url',
+                            url: 'https://toanvachatbot.herokuapp.com/senddocument/',
+                            title: 'Gửi bài viết',
+                            messenger_extensions: true
+                        },
+                        //{
+                        //    type: 'web_url',
+                        //    url: 'https://toanvachatbot.herokuapp.com/document.html',
+                        //    title: 'Bài viết chọn lọc'
+                        //}
+                        //,
+                        {
+                            type: 'web_url',
+                            url: 'http://www.chiasecungthayco.com/2018',
+                            title: 'Bình chọn'
+                        }
+                    ]);
+                    client.sendButtonTemplate(senderID,'', [
+                        {
+                            type: 'web_url',
+                            url: 'https://toanvachatbot.herokuapp.com/document.html',
+                            title: 'Bài viết chọn lọc'
+                        }
+                    ]);
                 });
 			    break;
 		}
