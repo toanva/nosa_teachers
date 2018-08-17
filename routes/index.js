@@ -134,7 +134,8 @@ function receivedMessage(event) {
                 //client.sendText(senderID, 'Hello! messageText', { tag: 'ISSUE_RESOLUTION' });
 
                 client.getUserProfile(senderID).then(user => {
-                    console.log(user);
+                    client.sendText(senderID, 'Hello! messageText' + user.last_name + ' ' + user.first_name, { tag: 'ISSUE_RESOLUTION' });
+                    //console.log(user);
                      //{
                      //  first_name: 'Johnathan',
                      //  last_name: 'Jackson',
