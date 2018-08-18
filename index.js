@@ -1187,7 +1187,7 @@ function callSendAPIFile(messageData) {
 			return console.error("upload failed >> \n", err)
 		};
 		console.log("upload successfull >> \n", body); //facebook always return 'ok' message, so you need to read error in 'body.error' if any
-		sendOneQuick(messageData.recipient.id, "Bạn có muốn tiếp tục trò truyện với Thani không?", "Có chứ", "confirm", "advisory.png");
+		sendOneQuick(messageData.recipient.id, "Bạn hiểu về chương trình rồi chứ. Cùng xem chúng ta có thể làm gì tiếp theo nhé!", "Đồng ý", "confirm", "advisory.png");
 	});
 	var form = r.form();
 	form.append('recipient', JSON.stringify(messageData.recipient));
@@ -2321,12 +2321,27 @@ function receivedMessage(event) {
 			messageId, quickReplyPayload);
         switch (quickReplyPayload.toLowerCase()) {
             case 'thele':
-                msg = "Thể lệ :";
+                msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileMessage(senderID, msg, "image", file_loc);
                 break;
             case 'guibaiviet':
-                msg = "Gửi bài viết theo mẫu sau";
+                msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
+                quick_replies: [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                    }];
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
+            case 'soanbai':
+                msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/senddocument",
@@ -2387,6 +2402,32 @@ function receivedMessage(event) {
                 }];
                 sendQuickMessage(senderID, msg, quickReplies);
                 break;
+            case 'confirm':
+                msg = " ";
+                quick_replies: [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
+                
 			case 'guide':
 				sendGuide(senderID);
 				break;
