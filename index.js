@@ -2337,7 +2337,7 @@ function receivedMessage(event) {
                     title: "Gửi bài viết",
                     payload: "guibaiviet",
                     image_url: SERVER_URL + "/img/HoiMin.png"
-                    }];
+                }];
                 sendQuickMessage(senderID, msg, quickReplies);
                 break;
             case 'soanbai':
@@ -2403,7 +2403,7 @@ function receivedMessage(event) {
                 sendQuickMessage(senderID, msg, quickReplies);
                 break;
             case 'confirm':
-                msg = " ";
+                msg = "Đồng ý";
                 quick_replies: [{
                     content_type: "text",
                     title: "Thể lệ",
@@ -2482,16 +2482,7 @@ function receivedMessage(event) {
 					sendMessageWelecome(senderID, msg);
 				});
 				break;
-			case 'giúp đỡ':
-				callGetProfile(senderID, function (profile) {
-					//console.log("Res Post facebook 3", profile);
-					var obj = JSON.parse(profile);
-					msg = obj["last_name"] + " " + obj["first_name"] + " đã liên hệ!";
-					objLog.Answer = msg;
-					//saveLogs(objLog);
-					sendMessageWelecome(senderID, msg);
-				});
-				break;
+			
 			case 'chuẩn':
 				sendMessageConfimRegister(senderID);
 				break;
