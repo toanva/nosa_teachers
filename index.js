@@ -2084,7 +2084,7 @@ server.get('/closeForm', (req, res) => {
 	//res.send('Get Id From : '+ fromId + " = "+ data);
 });
 
-server.get('/facebook', function (req, res) {
+server.get('/webhook', function (req, res) {
 	console.log("get facebook")
 	if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === VALIDATION_TOKEN) {
 		console.log("Validating webhook facebook : ", req.query['first_name']);
@@ -2094,7 +2094,7 @@ server.get('/facebook', function (req, res) {
 		res.sendStatus(403);
 	}
 });
-server.post('/facebook', (req, res) => {
+server.post('/webhook', (req, res) => {
 	var data = req.body;
 	console.log("Res Post facebook");
 
