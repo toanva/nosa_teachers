@@ -48,8 +48,6 @@ server.get('/senddocument', (req, res, next) => {
             console.log("register.bot 3", referer);
             res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
         }
-        req.session.faceUser = true;
-        //res.render('register');
         res.sendFile('views/senddocument.html', {
             root: __dirname
         });
