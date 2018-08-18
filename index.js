@@ -1171,7 +1171,7 @@ function callSendAPIBroadcast(messageData, callback) {
 };
 
 function callSendAPIFile(messageData) {
-	var endpoint = "https://graph.facebook.com/v3.1/me/messages?access_token=" + PAGE_ACCESS_TOKEN;
+	var endpoint = "https://graph.facebook.com/v3.0/me/messages?access_token=" + PAGE_ACCESS_TOKEN;
 	var r = request.post(endpoint, function (err, httpResponse, body) {
 		if (err) {
 			return console.error("upload failed >> \n", err)
@@ -2479,7 +2479,11 @@ function receivedMessage(event) {
 			"InsertDay": inputDate
 		};
 		switch (messageText.toLowerCase()) {
-
+            case 'thể lệ':
+                msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
+                file_loc = __dirname + "/public/img/cddl.png";
+                sendFileMessage(senderID, msg, "image", file_loc);
+                break;
 			case 'image':
 				//sendImageMessage(senderID);
 				break;
