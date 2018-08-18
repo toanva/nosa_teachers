@@ -3725,7 +3725,7 @@ function sendMessageWelecome(recipientId, msg) {
 			id: recipientId
 		},
 		message: {
-			text: msg + " Tôi là Nosa, trợ lý ảo của Mạng lưới xây dựng Bản đồ số hóa sản phẩm nông nghiệp toàn quốc do Hội LHTN Việt Nam thực hiện. Tại đây, chúng ta hãy cùng nhau xây dựng mô hình và các hướng đi mới cho bài toán thanh niên làm kinh tế nhé. Bạn có thuộc nhóm thành viên được triệu tập không?",
+            text: msg + " Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?",
 			quick_replies: [{
 				content_type: "text",
 				title: "Cán bộ đoàn",
