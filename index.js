@@ -29,8 +29,11 @@ var FormData = require('form-data');
 var t = require('./test.js');
 var provincial = require('./Provincial.js');
 ////Toàn thêm
-var Cryptojs = require("crypto-js");//Toanva add
+var Cryptojs = require("crypto-js"); //Toanva add
 ///// hết
+//Toanva add api Message
+const { MessengerClient } = require('messaging-api-messenger');
+
 
 const server = express();
 
@@ -39,8 +42,7 @@ server.set('view engine', 'ejs');
 server.use(session({
 	secret: 'nsvn119',
 	saveUninitialized: true,
-	resave: true,
-	cookie:{expires : new Date(Date.now() + (60 * 1000 * 60))} /// Set time out 1h
+	resave: true
 }));
 server.use(bodyParser.urlencoded({
 	extended: false,
@@ -51,6 +53,7 @@ server.use(bodyParser.json({
 	verify: verifyRequestSignature,
 	limit: '10mb'
 }));
+
 server.use(express.static('public'));
 // App Secret can be retrieved from the App Dashboard
 const MONGO_URL = (process.env.MESSENGER_APP_SECRET) ?
@@ -90,6 +93,11 @@ const IMAGE_API_KEY = (process.env.SERVER_URL) ?
 const IMAGE_API_SECRET = (process.env.SERVER_URL) ?
 	(process.env.SERVER_URL) :
 	config.get('image_api_secret');
+const client = MessengerClient.connect({
+	accessToken: PAGE_ACCESS_TOKEN,
+	appSecret: APP_SECRET,
+	version: '3.1'
+});
 //var SERVER_URL ="https://nongsanvn.herokuapp.com";
 if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 	console.error("Missing config values");
@@ -132,8 +140,7 @@ function verifyRequestSignature(req, res, buf) {
 };
 
 const saveLogs = function (objLogs) {
-	try
-	{
+	try {
 		objDb.getConnection(function (client) {
 			objDb.insertLogs(objLogs, client, function (err, results) {
 
@@ -146,16 +153,15 @@ const saveLogs = function (objLogs) {
 				client.close();
 			});
 		});
-	}catch(err)
-	{
-		console.error("saveLogs: ",err);
+	} catch (err) {
+		console.error("saveLogs: ", err);
 	}
 };
 
 /// Dùng cho messs
 var authFace = function (req, res, next) {
 	//console.log("Session :",req.session);
-	console.log("Session faceUser :",req.session.faceUser);
+	console.log("Session faceUser :", req.session.faceUser);
 	if (req.session && req.session.faceUser)
 		return next();
 	else
@@ -177,44 +183,38 @@ var authKsv = function (req, res, next) {
 };
 ////////// rowter
 server.get('/setup', (req, res) => {
-
-
 	setupGetStartedButton(res);
 	//setupPersistentMenu(res);
 	setupGreetingText(res);
-
-
 });
 server.post('/', function (req, res) {
-
-
-
 });
 //Toanva add getkeyCMS
 server.post('/getkeyCMS', function (req, res) {
-    let body = req.body;
-    if (req.session.cms_key == undefined || req.session.cms_key == null || req.session.cms_key !== req.sessionID) {
-        var cms_key = req.sessionID;
-        req.session.cms_key = cms_key;
-        res.send(cms_key);
-    } 		
-    else {
-        res.send(req.session.cms_key);
-    }
+	let body = req.body;
+	if (req.session.cms_key == undefined || req.session.cms_key == null || req.session.cms_key !== req.sessionID) {
+		var cms_key = req.sessionID;
+		req.session.cms_key = cms_key;
+		res.send(cms_key);
+	} else {
+		res.send(req.session.cms_key);
+	}
 });
 //Toanva add loginCMS
 server.post('/loginCMS', function (req, res) {
-	try
-	{
-		
-			let body = req.body;
-			var bytes = Cryptojs.AES.decrypt(body.data, req.sessionID);
+	try {
+
+		let body = req.body;
+		var bytes = Cryptojs.AES.decrypt(body.data, req.sessionID);
+		var stringByte = bytes.toString(Cryptojs.enc.Utf8);
+		console.log("loginCMS Byte to string:", stringByte);
+		if (stringByte != undefined && stringByte != null && stringByte != "") {
 			var decryptedData = JSON.parse(bytes.toString(Cryptojs.enc.Utf8));
+
 			if (!decryptedData.UserName || !decryptedData.Password) {
 				console.log("loginCMS failed");
 				res.send('Mật khẩu hoạc tài khoản không đúng');
-			}
-			else {
+			} else {
 				console.log("loginCMS:", decryptedData.UserName);
 				var query = {
 					UserName: decryptedData.UserName,
@@ -228,20 +228,33 @@ server.post('/loginCMS', function (req, res) {
 							req.session.user = body.UserName;
 							req.session.admin = true;
 							req.session.faceUser = true;
-							res.json({ success: "true", message: 'Đăng nhập thành công' });
-						}
-						else {
+							res.json({
+								success: "true",
+								message: 'Đăng nhập thành công'
+							});
+						} else {
 							console.log("loginCMS failed");
-							res.json({ success: "false", message: 'Mật khẩu hoạc tài khoản không đúng' });
+							res.json({
+								success: "false",
+								message: 'Mật khẩu hoạc tài khoản không đúng'
+							});
 						}
 					});
 				});
 			}
-		
-	}catch(err)
-	{
-		console.error("loginCMS failed:",err);
-		res.json({ success: "false", message: 'Phiên làm việc không còn hiệu lực, bạn F5 lại để login' });
+		} else {
+			console.error("loginCMS failed byte string nulll");
+			res.json({
+				success: "false",
+				message: 'Phiên làm việc không còn hiệu lực, bạn tải lại trang để đăng nhập'
+			});
+		}
+	} catch (err) {
+		console.error("loginCMS failed:", err);
+		res.json({
+			success: "false",
+			message: 'Phiên làm việc không còn hiệu lực, bạn tải lại trang để đăng nhập'
+		});
 	}
 });
 server.get('/logoutCMS', function (req, res) {
@@ -276,31 +289,36 @@ server.get('/logout.bot', function (req, res) {
 	req.session.destroy();
 	res.send("logout success!");
 });
-server.get('/getMemberOnline',(req, res) => {
+server.get('/getMemberOnline', (req, res) => {
 	res.setHeader('X-Frame-Options', 'ALLOW-FROM ' + SERVER_URL);
-	try{
+	try {
 		var cDate = new Date();
-		var eDate= new Date();
-		eDate.setMinutes(cDate.getMinutes()+15);	
+		var eDate = new Date();
+		eDate.setMinutes(cDate.getMinutes() + 15);
 
-		var query = {ExpiredDate: {$gte: cDate, $lte: eDate}};
-		console.log("getMemberOnline query : ",query);
+		var query = {
+			ExpiredDate: {
+				$gte: cDate,
+				$lte: eDate
+			}
+		};
+		console.log("getMemberOnline query : ", query);
 		objDb.getConnection(function (client) {
 			objDb.findMemberOnline(query, client, function (results) {
 				client.close();
 				res.send(results);
 			});
 		});
-	}catch(err)
-	{	console.error("getMemberOnline:",err);
+	} catch (err) {
+		console.error("getMemberOnline:", err);
 		res.send(null);
 	}
 });
-server.get('/getMemberConnect',(req, res) => {
+server.get('/getMemberConnect', (req, res) => {
 	res.setHeader('X-Frame-Options', 'ALLOW-FROM ' + SERVER_URL);
-	try{
+	try {
 		var query = {};
-		console.log("getMemberConnect query : ",query);
+		console.log("getMemberConnect query : ", query);
 		objDb.getConnection(function (client) {
 			objDb.findMemberOnline(query, client, function (results) {
 				client.close();
@@ -308,8 +326,8 @@ server.get('/getMemberConnect',(req, res) => {
 
 			});
 		});
-	}catch(err)
-	{	console.error("getMemberConnect:",err);
+	} catch (err) {
+		console.error("getMemberConnect:", err);
 		res.send(null);
 	}
 });
@@ -339,48 +357,61 @@ server.get('/getTopProduct', authFace, (req, res) => {
 		});
 	});
 });
+server.get('/test', (req, res) => {
 
+	var query;
+	callGetLocation(req.query.adrr,  function (results) {
+		//console.log("test");
+		//console.log("test status:",results.status);
+		console.log("test:",results.results[0].geometry.location);
+		//client.close();
+		res.send(results);
+
+	});
+	
+	//res.send(req.query.idProvincial);
+});
 //Toanva add getProductCMS
 server.get('/getProductCMS', auth, (req, res) => {
-    var name = req.query.name;
-    var provincial = req.query.provincial;
-    var districts = req.query.districts;
-    var wards = req.query.wards;
-    var query = {};
-    if (name != "") {
-        name = ".*" + name + ".*";
-        Object.assign(query, {
-            Name: {
-                $regex: name
-            }
-        });
-    }
-    if (provincial != "") {
-        Object.assign(query, {
-            Provincial: provincial
-        });
-    }
-    if (districts != "") {
-        Object.assign(query, {
-            District: districts
-        });
-    }
-    if (wards != "") {
-        Object.assign(query, {
-            Ward: wards
-        });
-    }
-    console.log("Product query CMS", query);
-    objDb.getConnection(function (client) {
-        objDb.findProduct(query, client, function (results) {
-            client.close();
-            res.send(results);
-        });
-    });
+	var name = req.query.name;
+	var provincial = req.query.provincial;
+	var districts = req.query.districts;
+	var wards = req.query.wards;
+	var query = {};
+	if (name != "") {
+		name = ".*" + name + ".*";
+		Object.assign(query, {
+			Name: {
+				$regex: name
+			}
+		});
+	}
+	if (provincial != "") {
+		Object.assign(query, {
+			Provincial: provincial
+		});
+	}
+	if (districts != "") {
+		Object.assign(query, {
+			District: districts
+		});
+	}
+	if (wards != "") {
+		Object.assign(query, {
+			Ward: wards
+		});
+	}
+	console.log("Product query CMS", query);
+	objDb.getConnection(function (client) {
+		objDb.findProduct(query, client, function (results) {
+			client.close();
+			res.send(results);
+		});
+	});
 });
-//Toanva end getProductCMS
 
-server.get('/getProduct',  (req, res) => {
+
+server.get('/getProduct', (req, res) => {
 	res.setHeader('X-Frame-Options', 'ALLOW-FROM ' + SERVER_URL);
 	var name = req.query.name;
 	var id = req.query.id;
@@ -388,9 +419,14 @@ server.get('/getProduct',  (req, res) => {
 	var districts = req.query.districts;
 	var wards = req.query.wards;
 	var position = req.query.position;
+	var type = req.query.type;
+	var minprice = req.query.minprice;
+	var maxprice = req.query.maxprice;
+	var minvolume = req.query.minvolume;
+	var maxvolume = req.query.maxvolume;
 	//var reqQuery=  req.query.strQuery
 	var query = {};
-	if (name != "" && name!=undefined) {
+	if (name != "" && name != undefined) {
 		//{ "Name": {'$regex': '.*nam.*'}}
 		name = ".*" + name + ".*";
 		Object.assign(query, {
@@ -399,31 +435,53 @@ server.get('/getProduct',  (req, res) => {
 			}
 		});
 	}
-	if (id != "" && id!=undefined) {
+	if (id != "" && id != undefined) {
 		Object.assign(query, {
 			_id: new mongodb.ObjectID(id)
 		});
 	}
-	if (provincial != "" && provincial!=undefined) {
+	if (provincial != "" && provincial != undefined) {
 		Object.assign(query, {
 			Provincial: provincial
 		});
 	}
-	if (districts != "" && districts!=undefined) {
+	if (districts != "" && districts != undefined) {
 		Object.assign(query, {
 			District: districts
 		});
 	}
-	if (wards != "" && wards!=undefined) {
+	if (wards != "" && wards != undefined) {
 		Object.assign(query, {
 			Ward: wards
 		});
 	}
-	//	if (position != "") {
-	//		Object.assign(query, {
-	//			Position: position
-	//		});
-	//	}
+	if (type != "" && type != undefined) {
+		Object.assign(query, {
+			Type: type
+		});
+	}
+	
+	var where="";
+	if (minprice != "" && minprice != undefined) {
+		where=where+" parseInt(this.Price) >= "+minprice + " &&";	
+	}
+	if (maxprice != "" && type != maxprice) {
+		
+		where=where+" parseInt(this.Price) <= "+maxprice + " &&";
+	}	
+	if (minvolume != "" && minvolume != undefined) {
+		
+		where=where+" parseInt(this.Quantity) >= "+minvolume + " &&";		
+	}
+	if (maxvolume != "" && type != maxvolume) {
+		
+		where=where+" parseInt(this.Quantity) <= "+maxvolume + " &&";
+	}
+	where=where+" 1==1";
+	Object.assign(query, {
+			$where: where
+		});
+
 	console.log("Product query", query);
 	objDb.getConnection(function (client) {
 		objDb.findProduct(query, client, function (results) {
@@ -526,116 +584,135 @@ server.get('/getBranch', (req, res) => {
 });
 //Toanva router USERS
 server.get('/getUser', auth, (req, res) => {
-    var username = req.query.username;
-    var fullname = req.query.fullname;
-    var status = req.query.status;
-    console.log("getUser username: ", username);
-    if (username == null || username == 'all')
-        username = "";
-    if (fullname == null || fullname == 'all')
-        fullname = "";
-    if (status == null || status == 'all')
-        status = "";
-    var query = {};
-    if (username) {
-        username = ".*" + username + ".*";
-        Object.assign(query, {
-            UserName: {
-                $regex: username
-            }
-        });
-    }
-    if (fullname) {
-        fullname = ".*" + fullname + ".*";
-        Object.assign(query, {
-            FullName: {
-                $regex: fullname
-            }
-        });
-    }
-    if (status) {
-        Object.assign(query, {
-            Status: {
-                $regex: status
-            }
-        });
-    }
-    console.log("getUser query", query);
-    objDb.getConnection(function (client) {
-        objDb.findUsers(query, client, function (results) {
-            client.close();
-            res.send(results);
-        });
-    });
+	var username = req.query.username;
+	var fullname = req.query.fullname;
+	var status = req.query.status;
+	console.log("getUser username: ", username);
+	if (username == null || username == 'all')
+		username = "";
+	if (fullname == null || fullname == 'all')
+		fullname = "";
+	if (status == null || status == 'all')
+		status = "";
+	var query = {};
+	if (username) {
+		username = ".*" + username + ".*";
+		Object.assign(query, {
+			UserName: {
+				$regex: username
+			}
+		});
+	}
+	if (fullname) {
+		fullname = ".*" + fullname + ".*";
+		Object.assign(query, {
+			FullName: {
+				$regex: fullname
+			}
+		});
+	}
+	if (status) {
+		Object.assign(query, {
+			Status: {
+				$regex: status
+			}
+		});
+	}
+	console.log("getUser query", query);
+	objDb.getConnection(function (client) {
+		objDb.findUsers(query, client, function (results) {
+			client.close();
+			res.send(results);
+		});
+	});
 });
 server.post('/insertUser', (req, res) => {
-    let body = req.body;
-    var isEdit = body.isEdit;
-    var username = body.UserName;
-    var fullname = body.FullName;
-    var password = Cryptojs.MD5(body.Password).toString();
-    var status = body.Status;
-    var objUser = {
-        Status: status,
-        UserName: username,
-        FullName: fullname,
-        Password: password
-    }
-    objDb.getConnection(function (client) {
-        if (isEdit == 0) {
-            console.log("insertUser username: ", username);
-            //Insert
-            objDb.insertUsers(objUser, client, function (err, results) {
-                if (err) {
-                    console.log("insertUser Err", err);
-                    res.json({ success: "false", message: err });
-                } else {
-                    res.json({ success: "true" });
-                    console.log("insertUser SS");
-                }
-                console.log("insertUser: Close Connction")
-                client.close();
-            });
-        } else {
-            console.log("editUser username: ", username);
-            //Update
-            objDb.editUsers(objUser, client, function (err, results) {
-                if (err) {
-                    console.log("editUser Err", err);
-                    res.json({ success: "false", message: err });
-                } else {
-                    res.json({ success: "true", message: "Sửa thông tin tài khoản thành công" });
-                    console.log("editUser SS");
-                }
-                console.log("editUser: Close Connction")
-                client.close();
-            });
-        }
-    });
+	let body = req.body;
+	var isEdit = body.isEdit;
+	var username = body.UserName;
+	var fullname = body.FullName;
+	var password = Cryptojs.MD5(body.Password).toString();
+	var status = body.Status;
+	var objUser = {
+		Status: status,
+		UserName: username,
+		FullName: fullname,
+		Password: password
+	}
+	objDb.getConnection(function (client) {
+		if (isEdit == 0) {
+			console.log("insertUser username: ", username);
+			//Insert
+			objDb.insertUsers(objUser, client, function (err, results) {
+				if (err) {
+					console.log("insertUser Err", err);
+					res.json({
+						success: "false",
+						message: err
+					});
+				} else {
+					res.json({
+						success: "true"
+					});
+					console.log("insertUser SS");
+				}
+				console.log("insertUser: Close Connction")
+				client.close();
+			});
+		} else {
+			console.log("editUser username: ", username);
+			//Update
+			objDb.editUsers(objUser, client, function (err, results) {
+				if (err) {
+					console.log("editUser Err", err);
+					res.json({
+						success: "false",
+						message: err
+					});
+				} else {
+					res.json({
+						success: "true",
+						message: "Sửa thông tin tài khoản thành công"
+					});
+					console.log("editUser SS");
+				}
+				console.log("editUser: Close Connction")
+				client.close();
+			});
+		}
+	});
 });
 server.post('/deleteUser', (req, res) => {
-    let body = req.body;
-    console.log('deleteUser: ', body);
-    mess = {};
-    if (body.UserName) {
-        objDb.getConnection(function (client) {
-            objDb.deleteUser(body.UserName, client, function (err, results) {
-                if (err) {
-                    res.json({ success: "false", message: err });
-                    console.log("deleteUser Err", err);
-                } else {
-                    res.json({ success: "true", message: "Xóa thành công" });
-                    console.log("deleteUser SS");
-					 client.close();
-                }
-               
-            });
-        });
-    }
-    else {
-        res.json({ success: "false", message: "Cần bổ sung thông tin user" });
-        console.log("deleteUser err Thieu thong tin user");
-    }
+	let body = req.body;
+	console.log('deleteUser: ', body);
+	mess = {};
+	if (body.UserName) {
+		objDb.getConnection(function (client) {
+			objDb.deleteUser(body.UserName, client, function (err, results) {
+				if (err) {
+					res.json({
+						success: "false",
+						message: err
+					});
+					console.log("deleteUser Err", err);
+				} else {
+					res.json({
+						success: "true",
+						message: "Xóa thành công"
+					});
+					console.log("deleteUser SS");
+					client.close();
+				}
+
+			});
+		});
+	} else {
+		res.json({
+			success: "false",
+			message: "Cần bổ sung thông tin user"
+		});
+		console.log("deleteUser err Thieu thong tin user");
+	}
 });
 //Toanva end
 
@@ -676,6 +753,7 @@ server.get('/iproducts.bot', (req, res, next) => {
 		}
 		//res.render('register');
 		req.session.faceUser = true;
+		console.log("Session iproducts:",req.session);
 		res.sendFile('views/iproducts.html', {
 			root: __dirname
 		});
@@ -749,20 +827,21 @@ server.get('/iproductspostback.bot', authFace, (req, res) => {
 });
 server.post('/iproductspostback.bot', upload.single('somefile'), (req, res) => {
 
-	try{
+	try {
 		let body = req.body;
 		var mydate = new Date();
 		var inputDate = new Date(mydate.toISOString());
 		var imgName = body.psid + mydate.getFullYear() + mydate.getMonth() + mydate.getDate() + mydate.getHours() + mydate.getMinutes() + mydate.getSeconds() + body.ImgName;
 		var dir = "./public/uploads";
 
-
+         
 		//console.log("test:",body.ImgName);
 
 		var returnMessage;
 		//console.log(returnMessage);
 		var imgUrl = imgName;
 		console.log("test1:", body.IsImage);
+		
 		if (body.IsImage == '1') {
 			//console.log("test1:",body.ImgName);
 			imgUrl = "https://res.cloudinary.com/nosavn-net/image/upload/v1531382251/NSVN.jpg";
@@ -776,60 +855,77 @@ server.post('/iproductspostback.bot', upload.single('somefile'), (req, res) => {
 			var geoCodeProvincial = "NA";
 			objDb.getConnection(function (client) {
 				objDb.findMembers(query, client, function (results) {
+					var adrr="";
 					if (results.length == 1) {
 						provincial = results[0].Provincial;
 						district = results[0].District;
 						ward = results[0].Ward;
+						if(ward!='' && ward!='NA' && ward!=undefined)
+						{
+							adrr=adrr+ward;
+						}
+						if(district!='' && district!='NA' && district!=undefined)
+						{
+							adrr=adrr+","+district;
+						}
+						if(provincial!='' && provincial!='NA' && provincial!=undefined)
+						{
+							adrr=adrr+","+provincial+",Việt Nam";
+						}
+						
 						postName = results[0].Name;
 						geoCodeProvincial = results[0].GeoCodeProvincial;
 					};
 					returnMessage = " Sản phẩm tên là " + body.Name + ", sản lượng dữ kiến : " + body.Quantity + " " + body.QuantityUnit + " , giá bán dự kiến : " + body.Price + " " + body.PriceUnit + "  , số diện tích canh tác : " + body.Acreage + " " + body.AcreageUnit + " và thời vụ từ tháng " + body.ToMonth + " đến tháng " + body.FromMonth + ", hợp tác xã " + body.IsCooperative + ", thông tin thêm về sản phẩm: " + body.Description + " . Chuẩn chưa nhỉ?";
-					var objProduct = {
-						"IdPost": body.psid,
-						"Type": body.Type,
-						"Name": body.Name,
-						"Quantity": body.Quantity,
-						"QuantityUnit": body.QuantityUnit,
-						"Price": body.Price,
-						"PriceUnit": body.PriceUnit,
-						"Acreage": body.Acreage,
-						"AcreageUnit": body.AcreageUnit,
-						"Cooperative": body.IsCooperative,
-						"ToMonth": body.ToMonth,
-						"FromMonth": body.FromMonth,
-						"ImageData": "",
-						"ImgUrl": imgUrl,
-						"InsertDate": inputDate,
-						"Provincial": provincial,
-						"District": district,
-						"Ward": ward,
-						"PostName": postName,
-						"Description": body.Description,
-						"Lat": body.Lat,
-						"Lng": body.Lng,
-						"GeoCodeProvincial": geoCodeProvincial
-					};
-					objDb.insertProduct(objProduct, client, function (err, results) {
-						//	   res.send(results);
-						//console.log(results);
-						if (err) {
-							sendTextMessage(body.psid, 'Echo:' + err);
-						} else {
-							console.log("insertProduct : ", returnMessage);
+					//callGetLocation(adrr,  function (lrs) {
+							var objProduct = {
+								"IdPost": body.psid,
+								"Type": body.Type,
+								"Name": body.Name,
+								"Quantity": Number(body.Quantity),
+								"QuantityUnit": body.QuantityUnit,
+								"Price": Number(body.Price),
+								"PriceUnit": body.PriceUnit,
+								"Acreage": body.Acreage,
+								"AcreageUnit": body.AcreageUnit,
+								"Cooperative": body.IsCooperative,
+								"ToMonth": body.ToMonth,
+								"FromMonth": body.FromMonth,
+								"ImageData": "",
+								"ImgUrl": imgUrl,
+								"InsertDate": inputDate,
+								"Provincial": provincial,
+								"District": district,
+								"Ward": ward,
+								"PostName": postName,
+								"Description": body.Description,
+								"Lati": results[0].Lati,
+								"Long": results[0].Long,
+								"GeoCodeProvincial": geoCodeProvincial
+							};
+				
+						objDb.insertProduct(objProduct, client, function (err, results) {
+							//	   res.send(results);
+							//console.log(results);
+							if (err) {
+								sendTextMessage(body.psid, 'Echo:' + err);
+							} else {
+								console.log("insertProduct : ", returnMessage);
 
-							sendTextMessage(body.psid, "Cảm ơn " + postName + " đã cung cấp thông tin. Nosa kiểm tra lại nhé : Ảnh của sản phẩm ");
-							sendUrlMessage(body.psid, "image", imgUrl, function (error, response, bd) {
-								if (error) throw error;
-								console.log("sendUrlMessage:");
-								sendOneQuick(body.psid, returnMessage, "Chuẩn", "cfp", "OkLike.png");
-								// sendBackProduct(body.psid, returnMessage);
-							});
-							client.close();
-						}
+								sendTextMessage(body.psid, "Cảm ơn " + postName + " đã cung cấp thông tin. Nosa kiểm tra lại nhé : Ảnh của sản phẩm ");
+								sendUrlMessage(body.psid, "image", imgUrl, function (error, response, bd) {
+									if (error) throw error;
+									console.log("sendUrlMessage:");
+									sendOneQuick(body.psid, returnMessage, "Chuẩn", "cfp", "OkLike.png");
+									// sendBackProduct(body.psid, returnMessage);
+								});
+								client.close();
+							}
 
-						res.status(200).send('Please close this window to return to the conversation thread.');
-					});
-
+							res.status(200).send('Please close this window to return to the conversation thread.');
+						});
+					//});
+				/// end find member		
 				});
 			});
 		} else {
@@ -848,75 +944,90 @@ server.post('/iproductspostback.bot', upload.single('somefile'), (req, res) => {
 					var geoCodeProvincial = "NA";
 					objDb.getConnection(function (client) {
 						objDb.findMembers(query, client, function (results) {
+							var adrr="";
 							if (results.length == 1) {
 								provincial = results[0].Provincial;
 								district = results[0].District;
 								ward = results[0].Ward;
+								if(ward!='' && ward!='NA' && ward!=undefined)
+								{
+									adrr=adrr+ward;
+								}
+								if(district!='' && district!='NA' && district!=undefined)
+								{
+									adrr=adrr+","+district;
+								}
+								if(provincial!='' && provincial!='NA' && provincial!=undefined)
+								{
+									adrr=adrr+","+provincial+",Việt Nam";
+								}
+
 								postName = results[0].Name;
 								geoCodeProvincial = results[0].GeoCodeProvincial;
 							};
 							returnMessage = " Sản phẩm tên là " + body.Name + ", sản lượng dữ kiến : " + body.Quantity + " " + body.QuantityUnit + " , giá bán dự kiến : " + body.Price + " " + body.PriceUnit + "  , số diện tích canh tác : " + body.Acreage + " " + body.AcreageUnit + " và thời vụ từ tháng " + body.ToMonth + " đến tháng " + body.FromMonth + ", hợp tác xã " + body.IsCooperative + ", thông tin thêm về sản phẩm: " + body.Description + " . Chuẩn chưa nhỉ?";
-							var objProduct = {
-								"IdPost": body.psid,
-								"Type": body.Type,
-								"Name": body.Name,
-								"Quantity": body.Quantity,
-								"QuantityUnit": body.QuantityUnit,
-								"Price": body.Price,
-								"PriceUnit": body.PriceUnit,
-								"Acreage": body.Acreage,
-								"AcreageUnit": body.AcreageUnit,
-								"Cooperative": body.IsCooperative,
-								"ToMonth": body.ToMonth,
-								"FromMonth": body.FromMonth,
-								"ImageData": imgName,
-								"ImgUrl": imgUrl,
-								"InsertDate": inputDate,
-								"Provincial": provincial,
-								"District": district,
-								"Ward": ward,
-								"PostName": postName,
-								"Description": body.Description,
-								"Lat": body.Lat,
-								"Lng": body.Lng,
-								"GeoCodeProvincial": geoCodeProvincial
-							};
-							objDb.insertProduct(objProduct, client, function (err, results) {
-								//	   res.send(results);
-								//console.log(results);
-								if (err) {
-									sendTextMessage(body.psid, 'Echo:' + err);
-								} else {
-									console.log("insertProduct : ", returnMessage);
+						///	callGetLocation(adrr,  function (lrs) {
+								var objProduct = {
+									"IdPost": body.psid,
+									"Type": body.Type,
+									"Name": body.Name,
+									"Quantity": body.Quantity,
+									"QuantityUnit": body.QuantityUnit,
+									"Price": body.Price,
+									"PriceUnit": body.PriceUnit,
+									"Acreage": body.Acreage,
+									"AcreageUnit": body.AcreageUnit,
+									"Cooperative": body.IsCooperative,
+									"ToMonth": body.ToMonth,
+									"FromMonth": body.FromMonth,
+									"ImageData": imgName,
+									"ImgUrl": imgUrl,
+									"InsertDate": inputDate,
+									"Provincial": provincial,
+									"District": district,
+									"Ward": ward,
+									"PostName": postName,
+									"Description": body.Description,
+									"Lati": results[0].Lati,
+									"Long": results[0].Long,
+									"GeoCodeProvincial": geoCodeProvincial
+								};
+								objDb.insertProduct(objProduct, client, function (err, results) {
+									//	   res.send(results);
+									//console.log(results);
+									if (err) {
+										sendTextMessage(body.psid, 'Echo:' + err);
+									} else {
+										console.log("insertProduct : ", returnMessage);
 
-									sendTextMessage(body.psid, "Cảm ơn " + postName + " đã cung cấp thông tin. Nosa kiểm tra lại nhé : Ảnh của sản phẩm ");
-									sendUrlMessage(body.psid, "image", imgUrl, function (error, response, bd) {
-										if (error) throw error;
-										console.log("sendUrlMessage:");
-										sendOneQuick(body.psid, returnMessage, "Chuẩn", "cfp", "OkLike.png");
-										// sendBackProduct(body.psid, returnMessage);
-									});
-									client.close();
-								}
+										sendTextMessage(body.psid, "Cảm ơn " + postName + " đã cung cấp thông tin. Nosa kiểm tra lại nhé : Ảnh của sản phẩm ");
+										sendUrlMessage(body.psid, "image", imgUrl, function (error, response, bd) {
+											if (error) throw error;
+											console.log("sendUrlMessage:");
+											sendOneQuick(body.psid, returnMessage, "Chuẩn", "cfp", "OkLike.png");
+											// sendBackProduct(body.psid, returnMessage);
+										});
+										client.close();
+									}
 
-								res.status(200).send('Please close this window to return to the conversation thread.');
-							});
-
-						});
+									res.status(200).send('Please close this window to return to the conversation thread.');
+								});
+							//});
+						});/// end find member
 					});
 				}
 			});
 
 
-	}
-	}catch(err)
-	{
-		console.error("iproductspostback:",err);
+		}
+	} catch (err) {
+		console.error("iproductspostback:", err);
 		res.status(200).send(err);
 	}
-	
+
 });
 server.get('/register.bot', (req, res, next) => {
+	
 	let referer = req.get('Referer');
 	//console.log("register.bot 0",referer);
 	if (referer) {
@@ -931,7 +1042,7 @@ server.get('/register.bot', (req, res, next) => {
 			res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
 		}
 		req.session.faceUser = true;
-		//console.log("Session register:",req.session);
+		console.log("Session register:",req.session);
 		//res.render('register');
 		res.sendFile('views/register.html', {
 			root: __dirname
@@ -1004,11 +1115,11 @@ server.get('/rgg.bot', (req, res, next) => {
 });
 server.post('/basicregisterspostback.bot', upload.single('somefile'), authFace, (req, res) => {
 
-	try{
+	try {
 		let body = req.body;
 		var dir = "./public/uploads/Avatar";
 		req.session.psid = body.psid;
-		
+
 		//var level = 9999;
 		var msgConcurrently = '';
 		//if(Number(body.Level)>=5)
@@ -1017,7 +1128,7 @@ server.post('/basicregisterspostback.bot', upload.single('somefile'), authFace, 
 		var inputDate = new Date(mydate.toISOString());
 		console.log("basicregisterspostback PSID", body.psid);
 		var returnMessage = "Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + " , địa chỉ : " + body.Wards + " , quận / huyện " + body.Districts + ", Tỉnh / TP " + body.Provincial + " . Số điện thoại của bạn là : " + body.Phone + ", Email " + body.Email + ". Chuẩn chưa nhỉ?";
-		console.log(returnMessage);		
+		console.log(returnMessage);
 		var imgUrl;
 		callGetProfile(body.psid, function (objFacebook) {
 
@@ -1105,14 +1216,14 @@ server.post('/basicregisterspostback.bot', upload.single('somefile'), authFace, 
 
 
 		});
-	}catch(err){
-		console.error("basicregisterspostback:",err);
+	} catch (err) {
+		console.error("basicregisterspostback:", err);
 		res.send(null);
 	}
 });
 server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req, res) => {
 
-	try{
+	try {
 		let body = req.body;
 		var dir = "./public/uploads/Avatar";
 		req.session.psid = body.psid;
@@ -1168,6 +1279,7 @@ server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req,
 				"Position": body.Position,
 				"IsConcurrently": body.IsConcurrently,
 				"Concurrently": body.Concurrently,
+				"IdProvincial": body.IdProvincial,
 				"Provincial": body.Provincial,
 				"District": body.Districts,
 				"IdDistrict": body.IdDistrict,
@@ -1210,31 +1322,49 @@ server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req,
 					} else {
 						objMember.GeoCodeProvincial = 'VN-HN';
 					}
-					objDb.insertMembers(objMember, client, function (err, results) {
-						//	   res.send(results);
-						//console.log(results);
-						if (err) {
-							//client.close();
-							sendTextMessage(body.psid, 'Echo:' + err);
-						} else {
-
-							console.log("registerspostback: ", objMember);
-							//writeFile(imgName,body.DataImgAvatar,dir,body.psid);
-							sendTextMessage(body.psid, "Cảm ơn bạn đã cung cấp thông tin. Nosa kiểm tra lại nhé. Dưới đây là ảnh đại diện Facebook của bạn :");
-							sendUrlMessage(body.psid, "image", imgUrl, function (error, response, bd) {
-								if (error) throw error;
-								console.log("sendUrlMessage:");
-								sendBackRegister(body.psid, returnMessage);
-
-							});
-
-							client.close();
-							res.status(200).send('Please close this window to return to the conversation thread.');
-							//res.send(objMember);
-						}
-
-						//// enc insert member
-					});
+					
+					/// add Lati and Long
+					if(objMember.Level>3 && objMember.IdWard!=null && objMember.IdWard!='NA' && objMember.IdWard!=undefined){
+						
+						var qr1={_id:objMember.IdWard}
+						objDb.findWards(qr1, client, function (rsWard) {							
+							objMember.Lati=rsWard[0].Lati;
+							objMember.Long=rsWard[0].Long;
+							insertMember(body.psid,imgUrl,objMember,returnMessage,client,res);
+						});
+					 
+					}else if(objMember.Level>3 && (objMember.IdWard==null || objMember.IdWard=='NA' || objMember.IdWard=='9999')){
+						
+						var qr1={_id:objMember.IdDistrict}
+						objDb.findDistrict(qr1, client, function (rsDistrict) {							
+							objMember.Lati=rsDistrict[0].Lati;
+							objMember.Long=rsDistrict[0].Long;
+							insertMember(body.psid,imgUrl,objMember,returnMessage,client,res);
+						});
+					 
+					}
+					else if(objMember.Level==3  && objMember.IdDistrict!=null && objMember.IdDistrict!='NA' && objMember.IdDistrict!=undefined){
+						var qr1={_id:objMember.IdDistrict}
+						objDb.findDistrict(qr1, client, function (rsDistrict) {							
+							objMember.Lati=rsDistrict[0].Lati;
+							objMember.Long=rsDistrict[0].Long;
+							insertMember(body.psid,imgUrl,objMember,returnMessage,client,res);
+						});
+						
+					}else if(objMember.Level==3  && (objMember.IdDistrict==null || objMember.IdDistrict=='NA' || objMember.IdDistrict=='9999')){						
+						objMember.Lati=results[0].Lati;
+						objMember.Long=results[0].Long;
+						insertMember(body.psid,imgUrl,objMember,returnMessage,client,res);
+						
+					}else{
+						objMember.Lati=results[0].Lati;
+						objMember.Long=results[0].Long;
+						insertMember(body.psid,imgUrl,objMember,returnMessage,client,res);
+					}
+			
+					
+					
+					
 					////  end  findProvincial
 				});
 				/// end con
@@ -1242,8 +1372,8 @@ server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req,
 
 
 		});
-	}catch(err){
-		console.error("registerspostback:",err);
+	} catch (err) {
+		console.error("registerspostback:", err);
 		res.send(null);
 	}
 });
@@ -1342,10 +1472,10 @@ server.post('/registerspostbacktemp.bot', upload.single('somefile'), authFace, (
 							console.log("sendUrlMessage:");
 							client.close();
 							sendBackRegisterTemp(body.psid, returnMessage);
-							
+
 						});
 
-						
+
 						res.status(200).send('Please close this window to return to the conversation thread.');
 						//res.send(objMember);
 					}
@@ -1424,7 +1554,7 @@ server.get('/registerspostback.bot', authFace, (req, res) => {
 					client.close();
 					sendBackRegister(body.psid, returnMessage);
 				}
-				
+
 				//// enc insert member
 			});
 			////  end  findProvincial
@@ -1644,8 +1774,7 @@ server.post('/updateStatusKycMember.bot', authKsv, (req, res) => {
 });
 server.post('/updateStatusMember.bot', authFace, (req, res) => {
 
-	try
-	{
+	try {
 		let body = req.body;
 		var returnMessage = "";
 		//console.log(body.BlockStatus);
@@ -1664,13 +1793,12 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 		objDb.getConnection(function (client) {
 			objDb.findMembers(query, client, function (results) {
 				if (results.length > 0) {
-				   objDb.findMembers(query2, client, function (results2) {
-					   console.log("Check : "+results[0].Level +" " +results2[0].Level+" "+results[0].Layer+" "+results2[0].Layer);
-					   if(results[0].Level==results2[0].Level && results[0].Layer==results2[0].Layer && results[0].Level==1)
-						{
+					objDb.findMembers(query2, client, function (results2) {
+						console.log("Check : " + results[0].Level + " " + results2[0].Level + " " + results[0].Layer + " " + results2[0].Layer);
+						if (results[0].Level == results2[0].Level && results[0].Layer == results2[0].Layer && results[0].Level == 1) {
 							console.log("updateStatusMember: Cùng layer không thể phê duyệt cho nhau");
 							res.send("Thông báo : Thành viên này bạn không có quyền phê duyệt");
-						}else{
+						} else {
 							objDb.updateStatusMembers(body.psid, body.BlockStatus, body.ApprovedId, results[0].Name, client, function (err, rs) {
 
 								if (err) {
@@ -1681,10 +1809,10 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 								} else {
 									console.log("updateStatusMember:", returnMessage);
 									if (body.BlockStatus == 'ACTIVE') {
-							///// kiểm tra xem thành viên vừa được phê duyệt có quyền ksv không
-										
-									    if(results2[0].Level==results2[0].Layer){
-											console.log("Check 2: " +results2[0].Level+" "+results2[0].Layer);
+										///// kiểm tra xem thành viên vừa được phê duyệt có quyền ksv không
+
+										if (results2[0].Level == results2[0].Layer) {
+											console.log("Check 2: " + results2[0].Level + " " + results2[0].Layer);
 											msg = "Chúc mừng " + body.Name + " đã được xác thực tài khoản, ngay từ bây giờ bạn đã có thể sử dụng tính năng KSV rồi đấy. Bạn có muốn sử dụng tính năng KSV ngay không ?";
 											quickReplies = [{
 												content_type: "text",
@@ -1695,9 +1823,8 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 											sendQuickMessage(body.psid, msg, quickReplies);
 											client.close();
 											res.send(returnMessage);
-										}else
-										{
-											console.log("Check 3: " +results2[0].Level+" "+results2[0].Layer);
+										} else {
+											console.log("Check 3: " + results2[0].Level + " " + results2[0].Layer);
 											msg = body.Name + " đã được xác thực tài khoản. Bạn có muốn tiếp tục trò chuyện với Nosa không ?";
 											quickReplies = [{
 												content_type: "text",
@@ -1709,6 +1836,11 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 												title: "Hỗ trợ",
 												payload: "help",
 												image_url: SERVER_URL + "/img/helps.png"
+											},{
+												content_type: "text",
+												title: "Hướng dẫn",
+												payload: "guide",
+												image_url: SERVER_URL + "/img/guide.png"
 											}];
 											sendQuickMessage(body.psid, msg, quickReplies);
 											client.close();
@@ -1726,6 +1858,11 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 											title: "Hỗ trợ",
 											payload: "help",
 											image_url: SERVER_URL + "/img/helps.png"
+										},{
+											content_type: "text",
+											title: "Hướng dẫn",
+											payload: "guide",
+											image_url: SERVER_URL + "/img/guide.png"
 										}];
 										sendQuickMessage(body.psid, msg, quickReplies);
 										client.close();
@@ -1734,7 +1871,7 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 								}
 							});
 						}
-				  })
+					})
 				} else {
 					console.log("updateStatusMember: Không tìm thấy người đang phê duyệt trong hệ thống");
 					res.send("Lỗi : Không tìm thấy người đang thực hiện phê duyệt trong hệ thống");
@@ -1742,8 +1879,8 @@ server.post('/updateStatusMember.bot', authFace, (req, res) => {
 			});
 			/// end con
 		});
-	}catch(err){
-		console.error("updateStatusMember:",err);
+	} catch (err) {
+		console.error("updateStatusMember:", err);
 		res.send(null);
 	}
 });
@@ -1785,6 +1922,11 @@ server.post('/cancelStatusMember.bot', authFace, (req, res) => {
 								title: "Hỗ trợ",
 								payload: "help",
 								image_url: SERVER_URL + "/img/helps.png"
+							},{
+								content_type: "text",
+								title: "Hướng dẫn",
+								payload: "guide",
+								image_url: SERVER_URL + "/img/guide.png"
 							}];
 							sendQuickMessage(body.psid, msg, quickReplies);
 							client.close();
@@ -1884,6 +2026,11 @@ server.post('/cancelDelegateMember.bot', authFace, (req, res) => {
 							title: "Hỗ trợ",
 							payload: "help",
 							image_url: SERVER_URL + "/img/helps.png"
+						},{
+							content_type: "text",
+							title: "Hướng dẫn",
+							payload: "guide",
+							image_url: SERVER_URL + "/img/guide.png"
 						}];
 						sendQuickMessage(body.psid, msg, quickReplies);
 						client.close();
@@ -1926,6 +2073,11 @@ server.get('/closeForm', (req, res) => {
 		title: "Hỗ trợ",
 		payload: "help",
 		image_url: SERVER_URL + "/img/helps.png"
+	},{
+		content_type: "text",
+		title: "Hướng dẫn",
+		payload: "guide",
+		image_url: SERVER_URL + "/img/guide.png"
 	}];
 	sendQuickMessage(psid, msg, quickReplies);
 	res.send("Is Close");
@@ -1984,16 +2136,16 @@ server.post('/facebook', (req, res) => {
 						console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
 					}
 					////// Cập nhật lại thời gian hết hạn của member để đếm số thành viên đang hoạt động với bót
-					try{						
-						objDb.getConnection(function (client) {
-							objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {		
-							});						
+					try {
+					 objDb.getConnection(function (client) {
+						 objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {
+								client.close();
+							});
 						});
-					}catch(err)
-					{
-						console.error("insertMembersActive: ",err);
+					} catch (err) {
+						console.error("insertMembersActive: ", err);
 					}
-					
+
 				});
 			} else {
 				console.log("Messaging undefined");
@@ -2181,11 +2333,28 @@ server.get('/getListMemberById', authFace, (req, res) => {
 						results.Ward = "";
 
 					}
-					if (results.Layer != undefined & results.Layer != "" & layer != 1 && layer != 0) {
+					
+					
+					
+					if (results.Level == 1) {
+						////// Lấy cả layer = 1 và layer =2
 						Object.assign(queryDetail, {
-							Layer: Number(layer)
+							$or: [{
+								Layer: 2
+							}, {
+								Layer: 1
+							}]
 						});
+					} else {
+						/// Lấy leyer dưới 1 cấp
+						if (results.Layer != undefined && results.Layer != "" && layer != 1 && layer != 0) {
+							Object.assign(queryDetail, {
+								Layer: Number(layer)
+							});
+						}
 					}
+					
+					
 					if (layer != 1 && layer != 0) {
 						if (results.Provincial != undefined && results.Provincial != "" && results.Provincial != "NA") {
 							Object.assign(queryDetail, {
@@ -2320,24 +2489,27 @@ server.get('/getListMemberKsv', authFace, (req, res) => {
 		objDb.findMembers(query, client, function (results) {
 			if (results.length > 0) {
 				results = results[0];
-				
-				var queryDetail = { _id : {$ne:psid }};/////Loại bỏ chính mình ra khỏi danh sách
+
+				var queryDetail = {
+					_id: {
+						$ne: psid
+					}
+				}; /////Loại bỏ chính mình ra khỏi danh sách
 				////layerDelegatelayer- Delegate , được ủy quyền để tăng 1 cấp layer
 				if (results.Delegate == null) {
 					results.Delegate = 0;
 				}
-				var layerDelegate=Number(results.Layer)-Number(results.Delegate);
-				if(layerDelegate<0)
-				{
-					layerDelegate=0;// chỉ cho Ủy quyền đến cấp admin
+				var layerDelegate = Number(results.Layer) - Number(results.Delegate);
+				if (layerDelegate < 0) {
+					layerDelegate = 0; // chỉ cho Ủy quyền đến cấp admin
 				}
 				console.log("getListMemberKsv layerDelegate: ", layerDelegate);
-				if (results.BlockStatus == "ACTIVE" && results.Layer == results.Level) {
+				if (results.BlockStatus == "ACTIVE" && layerDelegate == results.Level) {
 					console.log("getListMemberDelegate Level : ", results.Level);
 					///// layer+1 + va + ủy quyền để thấy dưới 1 lớp
 					var layer = layerDelegate + 1;
 					//var layer = Number(results.Layer) + 1;
-					
+
 					if (results.Level == 1 || results.Level == 0) {
 						results.Provincial = "";
 						results.District = "";
@@ -2345,21 +2517,27 @@ server.get('/getListMemberKsv', authFace, (req, res) => {
 
 					}
 					////// Chỉ lấy ra thành viên cùng cấp
-//					Object.assign(queryDetail, {
-//						Level: results.Level
-//					});
+					//					Object.assign(queryDetail, {
+					//						Level: results.Level
+					//					});
 					///// Lấy ra thành viên cùng lớp
-					
-					if(results.Level == 1){
+
+					if (results.Level == 1) {
 						////// Lấy cả layer = 1 và layer =2
-						Object.assign(queryDetail, {$or: [{Layer: 2},{Layer: 1}]});
-					}else{
+						Object.assign(queryDetail, {
+							$or: [{
+								Layer: 2
+							}, {
+								Layer: 1
+							}]
+						});
+					} else {
 						/// Lấy leyer dưới 1 cấp
 						if (results.Layer != undefined && results.Layer != "" && layer != 1 && layer != 0) {
 							Object.assign(queryDetail, {
 								Layer: Number(layer)
 							});
-						}					
+						}
 					}
 					if (layer != 1 && layer != 0) {
 						if (results.Provincial != undefined && results.Provincial != "" && results.Provincial != "NA") {
@@ -2378,9 +2556,9 @@ server.get('/getListMemberKsv', authFace, (req, res) => {
 							});
 						}
 					}
-//					Object.assign(queryDetail, {
-//						BlockStatus: 'ACTIVE'
-//					});
+					//					Object.assign(queryDetail, {
+					//						BlockStatus: 'ACTIVE'
+					//					});
 					console.log("getListMemberDelegate query detail", queryDetail);
 					objDb.findMembers(queryDetail, client, function (resultsList) {
 						client.close();
@@ -2478,118 +2656,99 @@ server.get('/getMember', authFace, (req, res) => {
 		});
 	});
 });
-//server.get('/updateBMember', (req, res) => {
-//	//res.setHeader('X-Frame-Options', 'ALLOW-FROM '+SERVER_URL);
-//	var query = {};
-//	console.log("GetMember query", query);
-//	objDb.getConnection(function (client) {
-//		objDb.findMembers(query, client, function (results) {
-//			
-//			for(var i=0;i<results.length;i++)
-//			{
-//				var date=new Date(results[i].Birthday);
-//				date.setHours(date.getHours()+7);
-//				strDate=date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear();
-//				objDb.updateBMemeber(results[i]._id,strDate,client,function (e,r) {});
-//			}
-//			client.close();
-//			res.send(results);
-//
-//		});
-//	});
-//});
+
 //Toanva add getMemberCMS
 server.get('/getMemberCMS', auth, (req, res) => {
-    var name = req.query.name;
-    var psid = req.query.psid;
-    var provincial = req.query.provincial;
-    var districts = req.query.districts;
-    var wards = req.query.wards;
-    var position = req.query.position;
-    var level = req.query.level;
-    var layer = req.query.layer;
-    var blockstatus = req.query.blockstatus;
-    var phone = req.query.phone;
-    if (psid == null || psid == 'all')
-        psid = "";
-    if (name == null || name == 'all')
-        name = "";
-    if (provincial == null || provincial == 'all' || provincial == 'NA')
-        provincial = "";
-    if (districts == null || districts == 'all' || districts == 'NA')
-        districts = "";
-    if (wards == null || wards == 'all' || wards == 'NA')
-        wards = "";
-    if (position == null || position == 'all' || position == 'NA')
-        position = "";
-    if (level == null || level == 'all' || level == 'NA')
-        level = "";
-    if (layer == null || layer == 'all' || layer == 'NA')
-        layer = "";
-    if (blockstatus == null || blockstatus == 'all')
-        blockstatus = "";
-    if (phone == null || phone == 'all')
-        phone = "";
-    var query = {};
-    if (name != "") {
-        name = ".*" + name + ".*";
-        Object.assign(query, {
-            Name: {
-                $regex: name
-            }
-        });
-    }
-    if (psid != "") {
-        Object.assign(query, {
-            _id: psid
-        });
-    }
-    if (blockstatus != "") {
-        Object.assign(query, {
-            BlockStatus:  blockstatus
-        });
-    }
+	var name = req.query.name;
+	var psid = req.query.psid;
+	var provincial = req.query.provincial;
+	var districts = req.query.districts;
+	var wards = req.query.wards;
+	var position = req.query.position;
+	var level = req.query.level;
+	var layer = req.query.layer;
+	var blockstatus = req.query.blockstatus;
+	var phone = req.query.phone;
+	if (psid == null || psid == 'all')
+		psid = "";
+	if (name == null || name == 'all')
+		name = "";
+	if (provincial == null || provincial == 'all' || provincial == 'NA')
+		provincial = "";
+	if (districts == null || districts == 'all' || districts == 'NA')
+		districts = "";
+	if (wards == null || wards == 'all' || wards == 'NA')
+		wards = "";
+	if (position == null || position == 'all' || position == 'NA')
+		position = "";
+	if (level == null || level == 'all' || level == 'NA')
+		level = "";
+	if (layer == null || layer == 'all' || layer == 'NA')
+		layer = "";
+	if (blockstatus == null || blockstatus == 'all')
+		blockstatus = "";
+	if (phone == null || phone == 'all')
+		phone = "";
+	var query = {};
+	if (name != "") {
+		name = ".*" + name + ".*";
+		Object.assign(query, {
+			Name: {
+				$regex: name
+			}
+		});
+	}
+	if (psid != "") {
+		Object.assign(query, {
+			_id: psid
+		});
+	}
+	if (blockstatus != "") {
+		Object.assign(query, {
+			BlockStatus: blockstatus
+		});
+	}
 
-    if (phone != "") {
-        phone = ".*" + phone + ".*";
-        Object.assign(query, {
-            Phone: {
-                $regex: phone
-            }
-        });
-    }
-    if (level != "") {
-        Object.assign(query, {
-            Level: parseInt(level)
-        });
-    }
-    if (provincial != "") {
-        Object.assign(query, {
-            Provincial: provincial
-        });
-    }
-    if (districts != "") {
-        Object.assign(query, {
-            District: districts
-        });
-    }
-    if (wards != "") {
-        Object.assign(query, {
-            Ward: wards
-        });
-    }
-    if (position != "") {
-        Object.assign(query, {
-            Position: position
-        });
-    }
-    console.log("GetMemberCMS query", query);
-    objDb.getConnection(function (client) {
-        objDb.findMembers(query, client, function (results) {
-            client.close();
-            res.send(results);
-        });
-    });
+	if (phone != "") {
+		phone = ".*" + phone + ".*";
+		Object.assign(query, {
+			Phone: {
+				$regex: phone
+			}
+		});
+	}
+	if (level != "") {
+		Object.assign(query, {
+			Level: parseInt(level)
+		});
+	}
+	if (provincial != "") {
+		Object.assign(query, {
+			Provincial: provincial
+		});
+	}
+	if (districts != "") {
+		Object.assign(query, {
+			District: districts
+		});
+	}
+	if (wards != "") {
+		Object.assign(query, {
+			Ward: wards
+		});
+	}
+	if (position != "") {
+		Object.assign(query, {
+			Position: position
+		});
+	}
+	console.log("GetMemberCMS query", query);
+	objDb.getConnection(function (client) {
+		objDb.findMembers(query, client, function (results) {
+			client.close();
+			res.send(results);
+		});
+	});
 });
 //Toanva getMemberCMS end
 server.get('/getKycMembers', authKsv, (req, res) => {
@@ -2777,6 +2936,7 @@ server.post('/helppostback.bot', upload.single('somefile'), authFace, (req, res)
 		imgUrl = objFacebook.profile_pic;
 		objDb.getConnection(function (client) {
 			objDb.findSupport(query, client, function (results) {
+				client.close();
 				console.log("helppostback :", content);
 				console.log("helppostback Psid:", results[0].Psid);
 				sendTextMessage(results[0].Psid, "Nosa nhận được yêu cầu hỗ trợ của " + fullName + ", ĐT :" + phone + " , Email:" + email + ", Tên Facebook là : " + objFacebook["last_name"] + " " + objFacebook["first_name"] + ", nội dung cần được hỗ trợ là:" + content + ". Ảnh đại diện facebook:");
@@ -2806,6 +2966,11 @@ server.post('/helppostback.bot', upload.single('somefile'), authFace, (req, res)
 					title: "Hỗ trợ",
 					payload: "help",
 					image_url: SERVER_URL + "/img/helps.png"
+				},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
 				}];
 				sendQuickMessage(body.psid, msg, quickReplies);
 				res.status(200).send('Please close this window to return to the conversation thread.');
@@ -2854,6 +3019,11 @@ server.post('/replyhelppostback.bot', upload.single('somefile'), authFace, (req,
 		title: "Hỗ trợ",
 		payload: "help",
 		image_url: SERVER_URL + "/img/helps.png"
+	},{
+		content_type: "text",
+		title: "Hướng dẫn",
+		payload: "guide",
+		image_url: SERVER_URL + "/img/guide.png"
 	}];
 	sendQuickMessage(fromPsid, msg, quickReplies);
 	res.status(200).send('Please close this window to return to the conversation thread.');
@@ -2867,9 +3037,55 @@ server.get('/map.bot', (req, res) => {
 	//res.send('Get Id From : '+ fromId + " = "+ data);
 });
 
+function insertMember(psid,imgUrl,objMember,returnMessage, client,res){
+	//// start insert member
+	objDb.insertMembers(objMember, client, function (err, results) {
+		//	   res.send(results);
+		//console.log(results);
+		if (err) {
+			//client.close();
+			sendTextMessage(psid, 'Echo:' + err);
+		} else {
 
+			console.log("registerspostback: ", objMember);
+			//writeFile(imgName,body.DataImgAvatar,dir,body.psid);
+			sendTextMessage(psid, "Cảm ơn bạn đã cung cấp thông tin. Nosa kiểm tra lại nhé. Dưới đây là ảnh đại diện Facebook của bạn :");
+			sendUrlMessage(psid, "image", imgUrl, function (error, response, bd) {
+				if (error) throw error;
+				console.log("sendUrlMessage:");
+				sendBackRegister(psid, returnMessage);
+
+			});
+
+			client.close();
+			res.status(200).send('Please close this window to return to the conversation thread.');
+			//res.send(objMember);
+		}
+
+		//// enc insert member
+	});
+};
+
+function callGetLocation(address,callback){
+	request({
+			uri: 'https://maps.googleapis.com/maps/api/geocode/json',
+			qs: {
+				address: address
+			}},
+		function (error, response, body) {
+			if (!error && response.statusCode == 200) {
+
+				console.log("callGetLocation:",body);
+				callback(JSON.parse(body));
+			} else {
+				console.error("Failed calling callGetLocation", response.statusCode, response.statusMessage, body.error);
+				console.error(response.error);
+				callback(null);
+			}
+		});
+};
 /// end rowter
-function callSendAPI1(messageData) {	
+function callSendAPI1(messageData) {
 	var messageTyping = {
 		recipient: {
 
@@ -2877,7 +3093,7 @@ function callSendAPI1(messageData) {
 		},
 		sender_action: "typing_on"
 	};
-	
+
 	request({
 			uri: 'https://graph.facebook.com/v3.1/me/messages',
 			qs: {
@@ -2901,7 +3117,7 @@ function callSendAPI1(messageData) {
 					console.log("Successfully called Send API for recipient %s",
 						recipientId);
 				}
-				
+
 			} else {
 				//console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 				console.error(response.error);
@@ -2938,7 +3154,7 @@ function callSendAPI(messageData) {
 				}
 
 			} else {
-				//console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
+				console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 				console.error(response.error);
 			}
 		});
@@ -3023,18 +3239,17 @@ function callGetProfile(psid, callback) {
 		//nếu có lỗi
 		if (!error && response.statusCode == 200) {
 			var obj = JSON.parse(body);
-			console.log("callGetProfile: ",obj.last_name + ' ' + obj.first_name+' '+obj.profile_pic);
+			console.log("callGetProfile: ", obj.last_name + ' ' + obj.first_name + ' ' + obj.profile_pic);
 			var imgUrl = obj.profile_pic;
-			try{
-			  objDb.getConnection(function (client) {
-				objDb.updateAvatarMemeber(psid,imgUrl, client, function (results) {
-						console.log('updateAvatarMemeber SS:' ,psid);
+			try {
+				objDb.getConnection(function (client) {
+					objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
+						console.log('updateAvatarMemeber SS:', psid);
 						client.close();
-					});				 
-				});	
-			}catch(err)
-			{
-				console.error("updateAvatarMemeber: ",err);
+					});
+				});
+			} catch (err) {
+				console.error("updateAvatarMemeber: ", err);
 			}
 			callback(body);
 		} else {
@@ -3124,7 +3339,7 @@ function sendTextMessage(recipientId, messageText) {
 	callSendAPI(messageData);
 };
 
-function sendFileMessage(recipientId, messageText, fileType, file_loc) {	
+function sendFileMessage(recipientId, messageText, fileType, file_loc) {
 	var readStream = fs.createReadStream(file_loc);
 
 	var messageData = {
@@ -3192,11 +3407,11 @@ function sendRegisterForm(recipientId, msg) {
 					text: msg,
 					buttons: [{
 						type: "web_url",
-						url: SERVER_URL + "/register.bot?psid="+recipientId,
+						url: SERVER_URL + "/register.bot?psid=" + recipientId,
 						title: "Điểm danh",
 						messenger_extensions: true,
 						webview_height_ratio: "tall",
-						fallback_url: SERVER_URL + "/register.bot?psid="+recipientId
+						fallback_url: SERVER_URL + "/register.bot?psid=" + recipientId
 					}]
 				}
 			}
@@ -3204,6 +3419,7 @@ function sendRegisterForm(recipientId, msg) {
 	};
 	callSendAPI(messageData);
 };
+
 function sendBasicRegisterForm(recipientId, msg) {
 	var messageData = {
 		recipient: {
@@ -3217,11 +3433,11 @@ function sendBasicRegisterForm(recipientId, msg) {
 					text: msg,
 					buttons: [{
 						type: "web_url",
-						url: SERVER_URL + "/basicregister.bot?psid="+recipientId,
+						url: SERVER_URL + "/basicregister.bot?psid=" + recipientId,
 						title: "Điểm danh",
 						messenger_extensions: true,
 						webview_height_ratio: "tall",
-						fallback_url: SERVER_URL + "/basicregister.bot?psid="+recipientId
+						fallback_url: SERVER_URL + "/basicregister.bot?psid=" + recipientId
 					}]
 				}
 			}
@@ -3229,6 +3445,7 @@ function sendBasicRegisterForm(recipientId, msg) {
 	};
 	callSendAPI(messageData);
 };
+
 function sendRegisterTempForm(recipientId, msg) {
 	var messageData = {
 		recipient: {
@@ -3268,11 +3485,11 @@ function sendMessageIProducts(recipientId, msg) {
 					text: msg,
 					buttons: [{
 						type: "web_url",
-						url: SERVER_URL + "/iproducts.bot?psid="+recipientId,
+						url: SERVER_URL + "/iproducts.bot?psid=" + recipientId,
 						title: "Cung cấp thông tin",
 						messenger_extensions: true,
 						webview_height_ratio: "tall",
-						fallback_url: SERVER_URL + "/iproducts.bot?psid="+recipientId
+						fallback_url: SERVER_URL + "/iproducts.bot?psid=" + recipientId
 					}]
 				}
 			}
@@ -3326,6 +3543,25 @@ function sendButtonMessage(recipientId, msg, buttons) {
 	callSendAPI(messageData);
 };
 
+function sendGenericMessage(recipientId , elements) {
+//	console.log("Help 1",recipientId);
+	var messageData = {
+		recipient: {
+			id: recipientId
+		},message: {
+			attachment: {
+				type: "template",
+				payload: {
+					template_type: "generic",
+					elements: elements
+				}
+			}
+		}
+	};
+	//console.log("Help 2",messageData);
+	callSendAPI(messageData);
+};
+
 function sendBackRegister(recipientId, mgs) {
 	var messageData = {
 		recipient: {
@@ -3343,11 +3579,11 @@ function sendBackRegister(recipientId, mgs) {
 						"payload": "confirm"
 					}, {
 						type: "web_url",
-						url: SERVER_URL + "/register.bot?psid="+recipientId,
+						url: SERVER_URL + "/register.bot?psid=" + recipientId,
 						title: "Điểm danh lại",
 						messenger_extensions: true,
 						webview_height_ratio: "tall",
-						fallback_url: SERVER_URL + "/register.bot?psid="+recipientId
+						fallback_url: SERVER_URL + "/register.bot?psid=" + recipientId
 					}]
 				}
 			}
@@ -3355,6 +3591,7 @@ function sendBackRegister(recipientId, mgs) {
 	};
 	callSendAPI(messageData);
 };
+
 function sendBasicBackRegister(recipientId, mgs) {
 	var messageData = {
 		recipient: {
@@ -3372,11 +3609,11 @@ function sendBasicBackRegister(recipientId, mgs) {
 						"payload": "confirm"
 					}, {
 						type: "web_url",
-						url: SERVER_URL + "/basicregister.bot?psid="+recipientId,
+						url: SERVER_URL + "/basicregister.bot?psid=" + recipientId,
 						title: "Điểm danh lại",
 						messenger_extensions: true,
 						webview_height_ratio: "tall",
-						fallback_url: SERVER_URL + "/basicregister.bot?psid="+recipientId
+						fallback_url: SERVER_URL + "/basicregister.bot?psid=" + recipientId
 					}]
 				}
 			}
@@ -3384,6 +3621,7 @@ function sendBasicBackRegister(recipientId, mgs) {
 	};
 	callSendAPI(messageData);
 };
+
 function sendBackRegisterTemp(recipientId, mgs) {
 	var messageData = {
 		recipient: {
@@ -3503,6 +3741,11 @@ function sendMessageWelecome(recipientId, msg) {
 				title: "Khác",
 				payload: "other",
 				image_url: SERVER_URL + "/img/logomin.png"
+			},{
+				content_type: "text",
+				title: "Hướng dẫn",
+				payload: "guide",
+				image_url: SERVER_URL + "/img/guide.png"
 			}]
 		}
 	};
@@ -3746,6 +3989,11 @@ function sendNoReply(recipientId) {
 						title: "Hỗ trợ",
 						payload: "help",
 						image_url: SERVER_URL + "/img/helps.png"
+					},{
+						content_type: "text",
+						title: "Hướng dẫn",
+						payload: "guide",
+						image_url: SERVER_URL + "/img/guide.png"
 					}];
 					sendQuickMessage(recipientId, msg, quickReplies);
 				} else {
@@ -3760,6 +4008,11 @@ function sendNoReply(recipientId) {
 						title: "Hỗ trợ",
 						payload: "help",
 						image_url: SERVER_URL + "/img/helps.png"
+					},{
+						content_type: "text",
+						title: "Hướng dẫn",
+						payload: "guide",
+						image_url: SERVER_URL + "/img/guide.png"
 					}];
 					sendQuickMessage(recipientId, msg, quickReplies);
 				}
@@ -3794,9 +4047,9 @@ function sendKSV(recipientId) {
 				//console.log("findMembers:",results);
 				var msg = "Bạn tên là : " + results.Name + ", chức vụ " + results.Position + ", trạng thái " + results.BlockStatus + " ,Tỉnh/TP :" + results.Provincial + " Quận/Huyện : " + results.District + " , Phường/Xã : " + results.Ward;
 
-//				var provincial = results.Provincial;
-//				var districts = results.District;
-//				var wards = results.Ward;
+				//				var provincial = results.Provincial;
+				//				var districts = results.District;
+				//				var wards = results.Ward;
 				///// layerDelegatelayer- Delegate , được ủy quyền để tăng 1 cấp layer
 				if (results.Delegate == null) {
 					results.Delegate = 0;
@@ -3809,18 +4062,17 @@ function sendKSV(recipientId) {
 
 				if (results.BlockStatus == "ACTIVE" && layerDelegate == results.Level) {
 					///// layer = layerDelegate+1 để thấy dưới 1 cấp
-//					var layer = layerDelegate + 1;
-//					if (results.Level == 1 || results.Level == 0) {
-//						provincial = 'NA';
-//						districts = 'NA';
-//						wards = 'NA';
-//
-//					}
+					//					var layer = layerDelegate + 1;
+					//					if (results.Level == 1 || results.Level == 0) {
+					//						provincial = 'NA';
+					//						districts = 'NA';
+					//						wards = 'NA';
+					//
+					//					}
 					//console.log("test","/botksv.bot?p="+provincial+"&d="+districts+"&w="+wards);
 					var button;
-					if(results.Level==1 && results.Position=="Chủ tịch")
-					{
-						 button = [{
+					if (results.Level == 1 && results.Position == "Chủ tịch") {
+						button = [{
 							type: "web_url",
 							url: SERVER_URL + "/botnoksv.bot",
 							title: "Có",
@@ -3828,9 +4080,9 @@ function sendKSV(recipientId) {
 							webview_height_ratio: "tall",
 							fallback_url: SERVER_URL + "/botnoksv.bot"
 						}];
-						
-					}else{
-						 button = [{
+
+					} else {
+						button = [{
 							type: "web_url",
 							url: SERVER_URL + "/botksv.bot",
 							title: "Có",
@@ -3854,7 +4106,12 @@ function sendKSV(recipientId) {
 						title: "Hỗ trợ",
 						payload: "help",
 						image_url: SERVER_URL + "/img/helps.png"
-					}];
+					},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
+				}];
 					sendQuickMessage(recipientId, msg, quickReplies);
 				}
 			} else {
@@ -3880,7 +4137,7 @@ function sendSellProduct(recipientId) {
 	var query = {
 		_id: recipientId
 	};
-	
+
 	objDb.getConnection(function (client) {
 		objDb.findMembers(query, client, function (results) {
 			if (results.length == 1) {
@@ -3905,6 +4162,11 @@ function sendSellProduct(recipientId) {
 						title: "Hỗ trợ",
 						payload: "help",
 						image_url: SERVER_URL + "/img/helps.png"
+					},{
+						content_type: "text",
+						title: "Hướng dẫn",
+						payload: "guide",
+						image_url: SERVER_URL + "/img/guide.png"
 					}];
 					sendQuickMessage(recipientId, msg, quickReplies);
 					//endTextMessage(recipientId,msg);
@@ -3978,6 +4240,95 @@ function sendUqKsv(recipientId) {
 		});
 	});
 };
+function sendGuide(recipientId){
+	
+	var elements=[{
+            title: "Hướng dẫn ScanCode!",
+            image_url:SERVER_URL +"/images/ns1.jpg",
+            subtitle:"Hướng dẫn ScanCode để trò chuyện với NOSA.",
+            default_action: {
+              type: "web_url",
+              url: SERVER_URL +"/single.html?vid=AiN3rcsLnJQ&t",
+              messenger_extensions: true,
+              webview_height_ratio: "tall",
+              fallback_url: SERVER_URL +"/single.html?vid=AiN3rcsLnJQ&t"
+            },
+            buttons:[{
+                type:"web_url",
+                url: SERVER_URL + "/single.html?vid=AiN3rcsLnJQ&t",
+                title:"Xem ngay"
+              }]      
+          },{
+            title: "Hướng dẫn điểm danh!",
+            image_url:SERVER_URL +"/images/ns5.jpg",
+            subtitle:"Hướng dẫn điền Form Điểm danh - NOSA.",
+            default_action: {
+              type: "web_url",
+              url: SERVER_URL +"/single.html?vid=vOLdysL32NU&t",
+              messenger_extensions: true,
+              webview_height_ratio: "tall",
+              fallback_url: SERVER_URL +"/single.html?vid=vOLdysL32NU&t"
+            },
+            buttons:[{
+                type:"web_url",
+                url: SERVER_URL + "/single.html?vid=vOLdysL32NU&t",
+                title:"Xem ngay"
+              }]      
+          },{
+            title: "Hướng dẫn KSV!",
+            image_url:SERVER_URL +"/images/ns2.jpg",
+            subtitle:"Hướng dẫn sử dụng tính năng KSV - NOSA.",
+            default_action: {
+              type: "web_url",
+              url: SERVER_URL +"/single.html?vid=XwMqLYd5Qeg&t=2s",
+              messenger_extensions: true,
+              webview_height_ratio: "tall",
+              fallback_url: SERVER_URL +"/single.html?vid=XwMqLYd5Qeg&t=2s"
+            },
+            buttons:[{
+                type:"web_url",
+                url: SERVER_URL + "/single.html?vid=XwMqLYd5Qeg&t=2s",
+                title:"Xem ngay"
+              }]      
+          },{
+            title: "Hướng dẫn đăng nông sản!",
+            image_url:SERVER_URL +"/images/ns3.jpg",
+            subtitle:"Hướng dẫn điền Form Nông sản - NOSA.",
+            default_action: {
+              type: "web_url",
+              url: SERVER_URL +"/single.html?vid=k3OENdwLHVI&t",
+              messenger_extensions: true,
+              webview_height_ratio: "tall",
+              fallback_url: SERVER_URL +"/single.html?vid=k3OENdwLHVI&t"
+            },
+            buttons:[{
+                type:"web_url",
+                url: SERVER_URL + "/single.html?vid=k3OENdwLHVI&t",
+                title:"Xem ngay"
+              }]      
+          },{
+            title: "Hướng dẫn UQKSV!",
+            image_url:SERVER_URL +"/images/ns4.jpg",
+            subtitle:"Hướng dẫn sử dụng tính năng UQKSV - NOSA.",
+            default_action: {
+              type: "web_url",
+              url: SERVER_URL +"/single.html?vid=u9uSoX-T8hY",
+              messenger_extensions: true,
+              webview_height_ratio: "tall",
+              fallback_url: SERVER_URL +"/single.html?vid=u9uSoX-T8hY"
+            },
+            buttons:[{
+                type:"web_url",
+                url: SERVER_URL + "/single.html?vid=u9uSoX-T8hY",
+                title:"Xem ngay"
+              }]      
+          }
+				  
+	];
+	//console.log("HElp",elements);
+	sendGenericMessage(recipientId,elements);
+	
+};
 
 function receivedMessage(event) {
 	var senderID = event.sender.id;
@@ -4011,13 +4362,13 @@ function receivedMessage(event) {
 		switch (quickReplyPayload.toLowerCase()) {
 			case 'other':
 				//msg = "Xin lỗi bạn, đây là hệ thống dành riêng cho cán bộ của Đoàn TN và Hội LHTN. Nếu bạn quan tâm xin liên hệ với cán bộ Đoàn chuyên trách của địa phương đang cư trú. Xin cảm ơn.";
-				msg='Cảm ơn sự quan tâm của Bạn dành cho sản phẩm của Hội LHTN Việt Nam. Xin mời bạn điền thông tin để chúng ta có thể làm quen với nhau';
+				msg = 'Cảm ơn sự quan tâm của Bạn dành cho sản phẩm của Hội LHTN Việt Nam. Xin mời bạn điền thông tin để chúng ta có thể làm quen với nhau';
 				sendBasicRegisterForm(senderID, msg);
 				break;
-			case 'cbd':				
+			case 'cbd':
 				//msg = "Như vậy bạn là một cán bộ đoàn. Chúng ta hãy làm quen với nhau bằng thủ tục điểm danh nhé!";
 				//sendRegisterForm(senderID, msg);
-				msg ="Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Nosa sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+				msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Nosa sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
 				quickReplies = [{
 					content_type: "text",
 					title: "Có chứ",
@@ -4028,10 +4379,15 @@ function receivedMessage(event) {
 					title: "Hỗ trợ",
 					payload: "help",
 					image_url: SERVER_URL + "/img/helps.png"
+				},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
 				}];
 				sendQuickMessage(senderID, msg, quickReplies);
 				break;
-			case 'cbh':			
+			case 'cbh':
 				msg = "Như vậy bạn là một cán bộ Hội LHTN Việt Nam. Chúng ta hãy làm quen với nhau bằng thủ tục điểm danh nhé!";
 				sendRegisterForm(senderID, msg);
 				break;
@@ -4061,6 +4417,11 @@ function receivedMessage(event) {
 					title: "Hỗ trợ",
 					payload: "help",
 					image_url: SERVER_URL + "/img/helps.png"
+				},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
 				}];
 				sendQuickMessage(senderID, msg, quickReplies);
 				break;
@@ -4070,7 +4431,7 @@ function receivedMessage(event) {
 				break;
 			case 'global gap':
 				msg = "GlobalGAP là một bộ tiêu chuẩn về nông trại được công nhận quốc tế dành cho việc thực hành sản xuất nông nghiệp tốt (GAP). Thông qua việc chứng nhận, xác nhà sản xuất chứng minh việc thực hiện tiêu chuẩn GlobalGAP của mình. Đối với người tiêu dùng và các nhà bán lẻ, giấy chứng nhận GlobalGAP là sự đảm bảo rằng thực phẩm đạt được mức độ chấp nhận được về an toàn và chất lượng, và quá trình sản xuất được chứng minh là bền vững và có quan tâm đến sức khỏe, an toàn và phúc lợi của người lao động, môi trường, và có xem xết đến các vấn đề phúc lợi của vật nuôi. Nosa sẽ cập nhật thêm về GlobalGAP sau nhé?";
-				sendOneQuick(senderID, msg, "Có chứ", "confirm", "OkLike.png");				
+				sendOneQuick(senderID, msg, "Có chứ", "confirm", "OkLike.png");
 				break;
 			case 'vietgap':
 				msg = "Hãy cùng Nosa tìm hiểu về thủ tục chứng nhận VIETGAP nào!VietGAP có nghĩa là Thực hành sản xuất nông nghiệp tốt ở Việt Nam, do Bộ NNPTNT ban hành đối với từng sản phẩm, nhóm sản phẩm thủy sản, trồng trọt, chăn nuôi.";
@@ -4147,6 +4508,11 @@ function receivedMessage(event) {
 					title: "Hỗ trợ",
 					payload: "help",
 					image_url: SERVER_URL + "/img/helps.png"
+				},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
 				}];
 				sendQuickMessage(senderID, msg, quickReplies);
 				break;
@@ -4157,9 +4523,9 @@ function receivedMessage(event) {
 				sendFileMessage(senderID, msg, "image", file_loc);
 				break;
 			case 'lctv':
-				msg = "Hướng dẫn :";				
-				file_loc = __dirname + "/public/img/LCTV-P1.jpg";							
-				sendFileMessage(senderID, msg, "image", file_loc);				
+				msg = "Hướng dẫn :";
+				file_loc = __dirname + "/public/img/LCTV-P1.jpg";
+				sendFileMessage(senderID, msg, "image", file_loc);
 				break;
 			case 'ksvyes':
 				sendKSV(senderID);
@@ -4176,6 +4542,11 @@ function receivedMessage(event) {
 					title: "Hỗ trợ",
 					payload: "help",
 					image_url: SERVER_URL + "/img/helps.png"
+				},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
 				}];
 				sendQuickMessage(senderID, msg, quickReplies);
 				break;
@@ -4191,6 +4562,11 @@ function receivedMessage(event) {
 					title: "Hỗ trợ",
 					payload: "help",
 					image_url: SERVER_URL + "/img/helps.png"
+				},{
+					content_type: "text",
+					title: "Hướng dẫn",
+					payload: "guide",
+					image_url: SERVER_URL + "/img/guide.png"
 				}];
 				sendQuickMessage(senderID, msg, quickReplies);
 				break;
@@ -4205,13 +4581,14 @@ function receivedMessage(event) {
 					fallback_url: SERVER_URL + "/help.bot"
 				}];
 				sendButtonMessage(senderID, msg, button);
-
-
+				break;
+			case 'guide':
+				sendGuide(senderID);
 				break;
 			default:
 				sendTextMessage(senderID, 'Echo :' + messageText);
 		}
-		
+
 		return;
 	}
 
@@ -4335,6 +4712,9 @@ function receivedMessage(event) {
 			case 'uqksv':
 				sendUqKsv(senderID);
 				break;
+			case 'hướng dẫn':
+				sendGuide(senderID);
+				break;
 			case 'qr':
 				var url = "https://scontent.fhan3-2.fna.fbcdn.net/v/t1.0-9/37013371_201626787167096_4150509129015754752_n.png?_nc_cat=0&oh=79f3bc7ccdb642fd252bd84aa909e80c&oe=5BA3D6F4";
 				var msg = "Bạn có muốn tiếp tục nói chuyện với Nosa không ?"
@@ -4347,11 +4727,16 @@ function receivedMessage(event) {
 						title: "Có chứ",
 						payload: "confirm",
 						image_url: SERVER_URL + "/img/OkLike.png"
-					}, {
+					},{
 						content_type: "text",
 						title: "Hỗ trợ",
 						payload: "help",
 						image_url: SERVER_URL + "/img/helps.png"
+					},{
+						content_type: "text",
+						title: "Hướng dẫn",
+						payload: "guide",
+						image_url: SERVER_URL + "/img/guide.png"
 					}];
 					sendQuickMessage(senderID, msg, quickReplies);
 
@@ -4379,9 +4764,14 @@ function receivedMessage(event) {
 							title: "Hỗ trợ",
 							payload: "help",
 							image_url: SERVER_URL + "/img/helps.png"
+						},{
+							content_type: "text",
+							title: "Hướng dẫn",
+							payload: "guide",
+							image_url: SERVER_URL + "/img/guide.png"
 						}];
 						sendQuickMessage(senderID, msg, quickReplies);
-					} else {												  
+					} else {
 						sendNoReply(senderID);
 
 					}
@@ -4389,7 +4779,7 @@ function receivedMessage(event) {
 				break;
 
 		}
-		
+
 
 
 	} else if (messageAttachments) {
@@ -4503,7 +4893,7 @@ function setupGetStartedButton(res) {
 function writeFile(fileName, data, newPath, psid, callback) {
 
 	console.log("writeFile: writeFile : ", newPath + "/" + fileName);
-    try{
+	try {
 		var buf = new Buffer(data, 'base64');
 		console.log("writeFile: read buf");
 		var res;
@@ -4529,16 +4919,16 @@ function writeFile(fileName, data, newPath, psid, callback) {
 					});
 			}
 		});
-	}catch (err) {
-  
-		console.error("writeFile:",err);
+	} catch (err) {
+
+		console.error("writeFile:", err);
 	}
 
 };
 
 function writeFileProduct(fileName, data, newPath, psid, callback) {
 	console.log("writeFileProduct: writeFile", newPath + "/" + fileName);
-	try{
+	try {
 		var buf = new Buffer(data, 'base64');
 		console.log("writeFileProduct: read buf");
 		var res;
@@ -4565,9 +4955,9 @@ function writeFileProduct(fileName, data, newPath, psid, callback) {
 					});
 			}
 		});
- 	}catch (err) {
-  	
-		console.error("writeFileProduct:",err);
+	} catch (err) {
+
+		console.error("writeFileProduct:", err);
 	}
 
 };
