@@ -2449,6 +2449,7 @@ function receivedMessage(event) {
 			"InsertDay": inputDate
 		};
 		switch (messageText.toLowerCase()) {
+
 			case 'image':
 				//sendImageMessage(senderID);
 				break;
