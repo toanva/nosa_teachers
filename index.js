@@ -2404,7 +2404,7 @@ function receivedMessage(event) {
                 break;
             case 'ok':
                 msg = "Đồng ý";
-                quickReplies: [{
+                quick_replies: [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
@@ -2425,7 +2425,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
                 
 			case 'guide':
