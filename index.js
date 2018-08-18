@@ -2397,31 +2397,6 @@ function receivedMessage(event) {
                 }];
                 sendQuickMessage(senderID, msg, quick_replies);
                 break;
-            case 'confirm':
-                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quick_replies: [{
-                    content_type: "text",
-                    title: "Thể lệ",
-                    payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Gửi bài viết",
-                    payload: "guibaiviet",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bài viết hay",
-                    payload: "baiviethay",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bình chọn",
-                    payload: "binhchon",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }];
-                sendQuickMessage(senderID, msg, quick_replies);
-                break;
 			case 'guide':
 				sendGuide(senderID);
 				break;
