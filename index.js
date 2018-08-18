@@ -3728,22 +3728,22 @@ function sendMessageWelecome(recipientId, msg) {
             text: msg + " Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?",
 			quick_replies: [{
 				content_type: "text",
-				title: "Cán bộ đoàn",
+				title: "Thông tin chương trình",
 				payload: "CBD",
-				image_url: SERVER_URL + "/img/doan.png"
+                image_url: SERVER_URL + "/img/HoiMin.png"
 			}, {
 				content_type: "text",
-				title: "Cán bộ hội",
+				title: "Gửi bài viết",
 				payload: "CBH",
 				image_url: SERVER_URL + "/img/HoiMin.png"
 			}, {
 				content_type: "text",
-				title: "Khác",
+				title: "Xem bài viết chọn lọc",
 				payload: "other",
-				image_url: SERVER_URL + "/img/logomin.png"
+                image_url: SERVER_URL + "/img/HoiMin.png"
 			},{
 				content_type: "text",
-				title: "Hướng dẫn",
+				title: "Bình chọn",
 				payload: "guide",
 				image_url: SERVER_URL + "/img/guide.png"
 			}]
