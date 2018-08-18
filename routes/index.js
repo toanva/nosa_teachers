@@ -256,12 +256,7 @@ function receivedMessage(event) {
 				});
 				break;
             case 'Gửi bài viết':
-                client.sendAttachment(senderID, {
-                    type: 'image',
-                    payload: {
-                        url: 'https://scontent.fhan3-2.fna.fbcdn.net/v/t1.0-9/31081528_568961726811775_3035050846015455232_n.jpg?_nc_cat=0&oh=275c0f15fc0d56e03fee30afc9bea818&oe=5C060612',
-                    },
-                });
+                sendRegisterForm(recipientId, msg);
 				break;
 			default:
                 client.getUserProfile(senderID).then(user => {
