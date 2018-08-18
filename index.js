@@ -2402,31 +2402,31 @@ function receivedMessage(event) {
                 }];
                 sendQuickMessage(senderID, msg, quickReplies);
                 break;
-            //case 'confirm':
-            //    msg = "Đồng ý";
-            //    quick_replies: [{
-            //        content_type: "text",
-            //        title: "Thể lệ",
-            //        payload: "thele",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Gửi bài viết",
-            //        payload: "guibaiviet",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Bài viết hay",
-            //        payload: "baiviethay",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Bình chọn",
-            //        payload: "binhchon",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }];
-            //    sendQuickMessage(senderID, msg, quickReplies);
-            //    break;
+            case 'confirm':
+                msg = "Đồng ý";
+                quickReplies: [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
                 
 			case 'guide':
 				sendGuide(senderID);
