@@ -26,6 +26,7 @@
     "npm": "^5.8.0",
     "to": "^0.2.9",
     "update": "^0.7.4",
-    "zalo-sdk": "^2.0.4"
+    "zalo-sdk": "^2.0.4",
+    "messaging-api-messenger": "^0.7.5"
   }
 }
