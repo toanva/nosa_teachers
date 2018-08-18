@@ -1203,17 +1203,17 @@ function callGetProfile(psid, callback) {
 		if (!error && response.statusCode == 200) {
 			var obj = JSON.parse(body);
 			console.log("callGetProfile: ", obj.last_name + ' ' + obj.first_name + ' ' + obj.profile_pic);
-			var imgUrl = obj.profile_pic;
-			try {
-				objDb.getConnection(function (client) {
-					objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
-						console.log('updateAvatarMemeber SS:', psid);
-						client.close();
-					});
-				});
-			} catch (err) {
-				console.error("updateAvatarMemeber: ", err);
-			}
+			//var imgUrl = obj.profile_pic;
+			//try {
+			//	objDb.getConnection(function (client) {
+			//		objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
+			//			console.log('updateAvatarMemeber SS:', psid);
+			//			client.close();
+			//		});
+			//	});
+			//} catch (err) {
+			//	console.error("updateAvatarMemeber: ", err);
+			//}
 			callback(body);
 		} else {
 			console.error(response.error);
