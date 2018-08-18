@@ -3728,23 +3728,23 @@ function sendMessageWelecome(recipientId, msg) {
             text: msg + " Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?",
 			quick_replies: [{
 				content_type: "text",
-				title: "Thông tin chương trình",
-				payload: "CBD",
+				title: "Thể lệ",
+				payload: "thele",
                 image_url: SERVER_URL + "/img/HoiMin.png"
 			}, {
 				content_type: "text",
 				title: "Gửi bài viết",
-				payload: "CBH",
+				payload: "guibaiviet",
 				image_url: SERVER_URL + "/img/HoiMin.png"
 			}, {
 				content_type: "text",
-				title: "Xem bài viết chọn lọc",
-				payload: "other",
+				title: "Bài viết hay",
+				payload: "baiviethay",
                 image_url: SERVER_URL + "/img/HoiMin.png"
 			},{
 				content_type: "text",
 				title: "Bình chọn",
-				payload: "guide",
+				payload: "binhchon",
 				image_url: SERVER_URL + "/img/guide.png"
 			}]
 		}
@@ -4359,7 +4359,12 @@ function receivedMessage(event) {
 		var quickReplyPayload = quickReply.payload;
 		console.log("Quick reply for message %s with payload %s",
 			messageId, quickReplyPayload);
-		switch (quickReplyPayload.toLowerCase()) {
+        switch (quickReplyPayload.toLowerCase()) {
+            case 'thele':
+                msg = "Thể lệ :";
+                file_loc = __dirname + "/public/img/cddl.png";
+                sendFileMessage(senderID, msg, "image", file_loc);
+                break;
 			case 'other':
 				//msg = "Xin lỗi bạn, đây là hệ thống dành riêng cho cán bộ của Đoàn TN và Hội LHTN. Nếu bạn quan tâm xin liên hệ với cán bộ Đoàn chuyên trách của địa phương đang cư trú. Xin cảm ơn.";
 				msg = 'Cảm ơn sự quan tâm của Bạn dành cho sản phẩm của Hội LHTN Việt Nam. Xin mời bạn điền thông tin để chúng ta có thể làm quen với nhau';
