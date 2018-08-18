@@ -1,10 +1,11 @@
 {
-    "appSecret": "2c80040176e4d0894644034419559eed",   "pageAccessToken":"EAAdBlH5x0yoBACFNjf6jAVYnKXZApbfvvEgCb9DjJsuPTNLSslm6dYBxtZCKeOknGdkMF8kpb4SxXI9XXJYCzEZBtVK6y0QCvbQIHE3kVdJauCjK6GJOaID2ebs2jZC0ukZBBeruemMLfI7Dq4LMfQkZBWEUq9Et21OeROY4TvsgZDZD",
-    "validationToken": "verify-token-nsvn",
-    "serverURL": "https://nongsanvn.herokuapp.com",
-	"mongoUrl":"mongodb://nsvn:nsvn6688@ds251849.mlab.com:51849/heroku_g41d98gw",
-	"databasename":"heroku_g41d98gw",
-	"image_cloud_name":"nosavn-net",
-	"image_api_key":"617126195119673",
-	"image_api_secret":"8b6rlInYhs6Bubhiu3HsNg3OoVw"
+  "appSecret": "e11b663690418e0abafdfaaf5bb24bee",
+  "pageAccessToken": "EAADOg3kb1q0BAIenB6q5dyCk5bDsZC7UaEbU4RHvaIjhdlrYIRFVsbYdFo5lWnYy7EKcONbuhhSdzb1AwZCH71qUt7HOdHynACMyJprHS46d90zXLsSeGkRWE2EevMlZCayrPNdI3dAJyeQQBaeZCBQl69HwwYG9hJIlzNxPMwZDZD",
+  "validationToken": "verify-token-nsvn",
+  "serverURL": "https://toanvachatbot.herokuapp.com/",
+  "mongoUrl": "mongodb://nsvn:nsvn6688@ds251849.mlab.com:51849/heroku_g41d98gw",
+  "databasename": "heroku_g41d98gw",
+  "image_cloud_name": "nosavn-net",
+  "image_api_key": "617126195119673",
+  "image_api_secret": "8b6rlInYhs6Bubhiu3HsNg3OoVw"
 }
