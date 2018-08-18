@@ -2322,7 +2322,7 @@ function receivedMessage(event) {
                 break;
             case 'guibaiviet':
                 msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
-                quick_replies: [{
+                quickReplies: [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
@@ -2333,7 +2333,7 @@ function receivedMessage(event) {
                     payload: "guibaiviet",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quick_replies);
+                sendQuickMessage(senderID, msg, quickReplies);
                 break;
             case 'soanbai':
                 msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
@@ -2349,7 +2349,7 @@ function receivedMessage(event) {
                 break;
             case 'baiviethay':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quick_replies: [{
+                quickReplies: [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
@@ -2370,7 +2370,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quick_replies);
+                sendQuickMessage(senderID, msg, quickReplies);
                 break;
             case 'binhchon':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
@@ -2395,7 +2395,32 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quick_replies);
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
+            case 'confirm':
+                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                quickReplies: [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
                 break;
 			case 'guide':
 				sendGuide(senderID);
