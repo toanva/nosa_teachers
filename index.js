@@ -2378,7 +2378,7 @@ function receivedMessage(event) {
                 break;
             case 'guibaiviet':
                 msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
-                quick_Replies: [{
+                quickReplies = [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
@@ -2386,10 +2386,10 @@ function receivedMessage(event) {
                 }, {
                     content_type: "text",
                     title: "Gửi bài viết",
-                    payload: "guibaiviet",
+                        payload: "soanbai",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quick_Replies);
+                sendQuickMessage(senderID, msg, quickReplies);
                 break;
             case 'soanbai':
                 msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
@@ -2405,7 +2405,7 @@ function receivedMessage(event) {
                 break;
             case 'baiviethay':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quickReplies: [{
+                quickReplies = [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
@@ -2430,7 +2430,7 @@ function receivedMessage(event) {
                 break;
             case 'binhchon':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quick_replies: [{
+                quick_replies = [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
