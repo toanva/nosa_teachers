@@ -18,6 +18,13 @@ var formidable = require('formidable');
 const multer = require('multer');
 var cloudinary = require('cloudinary');
 var objDb = require('./object/database.js');
+//Google drive
+//const readline = require('readline');
+//const { google } = require('googleapis');
+
+//const SCOPES = ['https://www.googleapis.com/auth/drive.metadata.readonly'];
+//const TOKEN_PATH = 'token.json';
+
 const upload = multer({
 	storage: multer.memoryStorage(),
 	limits: {
@@ -32,7 +39,7 @@ var provincial = require('./Provincial.js');
 var Cryptojs = require("crypto-js"); //Toanva add
 ///// hết
 //Toanva add api Message
-const { MessengerClient } = require('messaging-api-messenger');
+//const { MessengerClient } = require('messaging-api-messenger');
 
 
 const server = express();
@@ -93,11 +100,11 @@ const IMAGE_API_KEY = (process.env.SERVER_URL) ?
 const IMAGE_API_SECRET = (process.env.SERVER_URL) ?
 	(process.env.SERVER_URL) :
 	config.get('image_api_secret');
-const client = MessengerClient.connect({
-	accessToken: PAGE_ACCESS_TOKEN,
-	appSecret: APP_SECRET,
-	version: '3.1'
-});
+//const client = MessengerClient.connect({
+//	accessToken: PAGE_ACCESS_TOKEN,
+//	appSecret: APP_SECRET,
+//	version: '3.1'
+//});
 //var SERVER_URL ="https://nongsanvn.herokuapp.com";
 if (!(APP_SECRET && VALIDATION_TOKEN && PAGE_ACCESS_TOKEN && SERVER_URL)) {
 	console.error("Missing config values");
@@ -119,7 +126,6 @@ cloudinary.config({
 
 function verifyRequestSignature(req, res, buf) {
 	var signature = req.headers["x-hub-signature"];
-
 	if (!signature) {
 		// For testing, let's log an error. In production, you should throw an 
 		// error.
@@ -128,11 +134,9 @@ function verifyRequestSignature(req, res, buf) {
 		var elements = signature.split('=');
 		var method = elements[0];
 		var signatureHash = elements[1];
-
 		var expectedHash = crypto.createHmac('sha1', APP_SECRET)
 			.update(buf)
 			.digest('hex');
-
 		if (signatureHash != expectedHash) {
 			throw new Error("Couldn't validate the request signature.");
 		}
@@ -143,12 +147,10 @@ const saveLogs = function (objLogs) {
 	try {
 		objDb.getConnection(function (client) {
 			objDb.insertLogs(objLogs, client, function (err, results) {
-
 				if (err) {
 					console.log("insertLogs err:", err);
 				} else {
 					console.log("insertLogs ss:", objLogs);
-					//sendBackRegister(body.psid, returnMessage);
 				}
 				client.close();
 			});
@@ -296,7 +298,7 @@ server.post('/login.bot', function (req, res) {
 		console.log("login success");
 		res.send("true");
 
-	} else if (body.UserName == "ksv" && body.Password == "ksvnosa") {
+	} else if (body.UserName == "ksv" && body.Password == "ksvThani") {
 		req.session.user = body.UserName;
 		req.session.ksv = true;
 		res.send("true");
@@ -319,20 +321,21 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
         var inputDate = new Date(mydate.toISOString());
         console.log("registerspostback PSID", body.psid);
         var returnMessage = "Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + 
-            body.Position + msgConcurrently + ", địa chỉ : " + body.Address + " . Số điện thoại của bạn là : " + body.Phone + ". Số CMT " + body.CMT + " đang giữ chức vụ " + ". Chuẩn chưa nhỉ?";
+            body.Position + msgConcurrently + ", địa chỉ : " + body.Address + " . Số điện thoại của bạn là : " + body.Phone + ". Số CMT " + body.CMT + ". Chuẩn chưa nhỉ?";
         console.log(returnMessage);
-        var imgUrl;
+        
         callGetProfile(body.psid, function (objFacebook) {
             var objFacebook = JSON.parse(objFacebook);
             console.log("callGetProfile: ", objFacebook);
-            imgUrl = objFacebook.profile_pic;
+            
             var objMember = {
                 "_id": body.psid,
                 "Name": body.Name,
                 "Birthday": body.Birthday,
-                "Phone": body.Phone,
                 "Address": body.Address,
-                "ImgUrl": imgUrl,
+                "CMT": body.CMT,
+                "Phone": body.Phone,
+                "Document": body.Document,
                 "InsertDate": inputDate
             };
             objDb.getConnection(function (client) {
@@ -378,7 +381,6 @@ server.get('/senddocument', authFace, (req, res) => {
 });
 
 server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req, res) => {
-
 	try {
 		let body = req.body;
 		var dir = "./public/uploads/Avatar";
@@ -517,11 +519,6 @@ server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req,
 						objMember.Long=results[0].Long;
 						insertMember(body.psid,imgUrl,objMember,returnMessage,client,res);
 					}
-			
-					
-					
-					
-					////  end  findProvincial
 				});
 				/// end con
 			});
@@ -558,7 +555,7 @@ server.get('/registerspostback.bot', authFace, (req, res) => {
 
 
 
-	var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Nosa kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.txtDay + "/" + body.txtMonth + "/" + body.txtYear + " . Hiện bạn đang giữ chức vụ " + body.cboPosition + ", địa chỉ : " + body.txtWards + " , quận / huyện " + body.txtDistricts + ", Tỉnh / TP " + body.txtProvincial + " . Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
+	var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.txtDay + "/" + body.txtMonth + "/" + body.txtYear + " . Hiện bạn đang giữ chức vụ " + body.cboPosition + ", địa chỉ : " + body.txtWards + " , quận / huyện " + body.txtDistricts + ", Tỉnh / TP " + body.txtProvincial + " . Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
 	//console.log(returnMessage);
 	var mydate = new Date(parseInt(body.txtYear), parseInt(body.txtMonth) - 1, parseInt(body.txtDay));
 	//console.log("Date", mydate);
@@ -615,14 +612,9 @@ server.get('/rg.bot', (req, res, next) => {
 server.post('/rgpostback.bot', upload.single('somefile'), (req, res) => {
 
 	let body = req.body;
-	var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Nosa kiểm tra lại nhé: Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + " . Hiện bạn đang giữ chức vụ " + body.Position + ", địa chỉ : " + body.Wards + " , quận / huyện " + body.Districts + ", Tỉnh / TP " + body.Provincial + " các chi hội :" + body.Branch + ". Số điện thoại của bạn là : " + body.Phone + " Chuẩn chưa nhỉ?";
+	var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + " . Hiện bạn đang giữ chức vụ " + body.Position + ", địa chỉ : " + body.Wards + " , quận / huyện " + body.Districts + ", Tỉnh / TP " + body.Provincial + " các chi hội :" + body.Branch + ". Số điện thoại của bạn là : " + body.Phone + " Chuẩn chưa nhỉ?";
 	console.log(returnMessage);
-	//var mydate = new Date(parseInt(body.txtYear), parseInt(body.txtMonth) - 1, parseInt(body.txtDay));
-	//console.log("Date", mydate);
-	//req.session.psid = body.psid;
-	//	var inputDate = new Date(mydate.toISOString());
 	if (body.Name != undefined) {
-
 		var objBranch;
 		if (body.Branch != undefined && body.Branch != 'NA' && body.Branch != '') {
 			var arr = body.Branch.split(',');
@@ -726,7 +718,7 @@ server.get('/closeForm', (req, res) => {
 
 	var psid = req.query.psid;
 	//var name = req.query.Name;
-	var msg = "Bạn có muốn tiếp tục nói chuyện với Nosa không ?";
+	var msg = "Bạn có muốn tiếp tục nói chuyện với Thani không ?";
 	quickReplies = [{
 		content_type: "text",
 		title: "Có chứ",
@@ -980,7 +972,7 @@ server.post('/helppostback.bot', upload.single('somefile'), authFace, (req, res)
 				client.close();
 				console.log("helppostback :", content);
 				console.log("helppostback Psid:", results[0].Psid);
-				sendTextMessage(results[0].Psid, "Nosa nhận được yêu cầu hỗ trợ của " + fullName + ", ĐT :" + phone + " , Email:" + email + ", Tên Facebook là : " + objFacebook["last_name"] + " " + objFacebook["first_name"] + ", nội dung cần được hỗ trợ là:" + content + ". Ảnh đại diện facebook:");
+				sendTextMessage(results[0].Psid, "Thani nhận được yêu cầu hỗ trợ của " + fullName + ", ĐT :" + phone + " , Email:" + email + ", Tên Facebook là : " + objFacebook["last_name"] + " " + objFacebook["first_name"] + ", nội dung cần được hỗ trợ là:" + content + ". Ảnh đại diện facebook:");
 				sendUrlMessage(results[0].Psid, "image", imgUrl, function (error, response, body) {
 					if (error) throw error;
 					console.log("sendUrlMessage:");
@@ -996,7 +988,7 @@ server.post('/helppostback.bot', upload.single('somefile'), authFace, (req, res)
 					sendButtonMessage(results[0].Psid, "Trả lời câu hỏi!", button);
 				});
 				///////Reply member
-				var msg = "Nosa đã nhận được yêu cầu hỗ trợ của " + objFacebook["last_name"] + " " + objFacebook["first_name"] + ". Nosa sẽ phản hồi lại bạn sớm nhất có thể. Bạn có muốn tiếp tục nói chuyện với Nosa không ?";
+				var msg = "Thani đã nhận được yêu cầu hỗ trợ của " + objFacebook["last_name"] + " " + objFacebook["first_name"] + ". Thani sẽ phản hồi lại bạn sớm nhất có thể. Bạn có muốn tiếp tục nói chuyện với Thani không ?";
 				quickReplies = [{
 					content_type: "text",
 					title: "Có chứ",
@@ -1049,7 +1041,7 @@ server.post('/replyhelppostback.bot', upload.single('somefile'), authFace, (req,
 	var fromPsid = body.fromPsid;
 	var Question = body.Question;
 	var content = body.Content;
-	var msg = "Nosa đã nhận được yêu cầu hỗ trợ của bạn như sau : " + Question + ". Nosa xin được trả lời câu hỏi : " + content + " . Bạn muốn tiếp tục trò chuyện với Nosa chứ ?";
+	var msg = "Thani đã nhận được yêu cầu hỗ trợ của bạn như sau : " + Question + ". Thani xin được trả lời câu hỏi : " + content + " . Bạn muốn tiếp tục trò chuyện với Thani chứ ?";
 	quickReplies = [{
 		content_type: "text",
 		title: "Có chứ",
@@ -1071,33 +1063,22 @@ server.post('/replyhelppostback.bot', upload.single('somefile'), authFace, (req,
 
 
 });
-////Bản đồ phân bổ nông ngiệp
-server.get('/map.bot', (req, res) => {
-	console.log("Call map.bot");
-	res.render('map');
-	//res.send('Get Id From : '+ fromId + " = "+ data);
-});
 
 function insertMember(psid,imgUrl,objMember,returnMessage, client,res){
 	//// start insert member
 	objDb.insertMembers(objMember, client, function (err, results) {
-		//	   res.send(results);
-		//console.log(results);
 		if (err) {
-			//client.close();
 			sendTextMessage(psid, 'Echo:' + err);
 		} else {
 
 			console.log("registerspostback: ", objMember);
 			//writeFile(imgName,body.DataImgAvatar,dir,body.psid);
-			sendTextMessage(psid, "Cảm ơn bạn đã cung cấp thông tin. Nosa kiểm tra lại nhé. Dưới đây là ảnh đại diện Facebook của bạn :");
+			sendTextMessage(psid, "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé. Dưới đây là ảnh đại diện Facebook của bạn :");
 			sendUrlMessage(psid, "image", imgUrl, function (error, response, bd) {
 				if (error) throw error;
 				console.log("sendUrlMessage:");
 				sendBackRegister(psid, returnMessage);
-
 			});
-
 			client.close();
 			res.status(200).send('Please close this window to return to the conversation thread.');
 			//res.send(objMember);
@@ -1206,7 +1187,7 @@ function callSendAPIFile(messageData) {
 			return console.error("upload failed >> \n", err)
 		};
 		console.log("upload successfull >> \n", body); //facebook always return 'ok' message, so you need to read error in 'body.error' if any
-		sendOneQuick(messageData.recipient.id, "Bạn có muốn tiếp tục trò truyện với Nosa không?", "Có chứ", "confirm", "advisory.png");
+		sendOneQuick(messageData.recipient.id, "Bạn có muốn tiếp tục trò truyện với Thani không?", "Có chứ", "confirm", "advisory.png");
 	});
 	var form = r.form();
 	form.append('recipient', JSON.stringify(messageData.recipient));
@@ -1727,7 +1708,7 @@ function sendMessageWelecome(recipientId, msg) {
 				content_type: "text",
 				title: "Bình chọn",
 				payload: "binhchon",
-				image_url: SERVER_URL + "/img/guide.png"
+                    image_url: SERVER_URL + "/img/HoiMin.png"
 			}]
 		}
 	};
@@ -1735,8 +1716,6 @@ function sendMessageWelecome(recipientId, msg) {
 };
 
 function sendMessageConfimRegister(recipientId) {
-
-
 	var query = {
 		_id: recipientId
 	};
@@ -1749,7 +1728,7 @@ function sendMessageConfimRegister(recipientId) {
 						id: recipientId
 					},
 					message: {
-						text: "Cảm ơn " + results[0].Name + ". Bạn là một " + results[0].Position + " gương mẫu đấy. Nosa là chuyên gia làm kinh tế trong lĩnh vực nông sản đấy. Hãy nói cho Nosa biết vấn đề bạn quan tâm nào.",
+						text: "Cảm ơn " + results[0].Name + ". Bạn là một " + results[0].Position + " gương mẫu đấy. Thani là chuyên gia làm kinh tế trong lĩnh vực nông sản đấy. Hãy nói cho Thani biết vấn đề bạn quan tâm nào.",
 						quick_replies: [{
 							content_type: "text",
 							title: "Xây dựng thương hiệu",
@@ -1960,7 +1939,7 @@ function sendNoReply(recipientId) {
 				var wards = results.Ward;
 
 				if (results.BlockStatus == "ACTIVE") {
-					msg = "Câu hỏi này để Nosa suy nghĩ đã. Bạn có muốn thảo luận với Nosa các vấn đề khác không ? ";
+					msg = "Câu hỏi này để Thani suy nghĩ đã. Bạn có muốn thảo luận với Thani các vấn đề khác không ? ";
 					quickReplies = [{
 						content_type: "text",
 						title: "Có chứ",
@@ -1979,7 +1958,7 @@ function sendNoReply(recipientId) {
 					}];
 					sendQuickMessage(recipientId, msg, quickReplies);
 				} else {
-					msg = "Câu hỏi này để Nosa suy nghĩ đã. Bạn có muốn thảo luận với Nosa các vấn đề khác không ? ";
+					msg = "Câu hỏi này để Thani suy nghĩ đã. Bạn có muốn thảo luận với Thani các vấn đề khác không ? ";
 					quickReplies = [{
 						content_type: "text",
 						title: "Có chứ",
@@ -2077,7 +2056,7 @@ function sendKSV(recipientId) {
 					sendButtonMessage(recipientId, msg, button);
 
 				} else {
-					msg = "Tính năng xác thực Hội viên chỉ mở cho chức danh chủ tịch và đã được xác thực trước đó, nếu " + results.Name + " là chủ tịch mà chưa được xác thực vui lòng liên hệ cán bộ Hội cấp trên để được xác thực nhé! " + results.Name + " có muốn tiếp tục trò chuyện cùng Nosa không?";
+					msg = "Tính năng xác thực Hội viên chỉ mở cho chức danh chủ tịch và đã được xác thực trước đó, nếu " + results.Name + " là chủ tịch mà chưa được xác thực vui lòng liên hệ cán bộ Hội cấp trên để được xác thực nhé! " + results.Name + " có muốn tiếp tục trò chuyện cùng Thani không?";
 					quickReplies = [{
 						content_type: "text",
 						title: "Có chứ",
@@ -2133,7 +2112,7 @@ function sendSellProduct(recipientId) {
 					sendMessageIProducts(recipientId, msgSell);
 
 				} else {
-					var msg = "Tính năng bán nông sản chỉ mở cho những Hội viên cấp quận/huyện, phường/xã, chi hội đã được xác thực trước đó, " + results.Name + " vui lòng liên hệ cán bộ Hội cấp trên để được xác thực nhé! Bạn có muốn tiếp tục trò chuyện cùng Nosa không?";
+					var msg = "Tính năng bán nông sản chỉ mở cho những Hội viên cấp quận/huyện, phường/xã, chi hội đã được xác thực trước đó, " + results.Name + " vui lòng liên hệ cán bộ Hội cấp trên để được xác thực nhé! Bạn có muốn tiếp tục trò chuyện cùng Thani không?";
 					quickReplies = [{
 						content_type: "text",
 						title: "Có chứ",
@@ -2227,7 +2206,7 @@ function sendGuide(recipientId){
 	var elements=[{
             title: "Hướng dẫn ScanCode!",
             image_url:SERVER_URL +"/images/ns1.jpg",
-            subtitle:"Hướng dẫn ScanCode để trò chuyện với NOSA.",
+            subtitle:"Hướng dẫn ScanCode để trò chuyện với Thani.",
             default_action: {
               type: "web_url",
               url: SERVER_URL +"/single.html?vid=AiN3rcsLnJQ&t",
@@ -2243,7 +2222,7 @@ function sendGuide(recipientId){
           },{
             title: "Hướng dẫn điểm danh!",
             image_url:SERVER_URL +"/images/ns5.jpg",
-            subtitle:"Hướng dẫn điền Form Điểm danh - NOSA.",
+            subtitle:"Hướng dẫn điền Form Điểm danh - Thani.",
             default_action: {
               type: "web_url",
               url: SERVER_URL +"/single.html?vid=vOLdysL32NU&t",
@@ -2259,7 +2238,7 @@ function sendGuide(recipientId){
           },{
             title: "Hướng dẫn KSV!",
             image_url:SERVER_URL +"/images/ns2.jpg",
-            subtitle:"Hướng dẫn sử dụng tính năng KSV - NOSA.",
+            subtitle:"Hướng dẫn sử dụng tính năng KSV - Thani.",
             default_action: {
               type: "web_url",
               url: SERVER_URL +"/single.html?vid=XwMqLYd5Qeg&t=2s",
@@ -2275,7 +2254,7 @@ function sendGuide(recipientId){
           },{
             title: "Hướng dẫn đăng nông sản!",
             image_url:SERVER_URL +"/images/ns3.jpg",
-            subtitle:"Hướng dẫn điền Form Nông sản - NOSA.",
+            subtitle:"Hướng dẫn điền Form Nông sản - Thani.",
             default_action: {
               type: "web_url",
               url: SERVER_URL +"/single.html?vid=k3OENdwLHVI&t",
@@ -2291,7 +2270,7 @@ function sendGuide(recipientId){
           },{
             title: "Hướng dẫn UQKSV!",
             image_url:SERVER_URL +"/images/ns4.jpg",
-            subtitle:"Hướng dẫn sử dụng tính năng UQKSV - NOSA.",
+            subtitle:"Hướng dẫn sử dụng tính năng UQKSV - Thani.",
             default_action: {
               type: "web_url",
               url: SERVER_URL +"/single.html?vid=u9uSoX-T8hY",
@@ -2337,7 +2316,6 @@ function receivedMessage(event) {
 			messageId, appId, metadata);
 		return;
 	} else if (quickReply) {
-
 		var quickReplyPayload = quickReply.payload;
 		console.log("Quick reply for message %s with payload %s",
 			messageId, quickReplyPayload);
@@ -2359,238 +2337,64 @@ function receivedMessage(event) {
                 }];
                 sendButtonMessage(senderID, msg, button);
                 break;
-			case 'other':
-				//msg = "Xin lỗi bạn, đây là hệ thống dành riêng cho cán bộ của Đoàn TN và Hội LHTN. Nếu bạn quan tâm xin liên hệ với cán bộ Đoàn chuyên trách của địa phương đang cư trú. Xin cảm ơn.";
-				msg = 'Cảm ơn sự quan tâm của Bạn dành cho sản phẩm của Hội LHTN Việt Nam. Xin mời bạn điền thông tin để chúng ta có thể làm quen với nhau';
-				sendBasicRegisterForm(senderID, msg);
-				break;
-			case 'cbd':
-				//msg = "Như vậy bạn là một cán bộ đoàn. Chúng ta hãy làm quen với nhau bằng thủ tục điểm danh nhé!";
-				//sendRegisterForm(senderID, msg);
-				msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Nosa sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-				quickReplies = [{
-					content_type: "text",
-					title: "Có chứ",
-					payload: "confirm",
-					image_url: SERVER_URL + "/img/OkLike.png"
-				}, {
-					content_type: "text",
-					title: "Hỗ trợ",
-					payload: "help",
-					image_url: SERVER_URL + "/img/helps.png"
-				},{
-					content_type: "text",
-					title: "Hướng dẫn",
-					payload: "guide",
-					image_url: SERVER_URL + "/img/guide.png"
-				}];
-				sendQuickMessage(senderID, msg, quickReplies);
-				break;
-			case 'cbh':
-				msg = "Như vậy bạn là một cán bộ Hội LHTN Việt Nam. Chúng ta hãy làm quen với nhau bằng thủ tục điểm danh nhé!";
-				sendRegisterForm(senderID, msg);
-				break;
-			case '63tinh':
-				msg = "Như vậy bạn là một cán bộ thuộc 63 tỉnh thành. Chúng ta cùng làm quen bằng thủ tục điểm danh nhé."
-				sendRegisterForm(senderID, msg);
-				break;
-			case 'tt63':
-				msg = "Như vậy bạn là một cán bộ thuộc cấp tương đương. Chúng ta cùng làm quen bằng thủ tục điểm danh nhé."
-				sendRegisterTempForm(senderID, msg);
-				break;
-			case 'confirm':
-				sendMessageConfimRegister(senderID);
-				break;
-			case 'bns':
-				sendSellProduct(senderID);
-				break;
-			case 'cfp':
-				msg = "Cảm ơn bạn! Hệ thống trung tâm sẽ xử lý và gửi thông báo cho bạn khi tìm được đầu ra cho sản phẩm. Bạn có muốn tiếp tục nói chuyện với Nosa không ?";
-				quickReplies = [{
-					content_type: "text",
-					title: "Có chứ",
-					payload: "confirm",
-					image_url: SERVER_URL + "/img/OkLike.png"
-				}, {
-					content_type: "text",
-					title: "Hỗ trợ",
-					payload: "help",
-					image_url: SERVER_URL + "/img/helps.png"
-				},{
-					content_type: "text",
-					title: "Hướng dẫn",
-					payload: "guide",
-					image_url: SERVER_URL + "/img/guide.png"
-				}];
-				sendQuickMessage(senderID, msg, quickReplies);
-				break;
-			case 'xdth':
-				msg = "Một thương hiệu nông sản mạnh cần chứng minh được nguồn gốc xuất xứ, quy trình sản xuất an toàn hoặc chất lượng nông sản. Hãy tham khảo những căn cứ như:";
-				sendMessageTrademark(senderID, msg);
-				break;
-			case 'global gap':
-				msg = "GlobalGAP là một bộ tiêu chuẩn về nông trại được công nhận quốc tế dành cho việc thực hành sản xuất nông nghiệp tốt (GAP). Thông qua việc chứng nhận, xác nhà sản xuất chứng minh việc thực hiện tiêu chuẩn GlobalGAP của mình. Đối với người tiêu dùng và các nhà bán lẻ, giấy chứng nhận GlobalGAP là sự đảm bảo rằng thực phẩm đạt được mức độ chấp nhận được về an toàn và chất lượng, và quá trình sản xuất được chứng minh là bền vững và có quan tâm đến sức khỏe, an toàn và phúc lợi của người lao động, môi trường, và có xem xết đến các vấn đề phúc lợi của vật nuôi. Nosa sẽ cập nhật thêm về GlobalGAP sau nhé?";
-				sendOneQuick(senderID, msg, "Có chứ", "confirm", "OkLike.png");
-				break;
-			case 'vietgap':
-				msg = "Hãy cùng Nosa tìm hiểu về thủ tục chứng nhận VIETGAP nào!VietGAP có nghĩa là Thực hành sản xuất nông nghiệp tốt ở Việt Nam, do Bộ NNPTNT ban hành đối với từng sản phẩm, nhóm sản phẩm thủy sản, trồng trọt, chăn nuôi.";
-				quickReplies = [{
-					content_type: "text",
-					title: "Lựa chọn tư vấn",
-					payload: "lctv",
-					image_url: SERVER_URL + "/img/advisory.png"
-				}, {
-					content_type: "text",
-					title: "Quy trình công nhận",
-					payload: "qtcn",
-					image_url: SERVER_URL + "/img/procedure.png"
-				}, {
-					content_type: "text",
-					title: "Quay lại",
-					payload: "confirm",
-					image_url: SERVER_URL + "/img/back.png"
-				}];
-				sendQuickMessage(senderID, msg, quickReplies);
-				//saveLogs(objLog);
-				break;
-			case 'vvsx':
-				msg = "Để vay vốn dành cho sản xuất, bạn có thể thực hiện khoản vay 50 triệu từ ngân hàng chính sách. Để tìm hiểu về thủ tục mời bạn download tài liệu sau:";
-				sendMessageLoan(senderID, msg);
-				break;
-			case 'cddl':
-				callGetProfile(senderID, function (profile) {
-					var obj = JSON.parse(profile);
-					msg = 'Hmmm, cụm từ "Chỉ dẫn địa lý" nghe giống như bạn đang đi hỏi đường ấy nhỉ. :). Nhưng thực ra cụm từ này là tiêu chuẩn của một sản phẩm. Chỉ dẫn địa lý là thông tin về nguồn gốc của hàng hóa: từ ngữ, dấu hiệu, biểu tượng, hình ảnh để chỉ: một quốc gia, một vùng lãnh thổ, một địa phương mà hàng hóa được sản xuất ra từ đó. Chất lượng, uy tín, danh tiếng của hàng hóa là do nguồn gốc địa lý tạo nên.' + obj['last_name'] + ' ' + obj['first_name'] + ' có biết hiện tại ở Việt Nam có bao nhiêu chỉ dẫn địa lý được bảo hộ không?';
-					quickReplies = [{
-						content_type: "text",
-						title: "46",
-						payload: "cddl66",
-						image_url: SERVER_URL + "/img/OkLike.png"
-					}, {
-						content_type: "text",
-						title: "56",
-						payload: "cddl66",
-						image_url: SERVER_URL + "/img/OkLike.png"
-					}, {
-						content_type: "text",
-						title: "66",
-						payload: "cddl66",
-						image_url: SERVER_URL + "/img/OkLike.png"
-					}];
-					sendQuickMessage(senderID, msg, quickReplies);
-				});
-				break;
-			case 'cddl66':
-				msg = "Đáp án chính xác là 66. Để Nosa giúp bạn hiểu rõ hơn về con số này nhé. Tính đến T3/2018, Việt Nam đã bảo hộ 66 chỉ dẫn địa lý với khoảng 1.000 sản vật, trong đó có 60 chỉ dẫn địa lý của Việt Nam và 6 chỉ dẫn địa lý của nước ngoài. Nghe thì hơi phức tạp nhưng chắc bạn đã nghe đến cụm từ như: Cam Cao Phong, Sò huyết Ô Loan, Nước mắm Phú Quốc, Nhãn lồng Hưng Yên, Thuốc lào Vĩnh Bảo . . .hay những tên mới như Thịt cừu Ninh Thuận, Cà phê Sơn La . . .Đây chính là chỉ dẫn địa lý bạn ạ.";
-
-				sendOneQuick(senderID, msg, "Xem thủ tục đăng ký", "vcddl", "OkLike.png");
-				break;
-			case 'vcddl':
-				msg = "Hướng dẫn :";
-				file_loc = __dirname + "/public/img/cddl.png";
-				sendFileMessage(senderID, msg, "image", file_loc);
-				break;
-			case 'nd612015ndcp':
-				msg = "Hướng dẫn :";
-				file_loc = __dirname + "/public/img/nd612015ndcp.png";
-				sendFileMessage(senderID, msg, "image", file_loc);
-				break;
-			case 'ncvv':
-				msg = "Tính năng đang được xây dựng, bạn có muốn tiếp tục nói chuyện với Nosa không ?";
-				quickReplies = [{
-					content_type: "text",
-					title: "Có chứ",
-					payload: "confirm",
-					image_url: SERVER_URL + "/img/OkLike.png"
-				}, {
-					content_type: "text",
-					title: "Hỗ trợ",
-					payload: "help",
-					image_url: SERVER_URL + "/img/helps.png"
-				},{
-					content_type: "text",
-					title: "Hướng dẫn",
-					payload: "guide",
-					image_url: SERVER_URL + "/img/guide.png"
-				}];
-				sendQuickMessage(senderID, msg, quickReplies);
-				break;
-			case 'qtcn':
-				msg = "Hướng dẫn :";
-				//sendTextMessage(senderID,msg);
-				file_loc = __dirname + "/public/img/QTCN.png";
-				sendFileMessage(senderID, msg, "image", file_loc);
-				break;
-			case 'lctv':
-				msg = "Hướng dẫn :";
-				file_loc = __dirname + "/public/img/LCTV-P1.jpg";
-				sendFileMessage(senderID, msg, "image", file_loc);
-				break;
-			case 'ksvyes':
-				sendKSV(senderID);
-				break;
-			case 'ksvno':
-				msg = "Tính năng xác thực Hội viên chỉ mở cho những Hội viên đã được xác thực trước đó, vui lòng liên hệ cán bộ Hội cấp trên để được xác thực nhé!";
-				quickReplies = [{
-					content_type: "text",
-					title: "Đồng ý",
-					payload: "confirm",
-					image_url: SERVER_URL + "/img/OkLike.png"
-				}, {
-					content_type: "text",
-					title: "Hỗ trợ",
-					payload: "help",
-					image_url: SERVER_URL + "/img/helps.png"
-				},{
-					content_type: "text",
-					title: "Hướng dẫn",
-					payload: "guide",
-					image_url: SERVER_URL + "/img/guide.png"
-				}];
-				sendQuickMessage(senderID, msg, quickReplies);
-				break;
-			case 'hdlda':
-				msg = "Hướng dẫn đang được cập nhật. Bạn có muốn tiếp tục trò truyện với Nosa không ?";
-				quickReplies = [{
-					content_type: "text",
-					title: "Có chứ",
-					payload: "confirm",
-					image_url: SERVER_URL + "/img/OkLike.png"
-				}, {
-					content_type: "text",
-					title: "Hỗ trợ",
-					payload: "help",
-					image_url: SERVER_URL + "/img/helps.png"
-				},{
-					content_type: "text",
-					title: "Hướng dẫn",
-					payload: "guide",
-					image_url: SERVER_URL + "/img/guide.png"
-				}];
-				sendQuickMessage(senderID, msg, quickReplies);
-				break;
-			case 'help':
-				msg = "Để được hỗ trợ Nosa cần bạn điền thông tin theo mẫu sau:";
-				var button = [{
-					type: "web_url",
-					url: SERVER_URL + "/help.bot",
-					title: "Điền thông tin",
-					messenger_extensions: true,
-					webview_height_ratio: "tall",
-					fallback_url: SERVER_URL + "/help.bot"
-				}];
-				sendButtonMessage(senderID, msg, button);
-				break;
+            case 'baiviethay':
+                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                quick_replies: [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
+            case 'binhchon':
+                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                quick_replies: [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
 			case 'guide':
 				sendGuide(senderID);
 				break;
 			default:
 				sendTextMessage(senderID, 'Echo :' + messageText);
 		}
-
 		return;
 	}
-
 	if (messageText) {
 		// If we receive a text message, check to see if it matches any special
 		// keywords and send back the corresponding example. Otherwise, just echo
@@ -2647,27 +2451,6 @@ function receivedMessage(event) {
 					sendMessageWelecome(senderID, msg);
 				});
 				break;
-			case 'điểm danh':
-				callGetProfile(senderID, function (profile) {
-					//console.log("Res Post facebook 3", profile);
-					var obj = JSON.parse(profile);
-					msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
-					objLog.Answer = msg;
-					//saveLogs(objLog);
-					sendMessageWelecome(senderID, msg);
-				});
-				break;
-			case 'cán bộ đoàn':
-				msg = "Như vậy bạn là một cán bộ đoàn. Chúng ta cùng làm quen bằng thủ tục điểm danh nhé!";
-				objLog.Answer = msg;
-				sendRegisterForm(senderID, msg);
-				break;
-			case 'cán bộ hội':
-				msg = "Như vậy bạn là một cán bộ hội. Chúng ta cùng làm quen bằng thủ tục điểm danh nhé!";
-				objLog.Answer = msg;
-				//saveLogs(objLog);
-				sendRegisterForm(senderID, msg);
-				break;
 			case 'chuẩn':
 				sendMessageConfimRegister(senderID);
 				break;
@@ -2686,21 +2469,6 @@ function receivedMessage(event) {
 				//objLog.Answer=msg;
 				//saveLogs(objLog);
 				break;
-			case 'xây dựng thương hiệu':
-				msg = "Một thương hiệu nông sản mạnh cần chứng minh được các chỉ số về nguồn gốc xuất xứ, quy trình sản xuất an toàn hoạc chất lượng nông sản. Hãy tham khảo các căn cứ như.";
-				sendMessageTrademark(senderID, msg);
-				objLog.Answer = msg;
-				//saveLogs(objLog);
-				break;
-			case 'ksv':
-				sendKSV(senderID);
-				break;
-			case 'vay vốn':
-				msg = "Để vay vốn dành cho sản xuất, bạn có thể thực hiện khoản vay 50 triệu từ ngân hàng chính sách. Để tìm hiểu về thủ tục mời bạn download tài liệu sau:";
-				sendMessageLoan(senderID, msg);
-				objLog.Answer = msg;
-				//saveLogs(objLog);
-				break;
 			case 'thông tin':
 				sendInfo(senderID);
 				break;
@@ -2714,33 +2482,6 @@ function receivedMessage(event) {
 			case 'hướng dẫn':
 				sendGuide(senderID);
 				break;
-			case 'qr':
-				var url = "https://scontent.fhan3-2.fna.fbcdn.net/v/t1.0-9/37013371_201626787167096_4150509129015754752_n.png?_nc_cat=0&oh=79f3bc7ccdb642fd252bd84aa909e80c&oe=5BA3D6F4";
-				var msg = "Bạn có muốn tiếp tục nói chuyện với Nosa không ?"
-				sendUrlMessage(senderID, "image", url, function (error, response, bd) {
-					if (error) throw error;
-					console.log("sendUrlMessage:");
-
-					var quickReplies = [{
-						content_type: "text",
-						title: "Có chứ",
-						payload: "confirm",
-						image_url: SERVER_URL + "/img/OkLike.png"
-					},{
-						content_type: "text",
-						title: "Hỗ trợ",
-						payload: "help",
-						image_url: SERVER_URL + "/img/helps.png"
-					},{
-						content_type: "text",
-						title: "Hướng dẫn",
-						payload: "guide",
-						image_url: SERVER_URL + "/img/guide.png"
-					}];
-					sendQuickMessage(senderID, msg, quickReplies);
-
-				});
-				break;
 			default:
 				getAnswer(messageText, function (aiMes) {
 					if (aiMes.length > 0) {
@@ -2752,35 +2493,20 @@ function receivedMessage(event) {
 						objLog.Answer = msg;
 						saveLogs(objLog);
 						//sendTextMessage(senderID,msg);
-						msg = msg + ". Bạn có muốn tiếp tục nói chuyện với Nosa không ?";
+						msg = msg + ". Bạn có muốn tiếp tục nói chuyện với Thani không ?";
 						quickReplies = [{
 							content_type: "text",
 							title: "Có chứ",
 							payload: "confirm",
 							image_url: SERVER_URL + "/img/OkLike.png"
-						}, {
-							content_type: "text",
-							title: "Hỗ trợ",
-							payload: "help",
-							image_url: SERVER_URL + "/img/helps.png"
-						},{
-							content_type: "text",
-							title: "Hướng dẫn",
-							payload: "guide",
-							image_url: SERVER_URL + "/img/guide.png"
 						}];
 						sendQuickMessage(senderID, msg, quickReplies);
 					} else {
 						sendNoReply(senderID);
-
 					}
 				});
 				break;
-
 		}
-
-
-
 	} else if (messageAttachments) {
 		sendTextMessage(senderID, "Message with attachment received");
 	}

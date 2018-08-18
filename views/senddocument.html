@@ -82,10 +82,11 @@ form {
                     <input type="text" id="txtPhone" name="txtPhone" required=true autocomplete="off">
                 </label>
             </section>
-            <section id="stDocument" name="stDocument">
+            <section>
                 <label class="label">Bài viết</label>
-                <label class="input">
-                    <input type="text" id="txtDocument" name="txtDocument" required=true autocomplete="off">
+                <label class="label">
+                    <input type="file" id="txtDocument" name="txtDocument" required=true 
+                           accept="application/msword, application/vnd.ms-excel, application/vnd.ms-powerpoint, text/plain, application/pdf, image/*" class="input-file .button">
                 </label>
             </section>
         </fieldset>
@@ -93,8 +94,7 @@ form {
             <button type="button" value="Submit" id="btnSend" class="button" onClick="SaveObject()" name="btnSend">Gửi bài</button>
         </footer>
     </form>
-
-    <script type='text/javascript' src="/js/senddocument.js?vesion=1.1.0"></script>
+    <script type='text/javascript' src="/js/senddocument.js?vesion=1.1.1"></script>
 </body>
 
 </html>
