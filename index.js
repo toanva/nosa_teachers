@@ -2380,7 +2380,7 @@ function receivedMessage(event) {
                 break;
             case 'guibaiviet':
                 msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
-                quickReplies: [{
+                quick_Replies: [{
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
@@ -2391,7 +2391,7 @@ function receivedMessage(event) {
                     payload: "guibaiviet",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_Replies);
                 break;
             case 'soanbai':
                 msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
@@ -2453,7 +2453,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'confirm':
                 sendMessageAccept(senderID, "Đồng ý");
