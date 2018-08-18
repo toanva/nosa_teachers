@@ -2420,7 +2420,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
 			case 'guide':
 				sendGuide(senderID);
