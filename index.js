@@ -2333,7 +2333,7 @@ function receivedMessage(event) {
                     payload: "guibaiviet",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'soanbai':
                 msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
@@ -2370,7 +2370,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'binhchon':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
@@ -2395,7 +2395,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'confirm':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
