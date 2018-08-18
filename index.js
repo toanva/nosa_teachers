@@ -1187,7 +1187,7 @@ function callSendAPIFile(messageData) {
 			return console.error("upload failed >> \n", err)
 		};
 		console.log("upload successfull >> \n", body); //facebook always return 'ok' message, so you need to read error in 'body.error' if any
-		sendOneQuick(messageData.recipient.id, "Bạn hiểu về chương trình rồi chứ. Cùng xem chúng ta có thể làm gì tiếp theo nhé!", "Đồng ý", "confirm", "advisory.png");
+        sendOneQuick(messageData.recipient.id, "Bạn hiểu về chương trình rồi chứ. Cùng xem chúng ta có thể làm gì tiếp theo nhé!", "Đồng ý", "ok", "advisory.png");
 	});
 	var form = r.form();
 	form.append('recipient', JSON.stringify(messageData.recipient));
@@ -2402,7 +2402,7 @@ function receivedMessage(event) {
                 }];
                 sendQuickMessage(senderID, msg, quickReplies);
                 break;
-            case 'confirm':
+            case 'ok':
                 msg = "Đồng ý";
                 quickReplies: [{
                     content_type: "text",
