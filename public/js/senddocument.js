@@ -2,8 +2,9 @@
 var txtFullName = document.getElementById("txtFullName");
 var txtDay = document.getElementById("txtBirthday");
 var txtPhone = document.getElementById('txtPhone');
-var txtEmail = document.getElementById('txtEmail');
-var txtAddress = document.getElementById('txtAddress');
+var txtCMT = document.getElementById('txtCMT');
+var txtAddress = document.getElementById('txtAddress'); 
+var txtDocument = document.getElementById('txtDocument');
 var btnSend = document.getElementById('btnSend');
 
 function SaveObject() {
