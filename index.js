@@ -1157,20 +1157,15 @@ function callSendAPICreatives(messageData, callback) {
 };
 
 function callSendAPIBroadcast(messageData, callback) {
-	///console.log("callSendAPI",request) ;
-
-	//console.log("callSendAPI:",messageData.recipient.id)
 	request({
-			uri: 'https://graph.facebook.com/v3.0/me/broadcast_messages',
+			uri: 'https://graph.facebook.com/v3.1/me/broadcast_messages',
 			qs: {
 				access_token: PAGE_ACCESS_TOKEN
 			},
 			method: 'POST',
 			json: messageData
-
 		},
 		function (error, response, body) {
-
 			callback(error, response, body);
 		});
 };
@@ -1191,9 +1186,7 @@ function callSendAPIFile(messageData) {
 };
 
 function callGetProfile(psid, callback) {
-
 	request('https://graph.facebook.com/v3.1/' + psid + '?fields=first_name,last_name,profile_pic&access_token=' + PAGE_ACCESS_TOKEN, function (error, response, body) {
-
 		//nếu có lỗi
 		if (!error && response.statusCode == 200) {
 			var obj = JSON.parse(body);
@@ -1710,6 +1703,71 @@ function sendMessageWelecome(recipientId, msg) {
 	callSendAPI(messageData);
 };
 
+function sendMessageAccept(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [{
+                content_type: "text",
+                title: "Thể lệ",
+                payload: "thele",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Gửi bài viết",
+                payload: "guibaiviet",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Bài viết hay",
+                payload: "baiviethay",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Bình chọn",
+                payload: "binhchon",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
+//Binh chon
+function sendMessageBinhChon(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [{
+                content_type: "text",
+                title: "Thể lệ",
+                payload: "thele",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Gửi bài viết",
+                payload: "guibaiviet",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Bài viết hay",
+                payload: "baiviethay",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Bình chọn",
+                payload: "binhchon",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
 function sendMessageConfimRegister(recipientId) {
 	var query = {
 		_id: recipientId
@@ -2398,29 +2456,7 @@ function receivedMessage(event) {
                 sendQuickMessage(senderID, msg, quickReplies);
                 break;
             case 'confirm':
-                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quickReplies: [{
-                    content_type: "text",
-                    title: "Thể lệ",
-                    payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Gửi bài viết",
-                    payload: "guibaiviet",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bài viết hay",
-                    payload: "baiviethay",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bình chọn",
-                    payload: "binhchon",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendMessageAccept(senderID, "Đồng ý");
                 break;
 			case 'guide':
 				sendGuide(senderID);
@@ -2459,11 +2495,9 @@ function receivedMessage(event) {
 				break;
 			case 'bắt đầu':
 				callGetProfile(senderID, function (profile) {
-					//console.log("Res Post facebook 3", profile);
 					var obj = JSON.parse(profile);
 					msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
 					objLog.Answer = msg;
-					//saveLogs(objLog);
 					sendMessageWelecome(senderID, msg);
 				});
 				break;
