@@ -764,12 +764,10 @@ server.post('/webhook', (req, res) => {
 			if (pageEntry.messaging) {
 				pageEntry.messaging.forEach(function (messagingEvent) {
 
-					//console.log("face event", messagingEvent.postback.payload);
+					console.log("face event", messagingEvent.postback.payload);
 					if (messagingEvent.message) {
-						//console.log("Res Post facebook 1");
+						console.log("Res Post facebook 1");
 						receivedMessage(messagingEvent);
-
-
 					} else if (messagingEvent.delivery) {
 						console.log("Res Post delivery");
 						////receivedDeliveryConfirmation(messagingEvent);
@@ -777,15 +775,15 @@ server.post('/webhook', (req, res) => {
 						//present user with some greeting or call to action
 
 						callGetProfile(messagingEvent.sender.id, function (profile) {
-							//console.log("Res Post facebook 3", profile);
+							console.log("Res Post facebook 3", profile);
 							var obj = JSON.parse(profile);
 							var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
 							//sendTextMessage(messagingEvent.sender.id, msg)
-
 							sendMessageWelecome(messagingEvent.sender.id, msg);
 						});
 					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
-						//present user 'confirm':				
+						//present user 'confirm':	
+                        console.log("confirm 123");
 						sendMessageConfimRegister(messagingEvent.sender.id);
 
 					} else {
