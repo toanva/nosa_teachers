@@ -261,6 +261,27 @@ server.get('/logoutCMS', function (req, res) {
 	req.session.destroy();
 	res.send("logout success!");
 });
+
+//Toanva add gui bai viet
+server.get('/senddocument', (req, res, next) => {
+
+    let referer = req.get('Referer');
+    //console.log("register.bot 0",referer);
+    if (referer) {
+        if (referer.indexOf('www.messenger.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
+        } else if (referer.indexOf('www.facebook.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
+        } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
+        }
+        console.log("Session register:", req.session);
+        //res.render('register');
+        res.sendFile('views/senddocument.html', {
+            root: __dirname
+        });
+    }
+});
 // Toanva login - End
 server.post('/login.bot', function (req, res) {
 	let body = req.body;
@@ -4364,6 +4385,18 @@ function receivedMessage(event) {
                 msg = "Thể lệ :";
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileMessage(senderID, msg, "image", file_loc);
+                break;
+            case 'guibaiviet':
+                msg = "Gửi bài viết theo mẫu sau";
+                var button = [{
+                    type: "web_url",
+                    url: SERVER_URL + "/senddocument",
+                    title: "Gửi bài viết",
+                    messenger_extensions: true,
+                    webview_height_ratio: "tall",
+                    fallback_url: SERVER_URL + "/senddocument"
+                }];
+                sendButtonMessage(senderID, msg, button);
                 break;
 			case 'other':
 				//msg = "Xin lỗi bạn, đây là hệ thống dành riêng cho cán bộ của Đoàn TN và Hội LHTN. Nếu bạn quan tâm xin liên hệ với cán bộ Đoàn chuyên trách của địa phương đang cư trú. Xin cảm ơn.";

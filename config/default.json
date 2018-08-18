@@ -3,8 +3,8 @@
   "pageAccessToken": "EAADOg3kb1q0BAIenB6q5dyCk5bDsZC7UaEbU4RHvaIjhdlrYIRFVsbYdFo5lWnYy7EKcONbuhhSdzb1AwZCH71qUt7HOdHynACMyJprHS46d90zXLsSeGkRWE2EevMlZCayrPNdI3dAJyeQQBaeZCBQl69HwwYG9hJIlzNxPMwZDZD",
   "validationToken": "verify-token-nsvn",
   "serverURL": "https://toanvachatbot.herokuapp.com/",
-  "mongoUrl": "mongodb://nsvn:nsvn6688@ds251849.mlab.com:51849/heroku_g41d98gw",
-  "databasename": "heroku_g41d98gw",
+  "mongoUrl": "mongodb://nosavnnet:nsvn6688@nosavn.net:27018/Nosa_Write_About_Teachers",
+  "databasename": "Nosa_Write_About_Teachers",
   "image_cloud_name": "nosavn-net",
   "image_api_key": "617126195119673",
   "image_api_secret": "8b6rlInYhs6Bubhiu3HsNg3OoVw"
