@@ -360,8 +360,6 @@ server.get('/senddocument', authFace, (req, res) => {
         "Birthday": inputDate,
         "Address": body.txtAddress,
         "CMT": body.txtCMT,
-        "Position": body.cboPosition,
-        "Ward": body.txtWards,
         "Phone": body.txtPhone
     };
     
