@@ -1090,7 +1090,6 @@ function insertMember(psid,imgUrl,objMember,returnMessage, client,res){
 /// end rowter
 function callSendAPI(messageData) {
 	///console.log("callSendAPI",request) ;
-
 	//console.log("callSendAPI:",messageData.recipient.id)
 	request({
 			uri: 'https://graph.facebook.com/v3.1/me/messages',
@@ -1099,12 +1098,9 @@ function callSendAPI(messageData) {
 			},
 			method: 'POST',
 			json: messageData
-
 		},
 		function (error, response, body) {
 			if (!error && response.statusCode == 200) {
-
-
 				var recipientId = body.recipient_id;
 				var messageId = body.message_id;
 				//sendTypingOff(recipientId);
@@ -1115,7 +1111,6 @@ function callSendAPI(messageData) {
 					console.log("Successfully called Send API for recipient %s",
 						recipientId);
 				}
-
 			} else {
 				console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 				console.error(response.error);
@@ -1181,7 +1176,7 @@ function callSendAPIBroadcast(messageData, callback) {
 };
 
 function callSendAPIFile(messageData) {
-	var endpoint = "https://graph.facebook.com/v3.0/me/messages?access_token=" + PAGE_ACCESS_TOKEN;
+	var endpoint = "https://graph.facebook.com/v3.1/me/messages?access_token=" + PAGE_ACCESS_TOKEN;
 	var r = request.post(endpoint, function (err, httpResponse, body) {
 		if (err) {
 			return console.error("upload failed >> \n", err)
