@@ -2376,83 +2376,83 @@ function receivedMessage(event) {
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileMessage(senderID, msg, "image", file_loc);
                 break;
-            case 'guibaiviet':
-                msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
-                quickReplies = [{
-                    content_type: "text",
-                    title: "Thể lệ",
-                    payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Gửi bài viết",
-                        payload: "soanbai",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }];
-                sendQuickMessage(senderID, msg, quickReplies);
-                break;
-            case 'soanbai':
-                msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
-                var button = [{
-                    type: "web_url",
-                    url: SERVER_URL + "/senddocument",
-                    title: "Gửi bài viết",
-                    messenger_extensions: true,
-                    webview_height_ratio: "tall",
-                    fallback_url: SERVER_URL + "/senddocument"
-                }];
-                sendButtonMessage(senderID, msg, button);
-                break;
-            case 'baiviethay':
-                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quickReplies = [{
-                    content_type: "text",
-                    title: "Thể lệ",
-                    payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Gửi bài viết",
-                    payload: "guibaiviet",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bài viết hay",
-                    payload: "baiviethay",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bình chọn",
-                    payload: "binhchon",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }];
-                sendQuickMessage(senderID, msg, quickReplies);
-                break;
-            case 'binhchon':
-                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quick_replies = [{
-                    content_type: "text",
-                    title: "Thể lệ",
-                    payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Gửi bài viết",
-                    payload: "guibaiviet",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bài viết hay",
-                    payload: "baiviethay",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bình chọn",
-                    payload: "binhchon",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }];
-                sendQuickMessage(senderID, msg, quick_replies);
-                break;
+            //case 'guibaiviet':
+            //    msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
+            //    quickReplies = [{
+            //        content_type: "text",
+            //        title: "Thể lệ",
+            //        payload: "thele",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Gửi bài viết",
+            //            payload: "soanbai",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }];
+            //    sendQuickMessage(senderID, msg, quickReplies);
+            //    break;
+            //case 'soanbai':
+            //    msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
+            //    var button = [{
+            //        type: "web_url",
+            //        url: SERVER_URL + "/senddocument",
+            //        title: "Gửi bài viết",
+            //        messenger_extensions: true,
+            //        webview_height_ratio: "tall",
+            //        fallback_url: SERVER_URL + "/senddocument"
+            //    }];
+            //    sendButtonMessage(senderID, msg, button);
+            //    break;
+            //case 'baiviethay':
+            //    msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+            //    quickReplies = [{
+            //        content_type: "text",
+            //        title: "Thể lệ",
+            //        payload: "thele",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Gửi bài viết",
+            //        payload: "guibaiviet",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Bài viết hay",
+            //        payload: "baiviethay",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Bình chọn",
+            //        payload: "binhchon",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }];
+            //    sendQuickMessage(senderID, msg, quickReplies);
+            //    break;
+            //case 'binhchon':
+            //    msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+            //    quick_replies = [{
+            //        content_type: "text",
+            //        title: "Thể lệ",
+            //        payload: "thele",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Gửi bài viết",
+            //        payload: "guibaiviet",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Bài viết hay",
+            //        payload: "baiviethay",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }, {
+            //        content_type: "text",
+            //        title: "Bình chọn",
+            //        payload: "binhchon",
+            //        image_url: SERVER_URL + "/img/HoiMin.png"
+            //    }];
+            //    sendQuickMessage(senderID, msg, quick_replies);
+            //    break;
             case 'confirm':
                 sendMessageAccept(senderID, "Đồng ý");
                 break;
