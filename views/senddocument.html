@@ -38,9 +38,51 @@ form {
 </head>
 <body class="bg-blue">
     <script type='text/javascript' src="/js/psid.js?vesion=1"></script>
-     Wellcome !   Vũ Anh Toản
+    <form action="/senddocument" method="post" class="sky-form" autautocomplete="off">
+        <header align="center">
+            <div class="headerMin" align="center">
+                <table width="100%" border="0" align="center">
+                    <tbody>
+                        <tr>
+                            <td>Thông tin bài viết</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </header>
+        <input type="hidden" name="psid" id="psid">
+        <fieldset>
+            <section id="stName" name="stName">
+                <label class="label">Họ và tên</label>
+                <label class="input">
+                    <input type="text" id="txtFullName" name="txtFullName" required=true autocomplete="off">
+                </label>
+            </section>
+            <section id="stBirthday" name="stBirthday">
+                <label class="label">Ngày sinh (DD/MM/YYYY)</label>
+                <label class="input">
+                    <input type="date" id="txtBirthday" name="txtBirthday" max="22-01-2030" value="1985-05-22"><br>
+                </label>
+            </section>
+            <section id="stPhone" name="stPhone">
+                <label class="label">Số ĐT liên hệ</label>
+                <label class="input">
+                    <input type="text" id="txtPhone" name="txtPhone" required=true autocomplete="off">
+                </label>
+            </section>
+            <section id="stAddress" name="stAddress">
+                <label class="label">Address</label>
+                <label class="input">
+                    <input type="text" id="txtAddress" name="txtAddress" required=true autocomplete="off">
+                </label>
+            </section>
+        </fieldset>
+        <footer align="center">
+            <button type="button" value="Submit" id="btnSend" class="button" onClick="SaveObject()" name="btnSend">Gửi bài</button>
+        </footer>
+    </form>
 
-    <!--<script type='text/javascript' src="/js/send.js?vesion=1.1.0"></script>-->
+    <script type='text/javascript' src="/js/senddocument.js?vesion=1.1.0"></script>
 </body>
 
 </html>
