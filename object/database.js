@@ -368,7 +368,20 @@ module.exports = {
 				}
 			}
 		});
-	},
+    },
+    insertDocument: function (objDocument, client, callback) {
+        // Get the documents collection
+        const db = client.db(DATA_BASE_NAME);
+        const collection = db.collection('Document');
+        //var objCallback = null;
+        console.log("objDocument :", objDocument);
+        collection.insertOne(objProduct, function (err, res) {
+            //neu xay ra loi
+            if (err) throw err;
+            //neu khong co loi			
+            callback(null, res);
+        });
+    },
 	insertProduct: function (objProduct, client, callback) {
 		// Get the documents collection
 		const db = client.db(DATA_BASE_NAME);

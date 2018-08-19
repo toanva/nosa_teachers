@@ -3,7 +3,8 @@ import { image } from "./C:/Users/Toanva/AppData/Local/Microsoft/TypeScript/2.6/
 var dataImg = null;
 var imgName = null;
 
-var txtDocument = document.getElementById('txtDocument');
+//var txtDocument = document.getElementById('txtDocument');
+var txtLinkDocument = document.getElementById('txtLinkDocument');
 var btnSend = document.getElementById('btnSend');
 
 function SaveObject() {
@@ -16,32 +17,40 @@ function SaveObject() {
 	}else
 	{
 		psid= getParamValue("psid");
-	}
-    if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
-	{
-		alert("Bạn phải chọn bài viết muốn gửi");
-		btnSend.disabled=false;
-		btnSend.style.color = '#FFFFFF';
-        txtDocument.focus();
-		return;
+    }
+    if (txtLinkDocument.value == undefined || txtLinkDocument.value == "") {
+        alert("Bạn hãy điền link bài viết muốn gửi");
+        btnSend.disabled = false;
+        btnSend.style.color = '#FFFFFF';
+        txtLinkDocument.focus();
+        return;
     };
+ //   if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
+	//{
+	//	alert("Bạn hãy chọn bài viết muốn gửi");
+	//	btnSend.disabled=false;
+	//	btnSend.style.color = '#FFFFFF';
+ //       txtDocument.focus();
+	//	return;
+ //   };
 
-    var nameTemp = txtImage.files[0].name;
-    nameTemp = removeChar(nameTemp);
-    arr = nameTemp.split('.');
-    /////Random number name 1-10;
-    imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
+    //var nameTemp = txtImage.files[0].name;
+    //nameTemp = removeChar(nameTemp);
+    //arr = nameTemp.split('.');
+    ///////Random number name 1-10;
+    //imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
 
-	var mydate = txtBirthday.valueAsDate;
-	var inputDate = new Date(mydate.toISOString());
+	//var mydate = txtBirthday.valueAsDate;
+	//var inputDate = new Date(mydate.toISOString());
 
 	var objMember = {};
 	objMember.psid = psid;
-    objMember.Document = imgName;
+    //objMember.Document = imgName;
+    objMember.LinkDocument = LinkDocument.value;
 	var form = new FormData();
 	form.append('psid', objMember.psid);
-    form.append('Document', objMember.Document);
-
+    //form.append('Document', objMember.Document);
+    form.append('LinkDocument', objMember.LinkDocument);
 	$.ajax({
 		type: 'POST',
 		data: form,
@@ -51,8 +60,8 @@ function SaveObject() {
 		success: function (data) {
 			btnSend.disabled = false;
 			btnSend.style.color = '#FFFFFF';
-			console.log(data);
-			alert("Thêm mới thành công");
+			//console.log(data);
+			//alert("Thêm mới thành công");
 			MessengerExtensions.requestCloseBrowser(function success() {
 				console.log("Webview closing");
 			}, function error(err) {

@@ -333,34 +333,30 @@ server.get('/logout.bot', function (req, res) {
 server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => {
     try {
         let body = req.body;
-        var dir = "./public/uploads/Avatar";
+        //var dir = "./public/uploads/Avatar";
         req.session.psid = body.psid;
         var mydate = new Date();
         var inputDate = new Date(mydate.toISOString());
         console.log("registerspostback PSID", body.psid);
-        var returnMessage = "Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday +
-            body.Position + msgConcurrently + ", địa chỉ : " + body.Address + " . Số điện thoại của bạn là : " + body.Phone + ". Số CMT " + body.CMT + ". Chuẩn chưa nhỉ?";
-        console.log(returnMessage);
-
-        callGetProfile(body.psid, function (objFacebook) {
-            var objFacebook = JSON.parse(objFacebook);
-            console.log("callGetProfile: ", objFacebook);
-
-            var objMember = {
-                "_id": body.psid,
-                "Name": body.Name,
-                "Birthday": body.Birthday,
-                "Address": body.Address,
-                "CMT": body.CMT,
-                "Phone": body.Phone,
-                "Document": body.Document,
-                "InsertDate": inputDate
-            };
-            objDb.getConnection(function (client) {
-                insertMember(body.psid, imgUrl, objMember, returnMessage, client, res);
+        var returnMessage = "Cảm ơn bạn đã tham gia chương trình. Thani sẽ thông báo cho bạn ngay khi bài viết được đăng tải. Bạn vẫn muốn trò chuyện với Thani đó chứ?";
+        //console.log(returnMessage);
+        var objMember = {
+            "_id": body.psid,
+            "LinkDocument": body.LinkDocument,
+            "InsertDate": inputDate
+        };
+        objDb.getConnection(function (client) {
+            objDb.insertDocument(objMember, client, function (err, results) {
+                if (err) {
+                    sendTextMessage(body.psid, 'Echo:' + err);
+                } else {
+                    client.close();
+                    //sendTextMessage(body.psid, returnMessage);
+                    sendMessageGuiBaiVietXong(body.psid, returnMessage);
+                }
             });
-
         });
+
     } catch (err) {
         console.error("registerspostback:", err);
         res.send(null);
@@ -1220,17 +1216,17 @@ function callGetProfile(psid, callback) {
         if (!error && response.statusCode == 200) {
             var obj = JSON.parse(body);
             console.log("callGetProfile: ", obj.last_name + ' ' + obj.first_name + ' ' + obj.profile_pic);
-            var imgUrl = obj.profile_pic;
-            try {
-                objDb.getConnection(function (client) {
-                    objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
-                        console.log('updateAvatarMemeber SS:', psid);
-                        client.close();
-                    });
-                });
-            } catch (err) {
-                console.error("updateAvatarMemeber: ", err);
-            }
+            //var imgUrl = obj.profile_pic;
+            //try {
+            //    objDb.getConnection(function (client) {
+            //        objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
+            //            console.log('updateAvatarMemeber SS:', psid);
+            //            client.close();
+            //        });
+            //    });
+            //} catch (err) {
+            //    console.error("updateAvatarMemeber: ", err);
+            //}
             callback(body);
         } else {
             console.error(response.error);
@@ -1811,7 +1807,30 @@ function sendMessageDienThongTin(recipientId, msg) {
     };
     callSendAPI(messageData);
 };
-
+function sendMessageGuiBaiVietXong(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [{
+                content_type: "text",
+                title: "Tiếp tục",
+                payload: "tieptuc",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            },
+            {
+                content_type: "text",
+                title: "Dừng lại",
+                payload: "dunglai",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }
+            ]
+        }
+    };
+    callSendAPI(messageData);
+};
 function sendMessageGuiBaiViet(recipientId, msg) {
     var messageData = {
         recipient: {
@@ -2496,7 +2515,7 @@ function receivedMessage(event) {
                 sendButtonMessage(senderID, msg, button);
                 break;
             case 'guibai':
-                msg = "Giờ bạn vui lòng gửi bài viết tại đây nhé! Lưu ý: Không giới hạn số lượng bài viết gửi về.";
+                msg = "Giờ bạn vui lòng gửi bài viết tại đây nhé! Lưu ý: Không giới hạn số lượng bài viết gửi về. Có thể viết ra Google Doc và đính kèm link. Khuyến khích có hình ảnh minh họa";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/senddocument?psid=" + senderID,
@@ -2556,6 +2575,14 @@ function receivedMessage(event) {
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
                 sendQuickMessage(senderID, msg, quick_replies);
+                break;
+            case 'tieptuc':
+                msg = "";
+                sendMessageWelecome(senderID, msg);
+                break;
+            case 'dunglai':
+                msg = "Ohh! Thật tiếc khi không được tiếp tục trò chuyện cùng bạn. Thani sẽ đưa các thông tin về chương trình tới bạn sau nhé. Chúc bạn một ngày vui vẻ! Form Thani with Love <3";
+                sendTextMessage(senderID, msg);
                 break;
             case 'confirm':
                 msg = "Chúng ta tiếp tục nhé";
