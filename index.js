@@ -277,7 +277,7 @@ server.get('/senddocument', (req, res, next) => {
         } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
             res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
         }
-        console.log("Session register:", req.session);
+        //console.log("Session register:", req.session);
         //res.render('register');
         res.sendFile('views/senddocument.html', {
             root: __dirname
@@ -345,6 +345,7 @@ server.post('/senddocument', upload.single('somefile'), (req, res) => {
             "LinkDocument": body.LinkDocument,
             "InsertDate": inputDate
         };
+        console.log("objMember", objMember);
         objDb.getConnection(function (client) {
             objDb.insertDocument(objMember, client, function (err, results) {
                 if (err) {
