@@ -366,7 +366,7 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
         res.send(null);
     }
 });
-server.post('/document', authFace, (req, res) => {
+server.post('/document', (req, res) => {
     let body = req.query;
     res.status(200).send('Please close this window to return to the conversation thread.');
     var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.txtDay + "/" + body.txtMonth + "/" + body.txtYear + " , địa chỉ : " + body.txtAddress + ". Số CMT của bạn là : " + body.txtCMT + ". Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
