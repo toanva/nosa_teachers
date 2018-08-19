@@ -366,7 +366,7 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
         res.send(null);
     }
 });
-server.post('/document', (req, res) => {
+server.post('/document', upload.single('somefile'), (req, res) => {
     let body = req.body;
     console.log("body", body);
     res.status(200).send('Please close this window to return to the conversation thread.');
