@@ -2496,7 +2496,7 @@ function receivedMessage(event) {
                 sendButtonMessage(senderID, msg, button);
                 break;
             case 'guibai':
-                msg = "Gửi bài viết";
+                msg = "Giờ bạn vui lòng gửi bài viết tại đây nhé! Lưu ý: Không giới hạn số lượng bài viết gửi về.";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/senddocument?psid=" + senderID,
@@ -2558,14 +2558,15 @@ function receivedMessage(event) {
                 sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'confirm':
-                msg = "Tiếp tục nhé";
+                msg = "Chúng ta tiếp tục nhé";
                 sendMessageAccept(senderID, msg);
                 break;
-            case 'guide':
-                sendGuide(senderID);
-                break;
+            //case 'guide':
+            //    sendGuide(senderID);
+            //    break;
             default:
-                sendTextMessage(senderID, 'Echo :' + messageText);
+                sendMessageWelecome(senderID, "");
+                break;
         }
         return;
     }
@@ -2627,34 +2628,6 @@ function receivedMessage(event) {
                 break;
             case 'chuẩn':
                 sendMessageConfimRegister(senderID);
-                break;
-            case 'bán nông sản':
-                //msg = "Đầu ra cho sản phẩm luôn là một vấn đề phức tạp. Để nhận được sự tư vấn về đầu ra cho nông sản bạn hãy cung cấp thông tin vào form dưới nhé!";
-                sendSellProduct(senderID);
-                //objLog.Answer=msg;
-                //saveLogs(objLog);
-                break;
-            case 'chỉ dẫn địa lý':
-                msg = "Hướng dẫn :";
-                //sendTextMessage(senderID,msg);
-                file_loc = __dirname + "/public/img/cddl.png";
-                //console.log("file_loc:",file_loc)
-                sendFileMessage(senderID, msg, "image", file_loc);
-                //objLog.Answer=msg;
-                //saveLogs(objLog);
-                break;
-            case 'thông tin':
-                sendInfo(senderID);
-                break;
-
-            case '#setadmin':
-                setAdmin(senderID);
-                break;
-            case 'uqksv':
-                sendUqKsv(senderID);
-                break;
-            case 'hướng dẫn':
-                sendGuide(senderID);
                 break;
             default:
                 getAnswer(messageText, function (aiMes) {
