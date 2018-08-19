@@ -65,7 +65,8 @@ function SaveObject() {
 	var objMember = {};
 	objMember.psid = psid;
 	objMember.Name = txtFullName.value;
-	objMember.Birthday =  mydate.getDate()+'/'+(mydate.getMonth()+1)+'/'+mydate.getFullYear();
+    objMember.Birthday = mydate.getDate() + '/' + (mydate.getMonth() + 1) + '/' + mydate.getFullYear();
+    alert(objMember.Birthday)
 	objMember.Phone = txtPhone.value;
     objMember.CMT = txtCMT.value;
     objMember.Address = txtAddress.value;
