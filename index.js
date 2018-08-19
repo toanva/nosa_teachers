@@ -764,10 +764,12 @@ server.post('/webhook', (req, res) => {
 			if (pageEntry.messaging) {
 				pageEntry.messaging.forEach(function (messagingEvent) {
 
-					console.log("face event", messagingEvent.postback.payload);
+					//console.log("face event", messagingEvent.postback.payload);
 					if (messagingEvent.message) {
-						console.log("Res Post facebook 1");
+						//console.log("Res Post facebook 1");
 						receivedMessage(messagingEvent);
+
+
 					} else if (messagingEvent.delivery) {
 						console.log("Res Post delivery");
 						////receivedDeliveryConfirmation(messagingEvent);
@@ -775,30 +777,30 @@ server.post('/webhook', (req, res) => {
 						//present user with some greeting or call to action
 
 						callGetProfile(messagingEvent.sender.id, function (profile) {
-							console.log("Res Post facebook 3", profile);
+							//console.log("Res Post facebook 3", profile);
 							var obj = JSON.parse(profile);
 							var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
 							//sendTextMessage(messagingEvent.sender.id, msg)
+
 							sendMessageWelecome(messagingEvent.sender.id, msg);
 						});
 					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
-						//present user 'confirm':	
-                        console.log("confirm 123");
+						//present user 'confirm':				
 						sendMessageConfimRegister(messagingEvent.sender.id);
 
 					} else {
 						console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
 					}
 					////// Cập nhật lại thời gian hết hạn của member để đếm số thành viên đang hoạt động với bót
-					//try {
-					// objDb.getConnection(function (client) {
-					//	 objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {
-					//			client.close();
-					//		});
-					//	});
-					//} catch (err) {
-					//	console.error("insertMembersActive: ", err);
-					//}
+					try {
+					 objDb.getConnection(function (client) {
+						 objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {
+								client.close();
+							});
+						});
+					} catch (err) {
+						console.error("insertMembersActive: ", err);
+					}
 
 				});
 			} else {
@@ -1088,6 +1090,7 @@ function insertMember(psid,imgUrl,objMember,returnMessage, client,res){
 /// end rowter
 function callSendAPI(messageData) {
 	///console.log("callSendAPI",request) ;
+
 	//console.log("callSendAPI:",messageData.recipient.id)
 	request({
 			uri: 'https://graph.facebook.com/v3.1/me/messages',
@@ -1096,9 +1099,12 @@ function callSendAPI(messageData) {
 			},
 			method: 'POST',
 			json: messageData
+
 		},
 		function (error, response, body) {
 			if (!error && response.statusCode == 200) {
+
+
 				var recipientId = body.recipient_id;
 				var messageId = body.message_id;
 				//sendTypingOff(recipientId);
@@ -1109,6 +1115,7 @@ function callSendAPI(messageData) {
 					console.log("Successfully called Send API for recipient %s",
 						recipientId);
 				}
+
 			} else {
 				console.error("Failed calling Send API", response.statusCode, response.statusMessage, body.error);
 				console.error(response.error);
@@ -1155,15 +1162,20 @@ function callSendAPICreatives(messageData, callback) {
 };
 
 function callSendAPIBroadcast(messageData, callback) {
+	///console.log("callSendAPI",request) ;
+
+	//console.log("callSendAPI:",messageData.recipient.id)
 	request({
-			uri: 'https://graph.facebook.com/v3.1/me/broadcast_messages',
+			uri: 'https://graph.facebook.com/v3.0/me/broadcast_messages',
 			qs: {
 				access_token: PAGE_ACCESS_TOKEN
 			},
 			method: 'POST',
 			json: messageData
+
 		},
 		function (error, response, body) {
+
 			callback(error, response, body);
 		});
 };
@@ -1175,7 +1187,7 @@ function callSendAPIFile(messageData) {
 			return console.error("upload failed >> \n", err)
 		};
 		console.log("upload successfull >> \n", body); //facebook always return 'ok' message, so you need to read error in 'body.error' if any
-		sendOneQuick(messageData.recipient.id, "Bạn hiểu về chương trình rồi chứ. Cùng xem chúng ta có thể làm gì tiếp theo nhé!", "Đồng ý", "confirm", "advisory.png");
+		sendOneQuick(messageData.recipient.id, "Bạn có muốn tiếp tục trò truyện với Thani không?", "Có chứ", "confirm", "advisory.png");
 	});
 	var form = r.form();
 	form.append('recipient', JSON.stringify(messageData.recipient));
@@ -1184,22 +1196,24 @@ function callSendAPIFile(messageData) {
 };
 
 function callGetProfile(psid, callback) {
+
 	request('https://graph.facebook.com/v3.1/' + psid + '?fields=first_name,last_name,profile_pic&access_token=' + PAGE_ACCESS_TOKEN, function (error, response, body) {
+
 		//nếu có lỗi
 		if (!error && response.statusCode == 200) {
 			var obj = JSON.parse(body);
 			console.log("callGetProfile: ", obj.last_name + ' ' + obj.first_name + ' ' + obj.profile_pic);
-			//var imgUrl = obj.profile_pic;
-			//try {
-			//	objDb.getConnection(function (client) {
-			//		objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
-			//			console.log('updateAvatarMemeber SS:', psid);
-			//			client.close();
-			//		});
-			//	});
-			//} catch (err) {
-			//	console.error("updateAvatarMemeber: ", err);
-			//}
+			var imgUrl = obj.profile_pic;
+			try {
+				objDb.getConnection(function (client) {
+					objDb.updateAvatarMemeber(psid, imgUrl, client, function (results) {
+						console.log('updateAvatarMemeber SS:', psid);
+						client.close();
+					});
+				});
+			} catch (err) {
+				console.error("updateAvatarMemeber: ", err);
+			}
 			callback(body);
 		} else {
 			console.error(response.error);
@@ -1701,71 +1715,6 @@ function sendMessageWelecome(recipientId, msg) {
 	callSendAPI(messageData);
 };
 
-function sendMessageAccept(recipientId, msg) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            text: msg,
-            quick_replies: [{
-                content_type: "text",
-                title: "Thể lệ",
-                payload: "thele",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }, {
-                content_type: "text",
-                title: "Gửi bài viết",
-                payload: "guibaiviet",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }, {
-                content_type: "text",
-                title: "Bài viết hay",
-                payload: "baiviethay",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }, {
-                content_type: "text",
-                title: "Bình chọn",
-                payload: "binhchon",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }]
-        }
-    };
-    callSendAPI(messageData);
-};
-//Binh chon
-function sendMessageBinhChon(recipientId, msg) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            text: msg,
-            quick_replies: [{
-                content_type: "text",
-                title: "Thể lệ",
-                payload: "thele",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }, {
-                content_type: "text",
-                title: "Gửi bài viết",
-                payload: "guibaiviet",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }, {
-                content_type: "text",
-                title: "Bài viết hay",
-                payload: "baiviethay",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }, {
-                content_type: "text",
-                title: "Bình chọn",
-                payload: "binhchon",
-                image_url: SERVER_URL + "/img/HoiMin.png"
-            }]
-        }
-    };
-    callSendAPI(messageData);
-};
 function sendMessageConfimRegister(recipientId) {
 	var query = {
 		_id: recipientId
@@ -2372,91 +2321,71 @@ function receivedMessage(event) {
 			messageId, quickReplyPayload);
         switch (quickReplyPayload.toLowerCase()) {
             case 'thele':
-                console.log("thele");
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileMessage(senderID, msg, "image", file_loc);
-                console.log("thele ok");
                 break;
-            //case 'guibaiviet':
-            //    msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
-            //    quickReplies = [{
-            //        content_type: "text",
-            //        title: "Thể lệ",
-            //        payload: "thele",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Gửi bài viết",
-            //            payload: "soanbai",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }];
-            //    sendQuickMessage(senderID, msg, quickReplies);
-            //    break;
-            //case 'soanbai':
-            //    msg = "Bạn vui lòng cung cấp thông tin cá nhân để Chương trình có thể tri ân và trao giải nhé";
-            //    var button = [{
-            //        type: "web_url",
-            //        url: SERVER_URL + "/senddocument",
-            //        title: "Gửi bài viết",
-            //        messenger_extensions: true,
-            //        webview_height_ratio: "tall",
-            //        fallback_url: SERVER_URL + "/senddocument"
-            //    }];
-            //    sendButtonMessage(senderID, msg, button);
-            //    break;
-            //case 'baiviethay':
-            //    msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-            //    quickReplies = [{
-            //        content_type: "text",
-            //        title: "Thể lệ",
-            //        payload: "thele",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Gửi bài viết",
-            //        payload: "guibaiviet",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Bài viết hay",
-            //        payload: "baiviethay",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Bình chọn",
-            //        payload: "binhchon",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }];
-            //    sendQuickMessage(senderID, msg, quickReplies);
-            //    break;
-            //case 'binhchon':
-            //    msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-            //    quick_replies = [{
-            //        content_type: "text",
-            //        title: "Thể lệ",
-            //        payload: "thele",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Gửi bài viết",
-            //        payload: "guibaiviet",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Bài viết hay",
-            //        payload: "baiviethay",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }, {
-            //        content_type: "text",
-            //        title: "Bình chọn",
-            //        payload: "binhchon",
-            //        image_url: SERVER_URL + "/img/HoiMin.png"
-            //    }];
-            //    sendQuickMessage(senderID, msg, quick_replies);
-            //    break;
-            case 'confirm':
-                sendMessageAccept(senderID, "Đồng ý");
+            case 'guibaiviet':
+                msg = "Gửi bài viết theo mẫu sau";
+                var button = [{
+                    type: "web_url",
+                    url: SERVER_URL + "/senddocument",
+                    title: "Gửi bài viết",
+                    messenger_extensions: true,
+                    webview_height_ratio: "tall",
+                    fallback_url: SERVER_URL + "/senddocument"
+                }];
+                sendButtonMessage(senderID, msg, button);
+                break;
+            case 'baiviethay':
+                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                quick_replies= [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
+                break;
+            case 'binhchon':
+                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                quick_replies= [{
+                    content_type: "text",
+                    title: "Thể lệ",
+                    payload: "thele",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Gửi bài viết",
+                    payload: "guibaiviet",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bài viết hay",
+                    payload: "baiviethay",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }, {
+                    content_type: "text",
+                    title: "Bình chọn",
+                    payload: "binhchon",
+                    image_url: SERVER_URL + "/img/HoiMin.png"
+                }];
+                sendQuickMessage(senderID, msg, quickReplies);
                 break;
 			case 'guide':
 				sendGuide(senderID);
@@ -2479,11 +2408,6 @@ function receivedMessage(event) {
 			"InsertDay": inputDate
 		};
 		switch (messageText.toLowerCase()) {
-            case 'thể lệ':
-                msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
-                file_loc = __dirname + "/public/img/cddl.png";
-                sendFileMessage(senderID, msg, "image", file_loc);
-                break;
 			case 'image':
 				//sendImageMessage(senderID);
 				break;
@@ -2499,9 +2423,11 @@ function receivedMessage(event) {
 				break;
 			case 'bắt đầu':
 				callGetProfile(senderID, function (profile) {
+					//console.log("Res Post facebook 3", profile);
 					var obj = JSON.parse(profile);
 					msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
 					objLog.Answer = msg;
+					//saveLogs(objLog);
 					sendMessageWelecome(senderID, msg);
 				});
 				break;
@@ -2515,7 +2441,16 @@ function receivedMessage(event) {
 					sendMessageWelecome(senderID, msg);
 				});
 				break;
-			
+			case 'giúp đỡ':
+				callGetProfile(senderID, function (profile) {
+					//console.log("Res Post facebook 3", profile);
+					var obj = JSON.parse(profile);
+					msg = obj["last_name"] + " " + obj["first_name"] + " đã liên hệ!";
+					objLog.Answer = msg;
+					//saveLogs(objLog);
+					sendMessageWelecome(senderID, msg);
+				});
+				break;
 			case 'chuẩn':
 				sendMessageConfimRegister(senderID);
 				break;
