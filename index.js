@@ -2372,9 +2372,11 @@ function receivedMessage(event) {
 			messageId, quickReplyPayload);
         switch (quickReplyPayload.toLowerCase()) {
             case 'thele':
+                console.log("thele");
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileMessage(senderID, msg, "image", file_loc);
+                console.log("thele ok");
                 break;
             //case 'guibaiviet':
             //    msg = "Thật tuyệt vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
