@@ -2422,6 +2422,7 @@ function receivedMessage(event) {
             case 'confirm':
                 msg = "Tiếp tục nhé";
                 sendMessageAccept(senderID, msg);
+                break;
 			case 'guide':
 				sendGuide(senderID);
 				break;
