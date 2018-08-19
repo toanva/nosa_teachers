@@ -2354,6 +2354,7 @@ function receivedMessage(event) {
         switch (quickReplyPayload.toLowerCase()) {
             case 'thele':
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
+                sendTextMessage(senderID, msg);
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileMessage(senderID, msg, "image", file_loc);
                 break;
