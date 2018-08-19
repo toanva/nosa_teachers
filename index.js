@@ -2463,7 +2463,7 @@ function receivedMessage(event) {
                 msg = "Thật tuyệt khi vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
                 sendMessageGuiBaiViet(senderID, msg);
                 break;
-            case 'dienthontin':
+            case 'dienthongtin':
                 msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";
                 var button = [{
                     type: "web_url",
