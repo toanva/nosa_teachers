@@ -1809,6 +1809,36 @@ function sendMessageDienThongTin(recipientId, msg) {
     };
     callSendAPI(messageData);
 };
+function sendBaiVietHay(recipientId, mgs) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: mgs,
+                    buttons: [{
+                        type: "web_url",
+                        url: SERVER_URL + "/baiviethay.html",
+                        title: "Xem ngay",
+                        messenger_extensions: true,
+                        webview_height_ratio: "tall",
+                        fallback_url: SERVER_URL + "/baiviethay.html"
+                    }
+                    ,{
+                        type: "postback",
+                        title: "Tiếp tục",
+                        "payload": "tieptuc"
+                    }]
+                }
+            }
+        }
+    };
+    callSendAPI(messageData);
+};
 function sendMessageGuiBaiVietXong(recipientId, msg) {
     var messageData = {
         recipient: {
@@ -2530,19 +2560,16 @@ function receivedMessage(event) {
                 break;
             case 'baiviethay':
                 msg = "Cùng Thani xem qua bài viết gây được nhiều chú ý trong thời gian qua nhé!";
-                var button = [{
-                    type: "web_url",
-                    url: SERVER_URL + "/baiviethay.html",
-                    title: "Xem ngay",
-                    messenger_extensions: true,
-                    webview_height_ratio: "tall",
-                    fallback_url: SERVER_URL + "/baiviethay.html"
-                }, {
-                        type: "postback",
-                        title: "Tiếp tục",
-                        payload: "tieptuc"
-                    } ];
-                sendButtonMessage(senderID, msg, button);
+                sendBaiVietHay(senderID, msg);
+                //var button = [{
+                //    type: "web_url",
+                //    url: SERVER_URL + "/baiviethay.html",
+                //    title: "Xem ngay",
+                //    messenger_extensions: true,
+                //    webview_height_ratio: "tall",
+                //    fallback_url: SERVER_URL + "/baiviethay.html"
+                //}];
+                //sendButtonMessage(senderID, msg, button);
                 break;
             case 'binhchon':
                 msg = "Tính năng bình chọn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
