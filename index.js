@@ -2417,12 +2417,24 @@ function receivedMessage(event) {
                 msg = "Thật tuyệt khi vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
                 sendMessageGuiBaiViet(senderID, msg);
                 break;
-            case 'guibai':
-                msg = "Thật tuyệt khi vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
+            case 'dienthontin':
+                msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/senddocument",
-                    title: "Gửi bài viết",
+                    title: "Thông tin",
+                    messenger_extensions: true,
+                    webview_height_ratio: "tall",
+                    fallback_url: SERVER_URL + "/senddocument"
+                }];
+                sendButtonMessage(senderID, msg, button);
+                break;
+            case 'guibai':
+                msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";
+                var button = [{
+                    type: "web_url",
+                    url: SERVER_URL + "/senddocument",
+                    title: "Thông tin cá nhân",
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
                     fallback_url: SERVER_URL + "/senddocument"
@@ -2430,7 +2442,7 @@ function receivedMessage(event) {
                 sendButtonMessage(senderID, msg, button);
                 break;
             case 'baiviethay':
-                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                msg = "Tính năng này đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
                 quick_replies= [{
                     content_type: "text",
                     title: "Thể lệ",
@@ -2455,7 +2467,7 @@ function receivedMessage(event) {
                 sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'binhchon':
-                msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
+                msg = "Tính năng bình chọn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
                 quick_replies= [{
                     content_type: "text",
                     title: "Thể lệ",

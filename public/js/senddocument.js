@@ -8,7 +8,7 @@ var txtDay = document.getElementById("txtBirthday");
 var txtPhone = document.getElementById('txtPhone');
 var txtCMT = document.getElementById('txtCMT');
 var txtAddress = document.getElementById('txtAddress'); 
-var txtDocument = document.getElementById('txtDocument');
+//var txtDocument = document.getElementById('txtDocument');
 var btnSend = document.getElementById('btnSend');
 
 function SaveObject() {
@@ -46,20 +46,20 @@ function SaveObject() {
 		return;
     };
 
-    if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
-	{
-		alert("Bạn phải chọn bài viết muốn gửi");
-		btnSend.disabled=false;
-		btnSend.style.color = '#FFFFFF';
-        txtDocument.focus();
-		return;
-    };
+ //   if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
+	//{
+	//	alert("Bạn phải chọn bài viết muốn gửi");
+	//	btnSend.disabled=false;
+	//	btnSend.style.color = '#FFFFFF';
+ //       txtDocument.focus();
+	//	return;
+ //   };
 
-    var nameTemp = txtImage.files[0].name;
-    nameTemp = removeChar(nameTemp);
-    arr = nameTemp.split('.');
-    /////Random number name 1-10;
-    imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
+    //var nameTemp = txtImage.files[0].name;
+    //nameTemp = removeChar(nameTemp);
+    //arr = nameTemp.split('.');
+    ///////Random number name 1-10;
+    //imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
 
 	var mydate = txtBirthday.valueAsDate;
 	var inputDate = new Date(mydate.toISOString());
@@ -71,7 +71,7 @@ function SaveObject() {
 	objMember.Phone = txtPhone.value;
     objMember.CMT = txtCMT.value;
     objMember.Address = txtAddress.value;
-    objMember.Document = imgName;
+    //objMember.Document = imgName;
 	var form = new FormData();
 	form.append('psid', objMember.psid);
 	form.append('Name', objMember.Name);
