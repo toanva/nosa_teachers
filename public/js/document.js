@@ -45,21 +45,6 @@ function SaveObject() {
 		return;
     };
 
- //   if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
-	//{
-	//	alert("Bạn phải chọn bài viết muốn gửi");
-	//	btnSend.disabled=false;
-	//	btnSend.style.color = '#FFFFFF';
- //       txtDocument.focus();
-	//	return;
- //   };
-
-    //var nameTemp = txtImage.files[0].name;
-    //nameTemp = removeChar(nameTemp);
-    //arr = nameTemp.split('.');
-    ///////Random number name 1-10;
-    //imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
-
 	var mydate = txtBirthday.valueAsDate;
 	var inputDate = new Date(mydate.toISOString());
 
