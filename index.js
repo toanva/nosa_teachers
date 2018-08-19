@@ -2676,6 +2676,9 @@ function receivedMessage(event) {
             case 'chuẩn':
                 sendMessageConfimRegister(senderID);
                 break;
+            case 'tiếp tục':
+                sendMessageWelecome(senderID, "");
+                break;
             default:
                 getAnswer(messageText, function (aiMes) {
                     if (aiMes.length > 0) {
