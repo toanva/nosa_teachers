@@ -348,30 +348,9 @@ module.exports = {
 						$set: {
 							"Name": objMember.Name,
 							"Birthday": objMember.Birthday,
-							"Provincial": objMember.Provincial,
-							"District": objMember.District,
-							"IdDistrict": objMember.IdDistrict,
-							"Position": objMember.Position,
-							"IsConcurrently": objMember.IsConcurrently,
-							"Concurrently": objMember.Concurrently,
-							"Ward": objMember.Ward,
-							"IdWard": objMember.IdWard,
-							"Branch": objMember.Branch,
+                            "Address": objMember.Address,
+                            "CMT": objMember.CMT,
 							"Phone": objMember.Phone,
-							"Email": objMember.Email,
-							"ImgUrl": objMember.ImgUrl,
-							"LevelName": objMember.LevelName,
-							"Level": objMember.Level,
-							"Layer": objMember.Layer,
-							"Delegate": Number(0),
-							"DelegateId": objMember.DelegateId,
-							"DelegateName": objMember.DelegateName,
-							"DelegateLevelName": objMember.DelegateLevelName,
-							"DelegateImgUrl": objMember.DelegateImgUrl,
-							"ApprovedId": objMember.ApprovedId,
-							"ApprovedName": objMember.ApprovedName,
-							"BlockStatus": "PENDING",
-							"GeoCodeProvincial": objMember.GeoCodeProvincial,
 							"UpdateDate": inputDate
 						}
 					};
@@ -386,12 +365,9 @@ module.exports = {
 						callback(null, res);
 					});
 					//callback(null, res);
-
 				}
-
 			}
 		});
-
 	},
 	insertProduct: function (objProduct, client, callback) {
 		// Get the documents collection
