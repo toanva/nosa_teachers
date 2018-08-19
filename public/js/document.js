@@ -1,3 +1,4 @@
+
 var dataImg = null;
 var imgName = null;
 
@@ -65,7 +66,7 @@ function SaveObject() {
 	var objMember = {};
 	objMember.psid = psid;
 	objMember.Name = txtFullName.value;
-    objMember.Birthday = mydate.getDate() + '/' + (mydate.getMonth() + 1) + '/' + mydate.getFullYear();
+	objMember.Birthday =  mydate.getDate()+'/'+(mydate.getMonth()+1)+'/'+mydate.getFullYear();
 	objMember.Phone = txtPhone.value;
     objMember.CMT = txtCMT.value;
     objMember.Address = txtAddress.value;
@@ -78,11 +79,10 @@ function SaveObject() {
     form.append('CMT', objMember.CMT);
     form.append('Phone', objMember.Phone);
 
-    $.ajax({
-        contentType: 'application/json',
+	$.ajax({
 		type: 'POST',
-        data: JSON.stringify(objMember),
-		//contentType: false,
+		data: form,
+		contentType: false,
 		processData: false,
 		url: '/document',
 		success: function (data) {
