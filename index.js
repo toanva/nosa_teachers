@@ -786,7 +786,7 @@ server.post('/webhook', (req, res) => {
 						});
 					} else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
 						//present user 'confirm':				
-						sendMessageConfimRegister(messagingEvent.sender.id);
+						//sendMessageConfimRegister(messagingEvent.sender.id);
 
 					} else {
 						console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
