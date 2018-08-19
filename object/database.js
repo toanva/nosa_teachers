@@ -375,7 +375,7 @@ module.exports = {
         const collection = db.collection('Document');
         //var objCallback = null;
         console.log("objDocument :", objDocument);
-        collection.insertOne(objProduct, function (err, res) {
+        collection.insertOne(objDocument, function (err, res) {
             //neu xay ra loi
             if (err) throw err;
             //neu khong co loi			
