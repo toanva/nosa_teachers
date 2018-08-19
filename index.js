@@ -367,8 +367,8 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
     }
 });
 server.post('/document', (req, res) => {
-    let body = req.query;
-    res.status(200).send('Please close this window to return to the conversation thread.');
+    let body = req.query; console.log(body);
+    //res.status(200).send('Please close this window to return to the conversation thread.');
     var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.Birthday + " , địa chỉ : " + body.txtAddress + ". Số CMT của bạn là : " + body.txtCMT + ". Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
     console.log(returnMessage);
     req.session.psid = body.psid;
@@ -389,7 +389,6 @@ server.post('/document', (req, res) => {
             } else {
                 client.close();
                 sendMessageGuiBaiViet(body.psid, returnMessage);
-                //sendBackRegister(body.psid, returnMessage);
             }
         });
     });
