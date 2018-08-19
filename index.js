@@ -368,7 +368,7 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
         res.send(null);
     }
 });
-server.get('/senddocument', authFace, (req, res) => {
+server.post('/document', authFace, (req, res) => {
     let body = req.query;
     res.status(200).send('Please close this window to return to the conversation thread.');
     var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.txtDay + "/" + body.txtMonth + "/" + body.txtYear + " , địa chỉ : " + body.txtAddress + ". Số CMT của bạn là : " + body.txtCMT + ". Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
@@ -392,9 +392,9 @@ server.get('/senddocument', authFace, (req, res) => {
                 sendTextMessage(body.psid, 'Echo:' + err);
             } else {
                 client.close();
-                sendBackRegister(body.psid, returnMessage);
+                sendMessageGuiBaiViet(body.psid, returnMessage);
+                //sendBackRegister(body.psid, returnMessage);
             }
-            //// enc insert member
         });
     });
 
@@ -1793,7 +1793,7 @@ function sendMessageWelecome(recipientId, msg) {
 	callSendAPI(messageData);
 };
 
-function sendMessageGuiBaiViet(recipientId, msg) {
+function sendMessageDienThongTin(recipientId, msg) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -1816,6 +1816,23 @@ function sendMessageGuiBaiViet(recipientId, msg) {
     callSendAPI(messageData);
 };
 
+function sendMessageGuiBaiViet(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [ {
+                content_type: "text",
+                title: "Gửi bài viết",
+                payload: "guibai",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
 function sendMessageAccept(recipientId, msg) {
     var messageData = {
         recipient: {
@@ -2461,7 +2478,7 @@ function receivedMessage(event) {
                 break;
             case 'guibaiviet':
                 msg = "Thật tuyệt khi vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
-                sendMessageGuiBaiViet(senderID, msg);
+                sendMessageDienThongTin(senderID, msg);
                 break;
             case 'dienthongtin':
                 msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";

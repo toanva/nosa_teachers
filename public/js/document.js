@@ -85,7 +85,7 @@ function SaveObject() {
 		data: form,
 		contentType: false,
 		processData: false,
-		url: '/senddocument',
+		url: '/document',
 		success: function (data) {
 			btnSend.disabled = false;
 			btnSend.style.color = '#FFFFFF';
