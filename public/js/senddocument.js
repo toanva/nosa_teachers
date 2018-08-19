@@ -61,7 +61,7 @@ function SaveObject() {
 			btnSend.disabled = false;
 			btnSend.style.color = '#FFFFFF';
 			//console.log(data);
-			alert("Thêm mới thành công");
+			//alert("Thêm mới thành công");
 			MessengerExtensions.requestCloseBrowser(function success() {
 				console.log("Webview closing");
 			}, function error(err) {

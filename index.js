@@ -342,7 +342,7 @@ server.post('/senddocument', upload.single('somefile'), (req, res) => {
         var returnMessage = "Cảm ơn bạn đã tham gia chương trình. Thani sẽ thông báo cho bạn ngay khi bài viết được đăng tải. Bạn vẫn muốn trò chuyện với Thani đó chứ?";
         //console.log(returnMessage);
         var objMember = {
-            "_id": body.psid,
+            "psid": body.psid,
             "LinkDocument": body.LinkDocument,
             "InsertDate": inputDate
         };
