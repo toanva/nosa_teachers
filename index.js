@@ -284,6 +284,26 @@ server.get('/senddocument', (req, res, next) => {
         });
     }
 });
+
+server.get('/document', (req, res, next) => {
+
+    let referer = req.get('Referer');
+    //console.log("register.bot 0",referer);
+    if (referer) {
+        if (referer.indexOf('www.messenger.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
+        } else if (referer.indexOf('www.facebook.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
+        } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
+        }
+        console.log("Session register:", req.session);
+        //res.render('register');
+        res.sendFile('views/document.html', {
+            root: __dirname
+        });
+    }
+});
 // Toanva login - End
 server.post('/login.bot', function (req, res) {
 	let body = req.body;
@@ -1073,12 +1093,13 @@ function insertMember(psid,imgUrl,objMember,returnMessage, client,res){
 
 			console.log("registerspostback: ", objMember);
 			//writeFile(imgName,body.DataImgAvatar,dir,body.psid);
-			sendTextMessage(psid, "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé. Dưới đây là ảnh đại diện Facebook của bạn :");
-			sendUrlMessage(psid, "image", imgUrl, function (error, response, bd) {
-				if (error) throw error;
-				console.log("sendUrlMessage:");
-				sendBackRegister(psid, returnMessage);
-			});
+            sendTextMessage(psid, "Cảm ơn bạn đã cung cấp thông tin.");
+
+			//sendUrlMessage(psid, "image", imgUrl, function (error, response, bd) {
+			//	if (error) throw error;
+			//	console.log("sendUrlMessage:");
+			//	sendBackRegister(psid, returnMessage);
+			//});
 			client.close();
 			res.status(200).send('Please close this window to return to the conversation thread.');
 			//res.send(objMember);
@@ -1467,6 +1488,31 @@ function sendRegisterTempForm(recipientId, msg) {
 	callSendAPI(messageData);
 };
 
+function sendMessageDocument(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: "template",
+                payload: {
+                    template_type: "button",
+                    text: msg,
+                    buttons: [{
+                        type: "web_url",
+                        url: SERVER_URL + "/senddocument?psid=" + recipientId,
+                        title: "Gửi bài viết",
+                        messenger_extensions: true,
+                        webview_height_ratio: "tall",
+                        fallback_url: SERVER_URL + "/senddocument?psid=" + recipientId
+                    }]
+                }
+            }
+        }
+    };
+    callSendAPI(messageData);
+};
 function sendMessageIProducts(recipientId, msg) {
 	var messageData = {
 		recipient: {
@@ -1762,7 +1808,7 @@ function sendMessageGuiBaiViet(recipientId, msg) {
             }, {
                 content_type: "text",
                 title: "Gửi bài viết",
-                payload: "guibai",
+                payload: "dienthongtin",
                 image_url: SERVER_URL + "/img/HoiMin.png"
             }]
         }
@@ -2421,20 +2467,20 @@ function receivedMessage(event) {
                 msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";
                 var button = [{
                     type: "web_url",
-                    url: SERVER_URL + "/senddocument",
+                    url: SERVER_URL + "/document",
                     title: "Thông tin",
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
-                    fallback_url: SERVER_URL + "/senddocument"
+                    fallback_url: SERVER_URL + "/document"
                 }];
                 sendButtonMessage(senderID, msg, button);
                 break;
             case 'guibai':
-                msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";
+                msg = "Gửi bài viết";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/senddocument",
-                    title: "Thông tin cá nhân",
+                    title: "Gửi bài viết",
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
                     fallback_url: SERVER_URL + "/senddocument"

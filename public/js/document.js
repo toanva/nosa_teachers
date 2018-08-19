@@ -3,7 +3,12 @@ import { image } from "./C:/Users/Toanva/AppData/Local/Microsoft/TypeScript/2.6/
 var dataImg = null;
 var imgName = null;
 
-var txtDocument = document.getElementById('txtDocument');
+var txtFullName = document.getElementById("txtFullName");
+var txtDay = document.getElementById("txtBirthday");
+var txtPhone = document.getElementById('txtPhone');
+var txtCMT = document.getElementById('txtCMT');
+var txtAddress = document.getElementById('txtAddress'); 
+//var txtDocument = document.getElementById('txtDocument');
 var btnSend = document.getElementById('btnSend');
 
 function SaveObject() {
@@ -17,30 +22,63 @@ function SaveObject() {
 	{
 		psid= getParamValue("psid");
 	}
-    if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
-	{
-		alert("Bạn phải chọn bài viết muốn gửi");
-		btnSend.disabled=false;
+
+	if (txtFullName.value == undefined || txtFullName.value == "") {
+		alert("Bạn phải nhập tên");
+		btnSend.disabled = false;
 		btnSend.style.color = '#FFFFFF';
-        txtDocument.focus();
+		txtFullName.focus();
+		return;
+	};
+
+	if (txtPhone.value == undefined || txtPhone.value == "") {
+		alert("Bạn phải nhập số ĐT");
+		btnSend.disabled = false;
+		btnSend.style.color = '#FFFFFF';
+		txtPhone.focus();
+		return;
+	};
+    if (txtCMT.value == undefined || txtCMT.value == "") {
+		alert("Bạn phải nhập CMT");
+		btnSend.disabled = false;
+		btnSend.style.color = '#FFFFFF';
+        txtCMT.focus();
 		return;
     };
 
-    var nameTemp = txtImage.files[0].name;
-    nameTemp = removeChar(nameTemp);
-    arr = nameTemp.split('.');
-    /////Random number name 1-10;
-    imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
+ //   if (txtDocument.files[0] == undefined || txtDocument.files[0] == "")
+	//{
+	//	alert("Bạn phải chọn bài viết muốn gửi");
+	//	btnSend.disabled=false;
+	//	btnSend.style.color = '#FFFFFF';
+ //       txtDocument.focus();
+	//	return;
+ //   };
+
+    //var nameTemp = txtImage.files[0].name;
+    //nameTemp = removeChar(nameTemp);
+    //arr = nameTemp.split('.');
+    ///////Random number name 1-10;
+    //imgName = Math.floor((Math.random() * 10) + 1) + "." + arr[arr.length - 1];
 
 	var mydate = txtBirthday.valueAsDate;
 	var inputDate = new Date(mydate.toISOString());
 
 	var objMember = {};
 	objMember.psid = psid;
-    objMember.Document = imgName;
+	objMember.Name = txtFullName.value;
+	objMember.Birthday =  mydate.getDate()+'/'+(mydate.getMonth()+1)+'/'+mydate.getFullYear();
+	objMember.Phone = txtPhone.value;
+    objMember.CMT = txtCMT.value;
+    objMember.Address = txtAddress.value;
+    //objMember.Document = imgName;
 	var form = new FormData();
 	form.append('psid', objMember.psid);
-    form.append('Document', objMember.Document);
+	form.append('Name', objMember.Name);
+	form.append('Birthday', objMember.Birthday);
+    form.append('Address', objMember.Address);
+    form.append('CMT', objMember.CMT);
+    form.append('Phone', objMember.Phone);
 
 	$.ajax({
 		type: 'POST',
