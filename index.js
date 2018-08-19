@@ -792,15 +792,15 @@ server.post('/webhook', (req, res) => {
 						console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
 					}
 					////// Cập nhật lại thời gian hết hạn của member để đếm số thành viên đang hoạt động với bót
-					try {
-					 objDb.getConnection(function (client) {
-						 objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {
-								client.close();
-							});
-						});
-					} catch (err) {
-						console.error("insertMembersActive: ", err);
-					}
+					//try {
+					// objDb.getConnection(function (client) {
+					//	 objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {
+					//			client.close();
+					//		});
+					//	});
+					//} catch (err) {
+					//	console.error("insertMembersActive: ", err);
+					//}
 
 				});
 			} else {
@@ -1715,6 +1715,38 @@ function sendMessageWelecome(recipientId, msg) {
 	callSendAPI(messageData);
 };
 
+function sendMessageAccept(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [{
+                content_type: "text",
+                title: "Thể lệ",
+                payload: "thele",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Gửi bài viết",
+                payload: "guibaiviet",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Bài viết hay",
+                payload: "baiviethay",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Bình chọn",
+                payload: "binhchon",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
 function sendMessageConfimRegister(recipientId) {
 	var query = {
 		_id: recipientId
@@ -2387,6 +2419,9 @@ function receivedMessage(event) {
                 }];
                 sendQuickMessage(senderID, msg, quick_replies);
                 break;
+            case 'confirm':
+                msg = "Tiếp tục nhé";
+                sendMessageAccept(senderID, msg);
 			case 'guide':
 				sendGuide(senderID);
 				break;
