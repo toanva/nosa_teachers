@@ -46,7 +46,7 @@ function SaveObject() {
 	var objMember = {};
 	objMember.psid = psid;
     //objMember.Document = imgName;
-    objMember.LinkDocument = LinkDocument.value;
+    objMember.LinkDocument = txtLinkDocument.value;
 	var form = new FormData();
 	form.append('psid', objMember.psid);
     //form.append('Document', objMember.Document);
