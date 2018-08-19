@@ -333,6 +333,7 @@ server.get('/logout.bot', function (req, res) {
 server.post('/senddocument', upload.single('somefile'), (req, res) => {
     try {
         let body = req.body;
+        res.status(200).send('Please close this window to return to the conversation thread.');
         //var dir = "./public/uploads/Avatar";
         req.session.psid = body.psid;
         var mydate = new Date();
