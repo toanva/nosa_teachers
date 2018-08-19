@@ -801,6 +801,10 @@ server.post('/webhook', (req, res) => {
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
                         //present user 'confirm':				
                         //sendMessageConfimRegister(messagingEvent.sender.id);
+                    }
+                    else if (messagingEvent.postback && messagingEvent.postback.payload == 'tieptuc') {
+                        msg = "";
+                        sendMessageWelecome(messagingEvent.sender.id, msg);
 
                     } else {
                         console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
@@ -2560,16 +2564,20 @@ function receivedMessage(event) {
                 break;
             case 'baiviethay':
                 msg = "Cùng Thani xem qua bài viết gây được nhiều chú ý trong thời gian qua nhé!";
-                sendBaiVietHay(senderID, msg);
-                //var button = [{
-                //    type: "web_url",
-                //    url: SERVER_URL + "/baiviethay.html",
-                //    title: "Xem ngay",
-                //    messenger_extensions: true,
-                //    webview_height_ratio: "tall",
-                //    fallback_url: SERVER_URL + "/baiviethay.html"
-                //}];
-                //sendButtonMessage(senderID, msg, button);
+                //sendBaiVietHay(senderID, msg);
+                var button = [{
+                    type: "web_url",
+                    url: SERVER_URL + "/baiviethay.html",
+                    title: "Xem ngay",
+                    messenger_extensions: true,
+                    webview_height_ratio: "tall",
+                    fallback_url: SERVER_URL + "/baiviethay.html"
+                },{
+                    type: 'postback',
+                    title: 'Tiếp tục',
+                    payload: 'tieptuc',
+                }];
+                sendButtonMessage(senderID, msg, button);
                 break;
             case 'binhchon':
                 msg = "Tính năng bình chọn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
