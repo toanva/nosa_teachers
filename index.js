@@ -1747,6 +1747,29 @@ function sendMessageWelecome(recipientId, msg) {
 	callSendAPI(messageData);
 };
 
+function sendMessageGuiBaiViet(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [{
+                content_type: "text",
+                title: "Thể lệ",
+                payload: "thele",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }, {
+                content_type: "text",
+                title: "Gửi bài viết",
+                payload: "guibai",
+                image_url: SERVER_URL + "/img/HoiMin.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
+
 function sendMessageAccept(recipientId, msg) {
     var messageData = {
         recipient: {
@@ -2386,12 +2409,16 @@ function receivedMessage(event) {
         switch (quickReplyPayload.toLowerCase()) {
             case 'thele':
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
-                sendTextMessage(senderID, 'Echo :' + messageText);
+                sendTextMessage(senderID, msg);
                 file_loc = __dirname + "/public/img/cddl.png";
                 sendFileThele(senderID, msg, "image", file_loc);
                 break;
             case 'guibaiviet':
-                msg = "Gửi bài viết theo mẫu sau";
+                msg = "Thật tuyệt khi vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
+                sendMessageGuiBaiViet(senderID, msg);
+                break;
+            case 'guibai':
+                msg = "Thật tuyệt khi vẫn luôn có những tấm lòng quan tâm đến giáo dục đặc biệt. Chúng ta bắt đầu ngay nhé!";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/senddocument",
