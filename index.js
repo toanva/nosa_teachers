@@ -1320,6 +1320,38 @@ function sendFileMessage(recipientId, messageText, fileType, file_loc) {
 	callSendAPIFile(messageData);
 };
 
+function sendFileThele(recipientId, messageText, fileType, file_loc) {
+    var readStream = fs.createReadStream(file_loc);
+
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            attachment: {
+                type: fileType,
+                payload: {}
+            }
+        },
+        filedata: readStream //+";type=image/png"
+    };
+    callSendAPIFileThele(messageData);
+};
+function callSendAPIFileThele(messageData) {
+    var endpoint = "https://graph.facebook.com/v3.0/me/messages?access_token=" + PAGE_ACCESS_TOKEN;
+    var r = request.post(endpoint, function (err, httpResponse, body) {
+        if (err) {
+            return console.error("upload failed >> \n", err)
+        };
+        console.log("upload successfull >> \n", body); //facebook always return 'ok' message, so you need to read error in 'body.error' if any
+        sendOneQuick(messageData.recipient.id, "Bạn hiểu về chương trình rồi chứ. Cùng xem chúng ta có thể làm gì tiếp theo nhé!", "Đồng ý", "confirm", "advisory.png");
+    });
+    var form = r.form();
+    form.append('recipient', JSON.stringify(messageData.recipient));
+    form.append('message', JSON.stringify(messageData.message));
+    form.append('filedata', messageData.filedata); //no need to stringify!
+};
+
 function sendUrlMessage(recipientId, fileType, url, callback) {
 
 
@@ -2354,9 +2386,9 @@ function receivedMessage(event) {
         switch (quickReplyPayload.toLowerCase()) {
             case 'thele':
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
-                sendTextMessage(senderID, msg);
+                sendTextMessage(senderID, 'Echo :' + messageText);
                 file_loc = __dirname + "/public/img/cddl.png";
-                sendFileMessage(senderID, msg, "image", file_loc);
+                sendFileThele(senderID, msg, "image", file_loc);
                 break;
             case 'guibaiviet':
                 msg = "Gửi bài viết theo mẫu sau";
