@@ -1,4 +1,4 @@
-import { image } from "./C:/Users/Toanva/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/d3";
+//import { image } from "./C:/Users/Toanva/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/d3";
 
 var dataImg = null;
 var imgName = null;
@@ -61,7 +61,7 @@ function SaveObject() {
 			btnSend.disabled = false;
 			btnSend.style.color = '#FFFFFF';
 			//console.log(data);
-			//alert("Thêm mới thành công");
+			alert("Thêm mới thành công");
 			MessengerExtensions.requestCloseBrowser(function success() {
 				console.log("Webview closing");
 			}, function error(err) {
