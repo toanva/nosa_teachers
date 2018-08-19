@@ -2574,7 +2574,7 @@ function receivedMessage(event) {
                     fallback_url: SERVER_URL + "/baiviethay.html"
                 },{
                     type: 'postback',
-                    title: 'Tiếp tục',
+                    title: 'Quay lại',
                     payload: 'tieptuc',
                 }];
                 sendButtonMessage(senderID, msg, button);
