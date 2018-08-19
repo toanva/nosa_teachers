@@ -2537,16 +2537,12 @@ function receivedMessage(event) {
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
                     fallback_url: SERVER_URL + "/baiviethay.html"
-                }];
+                }, {
+                        type: "postback",
+                        title: "Tiếp tục",
+                        payload: "tieptuc"
+                    } ];
                 sendButtonMessage(senderID, msg, button);
-                function stateChange(newState) {
-                    setTimeout(function () {
-                        if (newState == -1) {
-                            sendMessageWelecome(senderID, "");
-                        }
-                    }, 10000);
-                }
-                
                 break;
             case 'binhchon':
                 msg = "Tính năng bình chọn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
