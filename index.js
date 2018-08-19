@@ -2527,29 +2527,16 @@ function receivedMessage(event) {
                 sendButtonMessage(senderID, msg, button);
                 break;
             case 'baiviethay':
-                msg = "Tính năng này đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
-                quick_replies = [{
-                    content_type: "text",
-                    title: "Thể lệ",
-                    payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
+                msg = "Giờ bạn vui lòng gửi bài viết tại đây nhé! Lưu ý: Không giới hạn số lượng bài viết gửi về. Có thể viết ra Google Doc và đính kèm link. Khuyến khích có hình ảnh minh họa";
+                var button = [{
+                    type: "web_url",
+                    url: SERVER_URL + "/baiviethay.html",
                     title: "Gửi bài viết",
-                    payload: "guibaiviet",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bài viết hay",
-                    payload: "baiviethay",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
-                }, {
-                    content_type: "text",
-                    title: "Bình chọn",
-                    payload: "binhchon",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
+                    messenger_extensions: true,
+                    webview_height_ratio: "tall",
+                    fallback_url: SERVER_URL + "/baiviethay.html"
                 }];
-                sendQuickMessage(senderID, msg, quick_replies);
+                sendButtonMessage(senderID, msg, button);
                 break;
             case 'binhchon':
                 msg = "Tính năng bình chọn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
