@@ -2482,11 +2482,11 @@ function receivedMessage(event) {
                 msg = "Bạn vui lòng cho cung cấp thông tin cá nhân để Chương trình có thể tri ân vào trao giải nhé";
                 var button = [{
                     type: "web_url",
-                    url: SERVER_URL + "/document",
+                    url: SERVER_URL + "/document?psid=" + recipientId,
                     title: "Thông tin",
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
-                    fallback_url: SERVER_URL + "/document"
+                    fallback_url: SERVER_URL + "/document?psid=" + recipientId
                 }];
                 sendButtonMessage(senderID, msg, button);
                 break;
@@ -2494,11 +2494,11 @@ function receivedMessage(event) {
                 msg = "Gửi bài viết";
                 var button = [{
                     type: "web_url",
-                    url: SERVER_URL + "/senddocument",
+                    url: SERVER_URL + "/senddocument?psid=" + recipientId,
                     title: "Gửi bài viết",
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
-                    fallback_url: SERVER_URL + "/senddocument"
+                    fallback_url: SERVER_URL + "/senddocument?psid=" + recipientId
                 }];
                 sendButtonMessage(senderID, msg, button);
                 break;
