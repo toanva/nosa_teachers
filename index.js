@@ -330,7 +330,7 @@ server.get('/logout.bot', function (req, res) {
     req.session.destroy();
     res.send("logout success!");
 });
-server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => {
+server.post('/senddocument', upload.single('somefile'), (req, res) => {
     try {
         let body = req.body;
         //var dir = "./public/uploads/Avatar";
