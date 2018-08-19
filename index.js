@@ -2539,11 +2539,13 @@ function receivedMessage(event) {
                     fallback_url: SERVER_URL + "/baiviethay.html"
                 }];
                 sendButtonMessage(senderID, msg, button);
-                setTimeout(function () {
-                    if (newState == -1) {
-                        sendMessageWelecome(senderID, "");
-                    }
-                }, 10000);
+                function stateChange(newState) {
+                    setTimeout(function () {
+                        if (newState == -1) {
+                            sendMessageWelecome(senderID, "");
+                        }
+                    }, 10000);
+                }
                 
                 break;
             case 'binhchon':
