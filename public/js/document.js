@@ -59,7 +59,7 @@ function SaveObject() {
 	var form = new FormData();
 	form.append('psid', objMember.psid);
 	form.append('Name', objMember.Name);
-	form.append('Birthday', objMember.Birthday);
+    form.append('Birthday', objMember.Birthday);
     form.append('Address', objMember.Address);
     form.append('CMT', objMember.CMT);
     form.append('Phone', objMember.Phone);
