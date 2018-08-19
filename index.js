@@ -2360,7 +2360,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'binhchon':
                 msg = "Tính năng dành cho Cán Bộ Đoàn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
@@ -2385,7 +2385,7 @@ function receivedMessage(event) {
                     payload: "binhchon",
                     image_url: SERVER_URL + "/img/HoiMin.png"
                 }];
-                sendQuickMessage(senderID, msg, quickReplies);
+                sendQuickMessage(senderID, msg, quick_replies);
                 break;
 			case 'guide':
 				sendGuide(senderID);
