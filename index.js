@@ -2539,7 +2539,12 @@ function receivedMessage(event) {
                     fallback_url: SERVER_URL + "/baiviethay.html"
                 }];
                 sendButtonMessage(senderID, msg, button);
-                sendMessageWelecome(senderID, "");
+                setTimeout(function () {
+                    if (newState == -1) {
+                        sendMessageWelecome(senderID, "");
+                    }
+                }, 10000);
+                
                 break;
             case 'binhchon':
                 msg = "Tính năng bình chọn đang được hoàn thiện. Thani sẽ liên hệ lại với bạn trong thời gian sớm nhất.";
