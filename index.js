@@ -369,16 +369,17 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
 server.post('/document', (req, res) => {
     let body = req.query;
     res.status(200).send('Please close this window to return to the conversation thread.');
-    var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + " , địa chỉ : " + body.Address + ". Số CMT của bạn là : " + body.CMT + ". Số điện thoại của bạn là : " + body.Phone + " Chuẩn chưa nhỉ?";
+    var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.Birthday + " , địa chỉ : " + body.txtAddress + ". Số CMT của bạn là : " + body.txtCMT + ". Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
     console.log(returnMessage);
     req.session.psid = body.psid;
+    //var inputDate = new Date(mydate.toISOString());
     var objMember = {
         "_id": body.psid,
-        "Name": body.Name,
+        "Name": body.txtFullName,
         "Birthday": body.Birthday,
-        "Address": body.Address,
-        "CMT": body.CMT,
-        "Phone": body.Phone
+        "Address": body.txtAddress,
+        "CMT": body.txtCMT,
+        "Phone": body.txtPhone
     };
     
     objDb.getConnection(function (client) {
