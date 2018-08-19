@@ -2527,11 +2527,11 @@ function receivedMessage(event) {
                 sendButtonMessage(senderID, msg, button);
                 break;
             case 'baiviethay':
-                msg = "Giờ bạn vui lòng gửi bài viết tại đây nhé! Lưu ý: Không giới hạn số lượng bài viết gửi về. Có thể viết ra Google Doc và đính kèm link. Khuyến khích có hình ảnh minh họa";
+                msg = "Cùng Thani xem qua bài viết gây được nhiều chú ý trong thời gian qua nhé!";
                 var button = [{
                     type: "web_url",
                     url: SERVER_URL + "/baiviethay.html",
-                    title: "Gửi bài viết",
+                    title: "Xem ngay",
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
                     fallback_url: SERVER_URL + "/baiviethay.html"
