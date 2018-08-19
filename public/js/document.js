@@ -1,5 +1,3 @@
-import { image } from "./C:/Users/Toanva/AppData/Local/Microsoft/TypeScript/2.6/node_modules/@types/d3";
-
 var dataImg = null;
 var imgName = null;
 

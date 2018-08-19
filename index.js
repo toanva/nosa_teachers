@@ -286,21 +286,21 @@ server.get('/senddocument', (req, res, next) => {
 });
 
 server.get('/document', (req, res, next) => {
-    //let referer = req.get('Referer');
-    ////console.log("register.bot 0",referer);
-    //if (referer) {
-    //    if (referer.indexOf('www.messenger.com') >= 0) {
-    //        res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
-    //    } else if (referer.indexOf('www.facebook.com') >= 0) {
-    //        res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
-    //    } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
-    //        res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
-    //    }
-    //    console.log("Session register:", req.session);
+    let referer = req.get('Referer');
+    //console.log("register.bot 0",referer);
+    if (referer) {
+        if (referer.indexOf('www.messenger.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.messenger.com/');
+        } else if (referer.indexOf('www.facebook.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://www.facebook.com/');
+        } else if (referer.indexOf('staticxx.facebook.com') >= 0) {
+            res.setHeader('X-Frame-Options', 'ALLOW-FROM https://staticxx.facebook.com');
+        }
+        console.log("Session register:", req.session);
         res.sendFile('views/document.html', {
             root: __dirname
         });
-    //}
+    }
 });
 // Toanva login - End
 server.post('/login.bot', function (req, res) {
@@ -366,7 +366,7 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
         res.send(null);
     }
 });
-server.post('/document', (req, res) => {
+server.post('/document', authFace, (req, res) => {
     let body = req.query;
     res.status(200).send('Please close this window to return to the conversation thread.');
     var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.txtDay + "/" + body.txtMonth + "/" + body.txtYear + " , địa chỉ : " + body.txtAddress + ". Số CMT của bạn là : " + body.txtCMT + ". Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
