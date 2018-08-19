@@ -78,10 +78,11 @@ function SaveObject() {
     form.append('CMT', objMember.CMT);
     form.append('Phone', objMember.Phone);
 
-	$.ajax({
+    $.ajax({
+        contentType: 'application/json',
 		type: 'POST',
-		data: form,
-		contentType: false,
+        data: JSON.stringify(objMember),
+		//contentType: false,
 		processData: false,
 		url: '/document',
 		success: function (data) {
