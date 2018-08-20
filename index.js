@@ -186,7 +186,6 @@ var authKsv = function (req, res, next) {
 ////////// rowter
 server.get('/setup', (req, res) => {
     setupGetStartedButton(res);
-    //setupPersistentMenu(res);
     setupGreetingText(res);
 });
 server.post('/', function (req, res) {
@@ -265,7 +264,7 @@ server.get('/logoutCMS', function (req, res) {
 });
 
 //Toanva add gui bai viet
-server.get('/senddocument', (req, res, next) => {
+server.get('/senddocument', authFace, (req, res, next) => {
 
     let referer = req.get('Referer');
     //console.log("register.bot 0",referer);
@@ -285,7 +284,7 @@ server.get('/senddocument', (req, res, next) => {
     }
 });
 
-server.get('/document', (req, res, next) => {
+server.get('/document', authFace, (req, res, next) => {
     let referer = req.get('Referer');
     //console.log("register.bot 0",referer);
     if (referer) {
@@ -330,7 +329,7 @@ server.get('/logout.bot', function (req, res) {
     req.session.destroy();
     res.send("logout success!");
 });
-server.post('/senddocument', upload.single('somefile'), (req, res) => {
+server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => {
     try {
         let body = req.body;
         res.status(200).send('Please close this window to return to the conversation thread.');
@@ -364,7 +363,7 @@ server.post('/senddocument', upload.single('somefile'), (req, res) => {
         res.send(null);
     }
 });
-server.post('/document', upload.single('somefile'), (req, res) => {
+server.post('/document', upload.single('somefile'), authFace, (req, res) => {
     let body = req.body;
     //console.log("body", body);
     res.status(200).send('Please close this window to return to the conversation thread.');
@@ -392,329 +391,6 @@ server.post('/document', upload.single('somefile'), (req, res) => {
             }
         });
     });
-});
-
-server.post('/registerspostback.bot', upload.single('somefile'), authFace, (req, res) => {
-    try {
-        let body = req.body;
-        var dir = "./public/uploads/Avatar";
-        req.session.psid = body.psid;
-        var mydate = new Date();
-        var inputDate = new Date(mydate.toISOString());
-        //var dateBrithDay = new Date(body.Birthday).toLocaleString('en-US', {timeZone: 'Asia/Ho_Chi_Minh'});
-        //var  = new Date();
-        //var mydate = new Date(body.Birthday);
-        //var dateBrithDay = new Date(mydate.toISOString());
-        //console.log("body : ", dateBrithDay);
-        //imgName=body.psid+body.ImgName;
-
-        //res.status(200).send('Please close this window to return to the conversation thread.');
-        //console.log(body.cboProvincial);
-        if (body.Level == '1') {
-            body.Provincial = 'Hà Nội';
-            body.Districts = 'Hoàn Kiếm';
-            body.Wards = 'Trần Hưng Đạo';
-            body.Branch = "NA";
-
-        };
-        var level = 9999;
-        var msgConcurrently = '';
-        //if(Number(body.Level)>=5)
-        //{
-        if (body.IsConcurrently == 'Là cán bộ Đoàn kiêm nhiệm' && body.Concurrently != '') {
-            msgConcurrently = ', cũng là cán bộ Đoàn kiêm nhiệm có chức danh khác là : ' + body.Concurrently;
-
-        } else if (body.IsConcurrently == 'Là cán bộ Đoàn viên') {
-            msgConcurrently = ' vừa là cán bộ Đoàn viên';
-        }
-        //}		
-        console.log("registerspostback PSID", body.psid);
-        var returnMessage = "Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + " . là cán bộ " + body.LevelName + " đang giữ chức vụ " + body.Position + msgConcurrently + ", địa chỉ : chi hội " + body.Branch + ", " + body.Wards + " , quận / huyện " + body.Districts + ", Tỉnh / TP " + body.Provincial + " . Số điện thoại của bạn là : " + body.Phone + ", Email " + body.Email + ". Chuẩn chưa nhỉ?";
-        console.log(returnMessage);
-        //var mydate = new Date(parseInt(body.Year), parseInt(body.Month) - 1, parseInt(body.Day));
-        var imgUrl;
-
-        //writeFile(imgName,body.DataImgAvatar,dir,body.psid,function (err, results) {
-        //	   res.send(results);
-        //console.log(results);
-        //if (results) {
-        //imgUrl=results.secure_url;
-        callGetProfile(body.psid, function (objFacebook) {
-
-            var objFacebook = JSON.parse(objFacebook);
-            console.log("callGetProfile: ", objFacebook);
-            imgUrl = objFacebook.profile_pic;
-            var objMember = {
-                "_id": body.psid,
-                "Name": body.Name,
-                "Birthday": body.Birthday,
-                "Position": body.Position,
-                "IsConcurrently": body.IsConcurrently,
-                "Concurrently": body.Concurrently,
-                "IdProvincial": body.IdProvincial,
-                "Provincial": body.Provincial,
-                "District": body.Districts,
-                "IdDistrict": body.IdDistrict,
-                "Ward": body.Wards,
-                "IdWard": body.IdWard,
-                "Branch": body.Branch,
-                "Phone": body.Phone,
-                "Email": body.Email,
-                "ImgUrl": imgUrl,
-                "LevelName": body.LevelName,
-                "Level": Number(body.Level),
-                "Layer": Number(body.Layer),
-                "Delegate": Number(0),
-                "DelegateId": null,
-                "DelegateName": null,
-                "DelegateLevelName": null,
-                "DelegateImgUrl": null,
-                "ApprovedId": null,
-                "ApprovedName": null,
-                "BlockStatus": "PENDING",
-                "InsertDate": inputDate
-            };
-            if (objMember.Provincial == undefined)
-                objMember.Provincial = 'NA';
-            if (objMember.District == undefined)
-                objMember.District = 'NA';
-            if (objMember.Ward == undefined)
-                objMember.Ward = 'NA';
-            if (objMember.Branch == undefined)
-                objMember.Branch = 'NA';
-
-            var query = {
-                "Name": objMember.Provincial
-            };
-
-            objDb.getConnection(function (client) {
-                objDb.findProvincial(query, client, function (results) {
-                    if (results.length == 1) {
-                        objMember.GeoCodeProvincial = results[0].GeoCode;
-                    } else {
-                        objMember.GeoCodeProvincial = 'VN-HN';
-                    }
-
-                    /// add Lati and Long
-                    if (objMember.Level > 3 && objMember.IdWard != null && objMember.IdWard != 'NA' && objMember.IdWard != undefined) {
-
-                        var qr1 = { _id: objMember.IdWard }
-                        objDb.findWards(qr1, client, function (rsWard) {
-                            objMember.Lati = rsWard[0].Lati;
-                            objMember.Long = rsWard[0].Long;
-                            insertMember(body.psid, imgUrl, objMember, returnMessage, client, res);
-                        });
-
-                    } else if (objMember.Level > 3 && (objMember.IdWard == null || objMember.IdWard == 'NA' || objMember.IdWard == '9999')) {
-
-                        var qr1 = { _id: objMember.IdDistrict }
-                        objDb.findDistrict(qr1, client, function (rsDistrict) {
-                            objMember.Lati = rsDistrict[0].Lati;
-                            objMember.Long = rsDistrict[0].Long;
-                            insertMember(body.psid, imgUrl, objMember, returnMessage, client, res);
-                        });
-
-                    }
-                    else if (objMember.Level == 3 && objMember.IdDistrict != null && objMember.IdDistrict != 'NA' && objMember.IdDistrict != undefined) {
-                        var qr1 = { _id: objMember.IdDistrict }
-                        objDb.findDistrict(qr1, client, function (rsDistrict) {
-                            objMember.Lati = rsDistrict[0].Lati;
-                            objMember.Long = rsDistrict[0].Long;
-                            insertMember(body.psid, imgUrl, objMember, returnMessage, client, res);
-                        });
-
-                    } else if (objMember.Level == 3 && (objMember.IdDistrict == null || objMember.IdDistrict == 'NA' || objMember.IdDistrict == '9999')) {
-                        objMember.Lati = results[0].Lati;
-                        objMember.Long = results[0].Long;
-                        insertMember(body.psid, imgUrl, objMember, returnMessage, client, res);
-
-                    } else {
-                        objMember.Lati = results[0].Lati;
-                        objMember.Long = results[0].Long;
-                        insertMember(body.psid, imgUrl, objMember, returnMessage, client, res);
-                    }
-                });
-                /// end con
-            });
-
-
-        });
-    } catch (err) {
-        console.error("registerspostback:", err);
-        res.send(null);
-    }
-});
-server.get('/registerspostback.bot', authFace, (req, res) => {
-    let body = req.query;
-
-    //console.log("body : ",body);
-    //var dateBrithDay= body.txtBrithDay;
-    res.status(200).send('Please close this window to return to the conversation thread.');
-    var level = 9999;
-    if (body.cboPosition == 'CB TƯ Hội LHTN Việt Nam' || body.cboPosition == 'CB TƯ Đoàn TNCS HCM') {
-        level = 1;
-
-    } else if (body.cboPosition == 'TV Ban thư ký HLHTN Tỉnh' || body.cboPosition == 'TV Ban CM Tỉnh/Thành Đoàn' || body.cboPosition == 'CB khác thuộc Tỉnh/Thành Đoàn') {
-        level = 2;
-
-    } else if (body.cboPosition == 'BT Quận/Huyện Đoàn' || body.cboPosition == 'CTH LHTN Quận/Huyện' || body.cboPosition == 'PCTH LHTN Quận/Huyện' || body.cboPosition == 'Ủy viên HLHTN Quận/Huyện') {
-        level = 3;
-
-    } else if (body.cboPosition == 'PBT Đoàn Xã/Phường/Thị Trấn' || body.cboPosition == 'CTH LHTN Xã/Phường/Thị Trấn' || body.cboPosition == 'PCTH LHTN Xã/Phường/Thị Trấn') {
-        level = 4;
-    } else {
-        level = 5;
-    }
-
-
-
-
-    var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.txtFullName + ", sinh ngày : " + body.txtDay + "/" + body.txtMonth + "/" + body.txtYear + " . Hiện bạn đang giữ chức vụ " + body.cboPosition + ", địa chỉ : " + body.txtWards + " , quận / huyện " + body.txtDistricts + ", Tỉnh / TP " + body.txtProvincial + " . Số điện thoại của bạn là : " + body.txtPhone + " Chuẩn chưa nhỉ?";
-    //console.log(returnMessage);
-    var mydate = new Date(parseInt(body.txtYear), parseInt(body.txtMonth) - 1, parseInt(body.txtDay));
-    //console.log("Date", mydate);
-    req.session.psid = body.psid;
-    var inputDate = new Date(mydate.toISOString());
-    var objMember = {
-        "_id": body.psid,
-        "Name": body.txtFullName,
-        "Birthday": inputDate,
-        "Provincial": body.txtProvincial,
-        "District": body.txtDistricts,
-        "Position": body.cboPosition,
-        "Ward": body.txtWards,
-        "Phone": body.txtPhone,
-        "BlockStatus": "Active"
-    };
-    if (objMember.District == undefined)
-        objMember.District = 'NA';
-    if (objMember.Ward == undefined)
-        objMember.Ward = 'NA';
-    var query = {
-        "Name": objMember.Provincial
-    };
-    objDb.getConnection(function (client) {
-        objDb.findProvincial(query, client, function (results) {
-            if (results.length == 1) {
-                objMember.GeoCodeProvincial = results[0].GeoCode;
-            } else {
-                objMember.GeoCodeProvincial = 'NA';
-            }
-            objDb.insertMembers(objMember, client, function (err, results) {
-                //	   res.send(results);
-                //console.log(results);
-                if (err) {
-                    sendTextMessage(body.psid, 'Echo:' + err);
-                } else {
-                    client.close();
-                    sendBackRegister(body.psid, returnMessage);
-                }
-
-                //// enc insert member
-            });
-            ////  end  findProvincial
-        });
-        /// end con
-    });
-
-});
-server.get('/rg.bot', (req, res, next) => {
-    res.sendFile('views/rg.html', {
-        root: __dirname
-    });
-});
-server.post('/rgpostback.bot', upload.single('somefile'), (req, res) => {
-
-    let body = req.body;
-    var returnMessage = "Cảm ơn bạn đã cung cấp thông tin. Thani kiểm tra lại nhé: Bạn tên là " + body.Name + ", sinh ngày : " + body.Birthday + " . Hiện bạn đang giữ chức vụ " + body.Position + ", địa chỉ : " + body.Wards + " , quận / huyện " + body.Districts + ", Tỉnh / TP " + body.Provincial + " các chi hội :" + body.Branch + ". Số điện thoại của bạn là : " + body.Phone + " Chuẩn chưa nhỉ?";
-    console.log(returnMessage);
-    if (body.Name != undefined) {
-        var objBranch;
-        if (body.Branch != undefined && body.Branch != 'NA' && body.Branch != '') {
-            var arr = body.Branch.split(',');
-            objBranch = arr;
-            console.log(arr);
-            //var objBranch[arr.length];
-            for (var i = 0; i < arr.length; i++) {
-                obj = {
-                    "IdWards": body.IdWards,
-                    "Name": arr[i].toString()
-                };
-                objBranch[i] = obj;
-            }
-        } else {
-            objBranch = undefined;
-        };
-
-        if (body.Position != 'CTH LHTN xã')
-            objBranch = "NA";
-        if (body.Position == 'CTH LHTN Tỉnh') {
-            objBranch = undefined;
-            body.Districts = 'NA';
-            body.Wards = 'NA';
-        };
-        if (body.Position == 'CTH LHTN huyện') {
-            objBranch = undefined;
-            body.Wards = 'NA';
-        };
-
-        var objMember = {
-            "Name": body.Name,
-            "Birthday": body.Birthday,
-            "Position": body.Position,
-            "Provincial": body.Provincial,
-            "Districts": body.Districts,
-            "Wards": body.Wards,
-            "Branch": objBranch,
-            "Phone": body.Phone,
-            "Email": body.Email,
-            "BlockStatus": "PENDING"
-        };
-        console.log("objMember:", objMember);
-        var query = {
-            "Name": objMember.Provincial
-        };
-        objDb.getConnection(function (client) {
-            objDb.findProvincial(query, client, function (results) {
-                if (results.length == 1) {
-                    objMember.GeoCodeProvincial = results[0].GeoCode;
-                } else {
-                    objMember.GeoCodeProvincial = 'NA';
-                }
-                objDb.insertKycMembers(objMember, client, function (err, results) {
-                    //	   res.send(results);
-                    //console.log(results);
-                    if (err) {
-                        //sendTextMessage(body.psid, 'Echo:' + err);
-                        client.close();
-                        res.send(err);
-                    } else {
-
-                        if (objBranch && objBranch != undefined && objBranch != "NA") {
-                            objDb.insertBranch(objBranch, client, function (err, results) {
-                                if (err) {
-                                    //sendTextMessage(body.psid, 'Echo:' + err);
-                                    //client.close();
-                                    res.send(err);
-                                } else {
-                                    client.close();
-                                    res.send(returnMessage);
-                                }
-                            });
-                        } else {
-                            client.close();
-                            res.send(returnMessage);
-                        }
-                        ///sendBackRegister(body.psid, returnMessage);
-                    }
-                    client.close();
-                    //// enc insert member
-                });
-                ////  end  findProvincial
-            });
-            /// end con
-        });
-    }
 });
 
 ///Lấy thông tin ID từ điểm danh về và tạo webView điểm danh
@@ -777,30 +453,24 @@ server.post('/webhook', (req, res) => {
             var timeOfEvent = pageEntry.time;
             if (pageEntry.messaging) {
                 pageEntry.messaging.forEach(function (messagingEvent) {
-
                     //console.log("face event", messagingEvent.postback.payload);
                     if (messagingEvent.message) {
                         //console.log("Res Post facebook 1");
                         receivedMessage(messagingEvent);
-
-
                     } else if (messagingEvent.delivery) {
                         console.log("Res Post delivery");
                         ////receivedDeliveryConfirmation(messagingEvent);
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'getstarted') {
                         //present user with some greeting or call to action
-
                         callGetProfile(messagingEvent.sender.id, function (profile) {
                             //console.log("Res Post facebook 3", profile);
                             var obj = JSON.parse(profile);
                             var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
-                            //sendTextMessage(messagingEvent.sender.id, msg)
-
                             sendMessageWelecome(messagingEvent.sender.id, msg);
                         });
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'confirm') {
-                        //present user 'confirm':				
-                        //sendMessageConfimRegister(messagingEvent.sender.id);
+                        msg = "";
+                        sendMessageWelecome(messagingEvent.sender.id, msg);
                     }
                     else if (messagingEvent.postback && messagingEvent.postback.payload == 'tieptuc') {
                         msg = "";
@@ -809,22 +479,10 @@ server.post('/webhook', (req, res) => {
                     } else {
                         console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
                     }
-                    ////// Cập nhật lại thời gian hết hạn của member để đếm số thành viên đang hoạt động với bót
-                    //try {
-                    // objDb.getConnection(function (client) {
-                    //	 objDb.insertMembersActive(messagingEvent.sender.id, client, function (results) {
-                    //			client.close();
-                    //		});
-                    //	});
-                    //} catch (err) {
-                    //	console.error("insertMembersActive: ", err);
-                    //}
-
                 });
             } else {
                 console.log("Messaging undefined");
             }
-
         });
 
         // Returns a '200 OK' response to all requests
@@ -1969,59 +1627,6 @@ function sendMessageConfimRegister(recipientId) {
 
 };
 
-function sendMessageTrademark(recipientId, msg) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            text: msg,
-            quick_replies: [{
-                content_type: "text",
-                title: "Global Gap",
-                payload: "global gap",
-                image_url: SERVER_URL + "/img/globalgap.png"
-            }, {
-                content_type: "text",
-                title: "VietGap",
-                payload: "vietgap",
-                image_url: SERVER_URL + "/img/vietgap.png"
-            }, {
-                content_type: "text",
-                title: "Chỉ dẫn địa lý",
-                payload: "cddl",
-                image_url: SERVER_URL + "/img/map.png"
-            }]
-        }
-
-    };
-    callSendAPI(messageData);
-};
-
-function sendMessageLoan(recipientId, msg) {
-    var messageData = {
-        recipient: {
-            id: recipientId
-        },
-        message: {
-            text: msg,
-            quick_replies: [{
-                content_type: "text",
-                title: "Thủ tục vay vốn",
-                payload: "nd612015ndcp",
-                image_url: SERVER_URL + "/img/logomin.png"
-            }, {
-                content_type: "text",
-                title: "Nhu cầu vay vốn",
-                payload: "ncvv",
-                image_url: SERVER_URL + "/img/logomin.png"
-            }]
-        }
-
-    };
-    callSendAPI(messageData);
-};
-
 function setAdmin(recipientId) {
     objDb.getConnection(function (client) {
         objDb.setAdminMembers(recipientId, "ACTIVE", client, function (err, results) {
@@ -2638,9 +2243,6 @@ function receivedMessage(event) {
             "InsertDay": inputDate
         };
         switch (messageText.toLowerCase()) {
-            case 'image':
-                //sendImageMessage(senderID);
-                break;
             case 'restart':
                 callGetProfile(senderID, function (profile) {
                     console.log("Get profile: ", profile);
@@ -2681,36 +2283,35 @@ function receivedMessage(event) {
                     sendMessageWelecome(senderID, msg);
                 });
                 break;
-            case 'chuẩn':
-                sendMessageConfimRegister(senderID);
-                break;
             case 'tiếp tục':
                 sendMessageWelecome(senderID, "");
                 break;
             default:
-                getAnswer(messageText, function (aiMes) {
-                    if (aiMes.length > 0) {
-                        //console.log("GetAnswer 2:", aiMes[0].Answer);
-                        //var obj = JSON.parse(profile);
-                        //var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
-                        //sendTextMessage(senderID, 'Echo:' + messageText);
-                        msg = aiMes[0].Answer;
-                        objLog.Answer = msg;
-                        saveLogs(objLog);
-                        //sendTextMessage(senderID,msg);
-                        msg = msg + ". Bạn có muốn tiếp tục nói chuyện với Thani không ?";
-                        quickReplies = [{
-                            content_type: "text",
-                            title: "Có chứ",
-                            payload: "confirm",
-                            image_url: SERVER_URL + "/img/OkLike.png"
-                        }];
-                        sendQuickMessage(senderID, msg, quickReplies);
-                    } else {
-                        sendNoReply(senderID);
-                    }
-                });
+                sendMessageWelecome(senderID, "");
                 break;
+                //getAnswer(messageText, function (aiMes) {
+                //    if (aiMes.length > 0) {
+                //        //console.log("GetAnswer 2:", aiMes[0].Answer);
+                //        //var obj = JSON.parse(profile);
+                //        //var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
+                //        //sendTextMessage(senderID, 'Echo:' + messageText);
+                //        msg = aiMes[0].Answer;
+                //        objLog.Answer = msg;
+                //        saveLogs(objLog);
+                //        //sendTextMessage(senderID,msg);
+                //        msg = msg + ". Bạn có muốn tiếp tục nói chuyện với Thani không ?";
+                //        quickReplies = [{
+                //            content_type: "text",
+                //            title: "Có chứ",
+                //            payload: "confirm",
+                //            image_url: SERVER_URL + "/img/OkLike.png"
+                //        }];
+                //        sendQuickMessage(senderID, msg, quickReplies);
+                //    } else {
+                //        sendNoReply(senderID);
+                //    }
+                //});
+                //break;
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received");
