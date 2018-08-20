@@ -139,6 +139,8 @@ function verifyRequestSignature(req, res, buf) {
         var expectedHash = crypto.createHmac('sha1', APP_SECRET)
             .update(buf)
             .digest('hex');
+        console.error("expectedHash", expectedHash);
+        console.error("signatureHash", signatureHash);
         if (signatureHash != expectedHash) {
             throw new Error("Couldn't validate the request signature.");
         }
