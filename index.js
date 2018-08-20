@@ -131,6 +131,8 @@ function verifyRequestSignature(req, res, buf) {
         // error.
         console.error("Couldn't validate the signature.");
     } else {
+        console.error("APP_SECRET", APP_SECRET);
+        console.error("PAGE_ACCESS_TOKEN", PAGE_ACCESS_TOKEN);
         var elements = signature.split('=');
         var method = elements[0];
         var signatureHash = elements[1];
