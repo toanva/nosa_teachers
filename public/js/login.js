@@ -32,7 +32,7 @@ function Login() {
         url: '/loginCMS',
         success: function (data) {
             if (data.success == "true") {
-                window.location.href = 'index.html';
+                window.location.href = 'member.html';
             }
             else {
 				GetKeyCMS();

@@ -131,16 +131,16 @@ function verifyRequestSignature(req, res, buf) {
         // error.
         console.error("Couldn't validate the signature.");
     } else {
-        console.error("APP_SECRET", APP_SECRET);
-        console.error("PAGE_ACCESS_TOKEN", PAGE_ACCESS_TOKEN);
+        //console.error("APP_SECRET", APP_SECRET);
+        //console.error("PAGE_ACCESS_TOKEN", PAGE_ACCESS_TOKEN);
         var elements = signature.split('=');
         var method = elements[0];
         var signatureHash = elements[1];
         var expectedHash = crypto.createHmac('sha1', APP_SECRET)
             .update(buf)
             .digest('hex');
-        console.error("expectedHash", expectedHash);
-        console.error("signatureHash", signatureHash);
+        //console.error("expectedHash", expectedHash);
+        //console.error("signatureHash", signatureHash);
         //if (signatureHash != expectedHash) {
         //    throw new Error("Couldn't validate the request signature.");
         //}
@@ -501,32 +501,14 @@ server.post('/webhook', (req, res) => {
 server.get('/getMemberCMS', auth, (req, res) => {
     var name = req.query.name;
     var psid = req.query.psid;
-    var provincial = req.query.provincial;
-    var districts = req.query.districts;
-    var wards = req.query.wards;
-    var position = req.query.position;
-    var level = req.query.level;
-    var layer = req.query.layer;
-    var blockstatus = req.query.blockstatus;
+    var cmt = req.query.cmt;
     var phone = req.query.phone;
     if (psid == null || psid == 'all')
         psid = "";
     if (name == null || name == 'all')
         name = "";
-    if (provincial == null || provincial == 'all' || provincial == 'NA')
-        provincial = "";
-    if (districts == null || districts == 'all' || districts == 'NA')
-        districts = "";
-    if (wards == null || wards == 'all' || wards == 'NA')
-        wards = "";
-    if (position == null || position == 'all' || position == 'NA')
-        position = "";
-    if (level == null || level == 'all' || level == 'NA')
-        level = "";
-    if (layer == null || layer == 'all' || layer == 'NA')
-        layer = "";
-    if (blockstatus == null || blockstatus == 'all')
-        blockstatus = "";
+    if (cmt == null || cmt == 'all')
+        cmt = "";
     if (phone == null || phone == 'all')
         phone = "";
     var query = {};
@@ -543,9 +525,12 @@ server.get('/getMemberCMS', auth, (req, res) => {
             _id: psid
         });
     }
-    if (blockstatus != "") {
+    if (cmt != "") {
+        cmt = ".*" + cmt + ".*";
         Object.assign(query, {
-            BlockStatus: blockstatus
+            CMT: {
+                $regex: cmt
+            }
         });
     }
 
@@ -555,31 +540,6 @@ server.get('/getMemberCMS', auth, (req, res) => {
             Phone: {
                 $regex: phone
             }
-        });
-    }
-    if (level != "") {
-        Object.assign(query, {
-            Level: parseInt(level)
-        });
-    }
-    if (provincial != "") {
-        Object.assign(query, {
-            Provincial: provincial
-        });
-    }
-    if (districts != "") {
-        Object.assign(query, {
-            District: districts
-        });
-    }
-    if (wards != "") {
-        Object.assign(query, {
-            Ward: wards
-        });
-    }
-    if (position != "") {
-        Object.assign(query, {
-            Position: position
         });
     }
     console.log("GetMemberCMS query", query);

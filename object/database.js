@@ -194,9 +194,17 @@ module.exports = {
 		const db = client.db(DATA_BASE_NAME);
 		collection = db.collection('Members');
 		// Find some documents
-		collection.find(query).sort({
-			"_id": 1
-		}).toArray(function (err, results) {
+        collection.aggregate([
+            {
+                $lookup:
+                    {
+                        from: "Document",
+                        localField: "_id",
+                        foreignField: "psid",
+                        as: "list_document"
+                    }
+            }
+        ]).toArray(function (err, results) {
 			//    assert.equal(err, null);
 			if (err) {
 				console.log("err:", err);
