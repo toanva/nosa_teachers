@@ -264,7 +264,7 @@ server.get('/logoutCMS', function (req, res) {
 });
 
 //Toanva add gui bai viet
-server.get('/senddocument', authFace, (req, res, next) => {
+server.get('/senddocument', (req, res, next) => {
 
     let referer = req.get('Referer');
     //console.log("register.bot 0",referer);
@@ -284,7 +284,7 @@ server.get('/senddocument', authFace, (req, res, next) => {
     }
 });
 
-server.get('/document', authFace, (req, res, next) => {
+server.get('/document', (req, res, next) => {
     let referer = req.get('Referer');
     //console.log("register.bot 0",referer);
     if (referer) {
@@ -329,7 +329,7 @@ server.get('/logout.bot', function (req, res) {
     req.session.destroy();
     res.send("logout success!");
 });
-server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => {
+server.post('/senddocument', upload.single('somefile'), (req, res) => {
     try {
         let body = req.body;
         res.status(200).send('Please close this window to return to the conversation thread.');
@@ -363,7 +363,7 @@ server.post('/senddocument', upload.single('somefile'), authFace, (req, res) => 
         res.send(null);
     }
 });
-server.post('/document', upload.single('somefile'), authFace, (req, res) => {
+server.post('/document', upload.single('somefile'), (req, res) => {
     let body = req.body;
     //console.log("body", body);
     res.status(200).send('Please close this window to return to the conversation thread.');
