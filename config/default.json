@@ -1,6 +1,6 @@
 {
   "appSecret": "a503ce21dc2a5020acbc3e6eb2abcd00",
-  "pageAccessToken": "EAAEFkZCbH84oBAHVmpY2EFioi7R63mmqThMz6g4MsIqpP3TJZA0iZCZA2PpTlwjOwMHNiB7tnJFVEKvOj8tnNLVQLlvCoDQfzvTpBgyzS91oXPWAypdf0kM9Fw0NPOqqaoaNH6EBbuawXUsdu3GeBWvfbZBTK4h1qc579ddkApAZDZD",
+  "pageAccessToken": "EAAEFkZCbH84oBADaOR6Q5Gl8Cn44wzLllU3ZBSSFgDE37o2PF4RqSNdipAgjxxcl3LOMZBJvEWD8qAArHc03peShzzMZALbd929khjJ8zaCg2JTfIeuRYSrgitprAhbZAoxsdfRZBEs2uttZC73drOJuZCyeG7HxMn0NYzvZCMJdMmQZDZD",
   "validationToken": "verify-token-nsvn",
   "serverURL": "https://toanvachatbot.herokuapp.com/",
   "mongoUrl": "mongodb://nosavnnet:nsvn6688@nosavn.net:27018/Nosa_Write_About_Teachers",
