@@ -1769,22 +1769,22 @@ function sendMessageWelecome(recipientId, msg) {
                 content_type: "text",
                 title: "Thể lệ",
                 payload: "thele",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/thele.png"
             }, {
                 content_type: "text",
                 title: "Gửi bài viết",
                 payload: "guibaiviet",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/guibaiviet.png"
             }, {
                 content_type: "text",
                 title: "Bài viết hay",
                 payload: "baiviethay",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/baiviethay.png"
             }, {
                 content_type: "text",
                 title: "Bình chọn",
                 payload: "binhchon",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/binhchon.png"
             }]
         }
     };
@@ -1802,12 +1802,12 @@ function sendMessageDienThongTin(recipientId, msg) {
                 content_type: "text",
                 title: "Thể lệ",
                 payload: "thele",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/thele.png"
             }, {
                 content_type: "text",
                 title: "Gửi bài viết",
                 payload: "dienthongtin",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/guibaiviet.png"
             }]
         }
     };
@@ -1902,22 +1902,22 @@ function sendMessageAccept(recipientId, msg) {
                 content_type: "text",
                 title: "Thể lệ",
                 payload: "thele",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/thele.png"
             }, {
                 content_type: "text",
                 title: "Gửi bài viết",
                 payload: "guibaiviet",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/guibaiviet.png"
             }, {
                 content_type: "text",
                 title: "Bài viết hay",
                 payload: "baiviethay",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/baiviethay.png"
             }, {
                 content_type: "text",
                 title: "Bình chọn",
                 payload: "binhchon",
-                image_url: SERVER_URL + "/img/HoiMin.png"
+                image_url: SERVER_URL + "/img/binhchon.png"
             }]
         }
     };
@@ -2531,7 +2531,7 @@ function receivedMessage(event) {
             case 'thele':
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
                 sendTextMessage(senderID, msg);
-                file_loc = __dirname + "/public/img/cddl.png";
+                file_loc = __dirname + "/public/img/thele.jpg";
                 sendFileThele(senderID, msg, "image", file_loc);
                 break;
             case 'guibaiviet':
@@ -2585,22 +2585,22 @@ function receivedMessage(event) {
                     content_type: "text",
                     title: "Thể lệ",
                     payload: "thele",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
+                    image_url: SERVER_URL + "/img/thele.png"
                 }, {
                     content_type: "text",
                     title: "Gửi bài viết",
                     payload: "guibaiviet",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
+                    image_url: SERVER_URL + "/img/guibaiviet.png"
                 }, {
                     content_type: "text",
                     title: "Bài viết hay",
                     payload: "baiviethay",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
+                    image_url: SERVER_URL + "/img/baiviethay.png"
                 }, {
                     content_type: "text",
                     title: "Bình chọn",
                     payload: "binhchon",
-                    image_url: SERVER_URL + "/img/HoiMin.png"
+                    image_url: SERVER_URL + "/img/binhchon.png"
                 }];
                 sendQuickMessage(senderID, msg, quick_replies);
                 break;
