@@ -1415,7 +1415,7 @@ function sendMessageWelecome(recipientId, msg) {
         title: "Giải thưởng",
         payload: 'giaithuong',
     }];
-    sendButtonMessage(senderID, msg, button);
+    sendButtonMessage(recipientId, msg, button);
 };
 function sendMessageGiaoDucDacBiet(recipientId, msg) {
     var messageData = {
