@@ -482,7 +482,7 @@ server.post('/webhook', (req, res) => {
 
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'gddb') {
                         msg = 'Bạn biết không, trong quá khứ, những ai bị khuyết tật thì thường không được đi học.' +
-                            '<br> Trẻ em khuyết tật thường được các thầy thuốc hay gia sư giáo dục. Những thầy thuốc ban đầu này  đã đặt ra nền móng cho giáo dục đặc biệt ngày nay.' +
+                            '<center> Trẻ em khuyết tật thường được các thầy thuốc hay gia sư giáo dục. Những thầy thuốc ban đầu này đã đặt ra nền móng cho giáo dục đặc biệt ngày nay.</center>' +
                             '<br> Họ tập trung vào việc giảng dạy mang tính cá nhân hóa và những kỹ năng cần đến trong đời sống.' +
                             '<br> Giáo dục đặc biệt trước đây chỉ dành cho những người có những khuyết tật nghiêm trọng và ở độ tuổi còn nhỏ, nhưng gần đây thì mở rộng ra cho bất cứ ai cảm thấy gặp khó khăn trong học tập.' +
                             '<br> Một mảng giáo dục thật ý nghĩa phải không nào. Chúng ta tiếp tục tìm hiểu thêm về chương trình nhé?';
