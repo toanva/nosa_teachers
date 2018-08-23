@@ -1427,7 +1427,7 @@ function sendMessageGiaoDucDacBiet(recipientId, msg) {
             quick_replies: [{
                 content_type: "text",
                 title: "Tiếp tục",
-                payload: "gdbd2",
+                payload: "gddb2",
                 image_url: SERVER_URL + "/img/ok.png"
             }, {
                 content_type: "text",
