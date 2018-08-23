@@ -2196,7 +2196,7 @@ function receivedMessage(event) {
                 quick_replies = [{
                     content_type: "text",
                     title: "Tham gia",
-                    payload: "cuocthi",
+                    payload: "confirm",
                     image_url: SERVER_URL + "/img/ok.png"
                 }, {
                     content_type: "text",
@@ -2207,20 +2207,7 @@ function receivedMessage(event) {
                 sendQuickMessage(senderID, msg, quick_replies);
                 break;
             case 'desau':
-                msg = 'Hiện nay, Việt Nam đang thiếu hàng nghìn giáo viên Giáo dục đặc biệt, một phần do tính chất nghề nghiệp vất vả, một phần do thiếu sự chung tay của xã hội. ' +
-                    'Chương trình "Viết về thầy cô giáo dục đặc biệt" được tổ chức nhằm tôn vinh các Thầy cô giáo đang ngày ngày âm thầm chăm sóc học sinh khuyết tật. Đồng thời truyền cảm hứng để kêu gọi sự chung tay giúp đỡ của trong xã hội. Bạn sẽ tham gia ngay chứ ?';
-                quick_replies = [{
-                    content_type: "text",
-                    title: "Tham gia",
-                    payload: "cuocthi",
-                    image_url: SERVER_URL + "/img/ok.png"
-                }, {
-                    content_type: "text",
-                    title: "Để sau",
-                    payload: "desau",
-                    image_url: SERVER_URL + "/img/cancel2.png"
-                }];
-                sendQuickMessage(senderID, msg, quick_replies);
+                sendMessageWelecome(senderID, "");
                 break;
             case 'thele':
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
