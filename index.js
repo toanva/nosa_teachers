@@ -480,6 +480,24 @@ server.post('/webhook', (req, res) => {
                         msg = "";
                         sendMessageWelecome(messagingEvent.sender.id, msg);
 
+                    } else if (messagingEvent.postback && messagingEvent.postback.payload == 'gddb') {
+                        msg = 'Bạn biết không, trong quá khứ, những ai bị khuyết tật thì thường không được đi học.' +
+                            ' Trẻ em khuyết tật thường được các thầy thuốc hay gia sư giáo dục. Những thầy thuốc ban đầu này  đã đặt ra nền móng cho giáo dục đặc biệt ngày nay.' +
+                            ' Họ tập trung vào việc giảng dạy mang tính cá nhân hóa và những kỹ năng cần đến trong đời sống.' +
+                            ' Giáo dục đặc biệt trước đây chỉ dành cho những người có những khuyết tật nghiêm trọng và ở độ tuổi còn nhỏ, nhưng gần đây thì mở rộng ra cho bất cứ ai cảm thấy gặp khó khăn trong học tập.' +
+                            ' Một mảng giáo dục thật ý nghĩa phải không nào. Chúng ta tiếp tục tìm hiểu thêm về chương trình nhé?';
+                        sendMessageGiaoDucDacBiet(messagingEvent.sender.id, msg);
+                    } else if (messagingEvent.postback && messagingEvent.postback.payload == 'cuocthi') {
+                        msg = "";
+                        sendMessageCuocThi(messagingEvent.sender.id, msg);
+
+                    } else if (messagingEvent.postback && messagingEvent.postback.payload == 'giaithuong') {
+                        msg = ' Cơ cấu giải thưởng của cuộc thi viết: - 01 giải nhất: 5.000.000 đ và bằng chứng nhận.' +
+                            ' - 01 giải nhì 4.000.000 đ và bằng chứng nhận.' +
+                            ' - 01 giải ba 2.000.000 đ và bằng chứng nhận.' +
+                            ' - Các phần quà đến từ nhà tài trợ Thiên Long. Bạn tham gia cùng chương trình ngay nhé!';
+                        sendMessageGiaiThuong(messagingEvent.sender.id, msg);
+
                     } else {
                         console.log("Facebook Webhook received unknown messagingEvent: ", messagingEvent);
                     }
@@ -1381,6 +1399,80 @@ function sendBroadcast(recipientId, msg) {
 };
 
 function sendMessageWelecome(recipientId, msg) {
+    msg = msg + ' Mình là Thani - đại diện quản lý Chương trình "Viết về thầy cô Giáo dục đặc biệt".' +
+        ' Bạn biết không, để gắn bó với nghề, nhiều thầy cô đã phải hy sinh rất nhiều thứ để ở bên các con - những mảnh đời không hoàn hảo, để hoàn thành tâm nguyện một đời đó là các con, gia đình các con không bao giờ đơn độc trên hành trình này.' +
+        ' Giờ bạn muốn tìm hiểu về vấn đề gì nào ?';
+    var button = [{
+        type: 'postback',
+        title: 'Giáo dục đặc biệt',
+        payload: 'gddb',
+    }, {
+        type: 'postback',
+        title: 'Cuộc thi',
+        payload: 'cuocthi',
+    }, {
+        type: 'postback',
+        title: "Giải thưởng",
+        payload: 'giaithuong',
+    }];
+    sendButtonMessage(senderID, msg, button);
+};
+function sendMessageGiaoDucDacBiet(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg,
+            quick_replies: [{
+                content_type: "text",
+                title: "Tiếp tục",
+                payload: "gdbd2",
+                image_url: SERVER_URL + "/img/ok.png"
+            }, {
+                content_type: "text",
+                title: "Quay lại",
+                payload: "backStart",
+                image_url: SERVER_URL + "/img/back2.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
+function sendMessageGiaiThuong(recipientId, msg) {
+    var messageData = {
+        recipient: {
+            id: recipientId
+        },
+        message: {
+            text: msg ,
+            quick_replies: [{
+                content_type: "text",
+                title: "Thể lệ",
+                payload: "thele",
+                image_url: SERVER_URL + "/img/thele.png"
+            }, {
+                content_type: "text",
+                title: "Gửi bài viết",
+                payload: "guibaiviet",
+                image_url: SERVER_URL + "/img/guibaiviet.png"
+            }, {
+                content_type: "text",
+                title: "Bài viết hay",
+                payload: "baiviethay",
+                image_url: SERVER_URL + "/img/baiviethay.png"
+            }, {
+                content_type: "text",
+                title: "Bình chọn",
+                payload: "binhchon",
+                image_url: SERVER_URL + "/img/binhchon.png"
+            }]
+        }
+    };
+    callSendAPI(messageData);
+};
+
+function sendMessageCuocThi(recipientId, msg) {
     var messageData = {
         recipient: {
             id: recipientId
@@ -1412,6 +1504,7 @@ function sendMessageWelecome(recipientId, msg) {
     };
     callSendAPI(messageData);
 };
+
 
 function sendMessageDienThongTin(recipientId, msg) {
     var messageData = {
@@ -1454,7 +1547,7 @@ function sendBaiVietHay(recipientId, mgs) {
                         webview_height_ratio: "tall",
                         fallback_url: SERVER_URL + "/baiviethay.html"
                     }
-                    ,{
+                        , {
                         type: "postback",
                         title: "Tiếp tục",
                         "payload": "tieptuc"
@@ -2097,6 +2190,38 @@ function receivedMessage(event) {
         console.log("Quick reply for message %s with payload %s",
             messageId, quickReplyPayload);
         switch (quickReplyPayload.toLowerCase()) {
+            case 'gddb2':
+                msg = 'Hiện nay, Việt Nam đang thiếu hàng nghìn giáo viên Giáo dục đặc biệt, một phần do tính chất nghề nghiệp vất vả, một phần do thiếu sự chung tay của xã hội. ' +
+                      'Chương trình "Viết về thầy cô giáo dục đặc biệt" được tổ chức nhằm tôn vinh các Thầy cô giáo đang ngày ngày âm thầm chăm sóc học sinh khuyết tật. Đồng thời truyền cảm hứng để kêu gọi sự chung tay giúp đỡ của trong xã hội. Bạn sẽ tham gia ngay chứ ?';
+                quick_replies = [{
+                    content_type: "text",
+                    title: "Tham gia",
+                    payload: "cuocthi",
+                    image_url: SERVER_URL + "/img/ok.png"
+                }, {
+                    content_type: "text",
+                    title: "Để sau",
+                    payload: "desau",
+                    image_url: SERVER_URL + "/img/cancel2.png"
+                }];
+                sendQuickMessage(senderID, msg, quick_replies);
+                break;
+            case 'desau':
+                msg = 'Hiện nay, Việt Nam đang thiếu hàng nghìn giáo viên Giáo dục đặc biệt, một phần do tính chất nghề nghiệp vất vả, một phần do thiếu sự chung tay của xã hội. ' +
+                    'Chương trình "Viết về thầy cô giáo dục đặc biệt" được tổ chức nhằm tôn vinh các Thầy cô giáo đang ngày ngày âm thầm chăm sóc học sinh khuyết tật. Đồng thời truyền cảm hứng để kêu gọi sự chung tay giúp đỡ của trong xã hội. Bạn sẽ tham gia ngay chứ ?';
+                quick_replies = [{
+                    content_type: "text",
+                    title: "Tham gia",
+                    payload: "cuocthi",
+                    image_url: SERVER_URL + "/img/ok.png"
+                }, {
+                    content_type: "text",
+                    title: "Để sau",
+                    payload: "desau",
+                    image_url: SERVER_URL + "/img/cancel2.png"
+                }];
+                sendQuickMessage(senderID, msg, quick_replies);
+                break;
             case 'thele':
                 msg = "Dưới đây là thể lệ cuộc thi, bạn hãy xem qua để có thể viết một bài viết tuyệt vời nhé!";
                 sendTextMessage(senderID, msg);
@@ -2141,7 +2266,7 @@ function receivedMessage(event) {
                     messenger_extensions: true,
                     webview_height_ratio: "tall",
                     fallback_url: SERVER_URL + "/baiviethay.html"
-                },{
+                }, {
                     type: 'postback',
                     title: 'Quay lại',
                     payload: 'tieptuc',
@@ -2253,29 +2378,29 @@ function receivedMessage(event) {
             default:
                 sendMessageWelecome(senderID, "");
                 break;
-                //getAnswer(messageText, function (aiMes) {
-                //    if (aiMes.length > 0) {
-                //        //console.log("GetAnswer 2:", aiMes[0].Answer);
-                //        //var obj = JSON.parse(profile);
-                //        //var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
-                //        //sendTextMessage(senderID, 'Echo:' + messageText);
-                //        msg = aiMes[0].Answer;
-                //        objLog.Answer = msg;
-                //        saveLogs(objLog);
-                //        //sendTextMessage(senderID,msg);
-                //        msg = msg + ". Bạn có muốn tiếp tục nói chuyện với Thani không ?";
-                //        quickReplies = [{
-                //            content_type: "text",
-                //            title: "Có chứ",
-                //            payload: "confirm",
-                //            image_url: SERVER_URL + "/img/OkLike.png"
-                //        }];
-                //        sendQuickMessage(senderID, msg, quickReplies);
-                //    } else {
-                //        sendNoReply(senderID);
-                //    }
-                //});
-                //break;
+            //getAnswer(messageText, function (aiMes) {
+            //    if (aiMes.length > 0) {
+            //        //console.log("GetAnswer 2:", aiMes[0].Answer);
+            //        //var obj = JSON.parse(profile);
+            //        //var msg = "Chúc mừng " + obj["last_name"] + " " + obj["first_name"] + " đã kết nối vào hệ thống!";
+            //        //sendTextMessage(senderID, 'Echo:' + messageText);
+            //        msg = aiMes[0].Answer;
+            //        objLog.Answer = msg;
+            //        saveLogs(objLog);
+            //        //sendTextMessage(senderID,msg);
+            //        msg = msg + ". Bạn có muốn tiếp tục nói chuyện với Thani không ?";
+            //        quickReplies = [{
+            //            content_type: "text",
+            //            title: "Có chứ",
+            //            payload: "confirm",
+            //            image_url: SERVER_URL + "/img/OkLike.png"
+            //        }];
+            //        sendQuickMessage(senderID, msg, quickReplies);
+            //    } else {
+            //        sendNoReply(senderID);
+            //    }
+            //});
+            //break;
         }
     } else if (messageAttachments) {
         sendTextMessage(senderID, "Message with attachment received");
