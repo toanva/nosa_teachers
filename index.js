@@ -482,20 +482,21 @@ server.post('/webhook', (req, res) => {
 
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'gddb') {
                         msg = 'Bạn biết không, trong quá khứ, những ai bị khuyết tật thì thường không được đi học.' +
-                            ' Trẻ em khuyết tật thường được các thầy thuốc hay gia sư giáo dục. Những thầy thuốc ban đầu này  đã đặt ra nền móng cho giáo dục đặc biệt ngày nay.' +
-                            ' Họ tập trung vào việc giảng dạy mang tính cá nhân hóa và những kỹ năng cần đến trong đời sống.' +
-                            ' Giáo dục đặc biệt trước đây chỉ dành cho những người có những khuyết tật nghiêm trọng và ở độ tuổi còn nhỏ, nhưng gần đây thì mở rộng ra cho bất cứ ai cảm thấy gặp khó khăn trong học tập.' +
-                            ' Một mảng giáo dục thật ý nghĩa phải không nào. Chúng ta tiếp tục tìm hiểu thêm về chương trình nhé?';
+                            '<br> Trẻ em khuyết tật thường được các thầy thuốc hay gia sư giáo dục. Những thầy thuốc ban đầu này  đã đặt ra nền móng cho giáo dục đặc biệt ngày nay.' +
+                            '<br> Họ tập trung vào việc giảng dạy mang tính cá nhân hóa và những kỹ năng cần đến trong đời sống.' +
+                            '<br> Giáo dục đặc biệt trước đây chỉ dành cho những người có những khuyết tật nghiêm trọng và ở độ tuổi còn nhỏ, nhưng gần đây thì mở rộng ra cho bất cứ ai cảm thấy gặp khó khăn trong học tập.' +
+                            '<br> Một mảng giáo dục thật ý nghĩa phải không nào. Chúng ta tiếp tục tìm hiểu thêm về chương trình nhé?';
                         sendMessageGiaoDucDacBiet(messagingEvent.sender.id, msg);
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'cuocthi') {
                         msg = "";
                         sendMessageCuocThi(messagingEvent.sender.id, msg);
 
                     } else if (messagingEvent.postback && messagingEvent.postback.payload == 'giaithuong') {
-                        msg = ' Cơ cấu giải thưởng của cuộc thi viết: - 01 giải nhất: 5.000.000 đ và bằng chứng nhận.' +
-                            ' - 01 giải nhì 4.000.000 đ và bằng chứng nhận.' +
-                            ' - 01 giải ba 2.000.000 đ và bằng chứng nhận.' +
-                            ' - Các phần quà đến từ nhà tài trợ Thiên Long. Bạn tham gia cùng chương trình ngay nhé!';
+                        msg = ' Cơ cấu giải thưởng của cuộc thi viết:' + 
+                            '<br> - 01 giải nhất: 5.000.000 đ và bằng chứng nhận.' +
+                            '<br> - 01 giải nhì 4.000.000 đ và bằng chứng nhận.' +
+                            '<br> - 01 giải ba 2.000.000 đ và bằng chứng nhận.' +
+                            '<br> - Các phần quà đến từ nhà tài trợ Thiên Long. Bạn tham gia cùng chương trình ngay nhé!';
                         sendMessageGiaiThuong(messagingEvent.sender.id, msg);
 
                     } else {
