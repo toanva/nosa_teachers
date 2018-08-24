@@ -1478,7 +1478,7 @@ function sendMessageCuocThi(recipientId, msg) {
             id: recipientId
         },
         message: {
-            text: msg + " Mình là Thani - trợ lý ảo quản lý chương trình Viết về thầy cô giáo dục đặc biệt. Bạn muốn chia sẻ gì cùng mình nào?",
+            text: msg + " Bạn muốn chia sẻ gì cùng Thani nào?",
             quick_replies: [{
                 content_type: "text",
                 title: "Thể lệ",
