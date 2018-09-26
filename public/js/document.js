@@ -9,7 +9,17 @@ var txtCMT = document.getElementById('txtCMT');
 var txtAddress = document.getElementById('txtAddress'); 
 //var txtDocument = document.getElementById('txtDocument');
 var btnSend = document.getElementById('btnSend');
-
+function getParamValue(param) {
+    var urlParamString = location.search.split(param + "=");
+    if (urlParamString.length <= 1) 
+	{
+		return "";
+	}
+    else {
+        var tmp = urlParamString[1].split("&");
+        return tmp[0];
+    }
+};
 function SaveObject() {
 	btnSend.disabled = true;
 	btnSend.style.color = '#5d98fb';
